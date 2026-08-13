@@ -9,6 +9,7 @@ import {
   ShoppingCartIcon,
 } from "@phosphor-icons/react";
 import { ICON_SIZE_LG, ICON_SIZE_MOBILE } from "@/lib/icon-size";
+import { useIsDark } from "@/lib/use-is-dark";
 import { useMediaQuery } from "@/lib/use-media-query";
 import iconRowStyles from "./icon-row.module.css";
 import { Seam } from "./seam";
@@ -69,18 +70,23 @@ const entries = [
 
 export function TimelineSection() {
   const isTablet = useMediaQuery("(min-width: 768px)");
+  const isDark = useIsDark();
   const iconSize = isTablet ? ICON_SIZE_LG : ICON_SIZE_MOBILE;
 
   return (
     <section className="relative pt-section-gap pb-page-y">
       <Seam />
-      <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-content-secondary">
+      <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
         TIMELINE
       </h2>
       <div className="flex flex-col gap-[80px] px-page-x py-page-y">
         {entries.map(({ Icon, company, href, role, meta, highlight }, index) => (
           <div key={index} className="flex items-start gap-page-x">
-            <Icon size={iconSize} weight="regular" className="shrink-0 text-icon" />
+            <Icon
+              size={iconSize}
+              weight={isDark ? "fill" : "regular"}
+              className="shrink-0 text-icon"
+            />
             <div>
               {href ? (
                 <a

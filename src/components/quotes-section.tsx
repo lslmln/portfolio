@@ -64,7 +64,7 @@ export function QuotesSection() {
   return (
     <section className="relative pt-section-gap pb-page-y">
       <Seam />
-      <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-content-secondary">
+      <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
         QUOTES
       </h2>
       <div className="relative">

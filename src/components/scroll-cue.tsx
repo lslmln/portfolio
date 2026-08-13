@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowDownIcon } from "@phosphor-icons/react";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
+import { useIsDark } from "@/lib/use-is-dark";
 
 export function ScrollCue() {
   const [visible, setVisible] = useState(true);
   const reduceMotion = useReducedMotion();
+  const isDark = useIsDark();
 
   useEffect(() => {
     function handleScroll() {
@@ -43,7 +45,7 @@ export function ScrollCue() {
         }
         className="text-content-primary"
       >
-        <ArrowDownIcon size={ICON_SIZE_SM} weight="regular" />
+        <ArrowDownIcon size={ICON_SIZE_SM} weight={isDark ? "fill" : "regular"} />
       </motion.div>
     </motion.div>
   );

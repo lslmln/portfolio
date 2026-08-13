@@ -2,6 +2,7 @@
 
 import { ArrowUpRightIcon } from "@phosphor-icons/react";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
+import { useIsDark } from "@/lib/use-is-dark";
 import { Seam } from "./seam";
 import styles from "./contact-section.module.css";
 
@@ -11,10 +12,12 @@ const links = [
 ];
 
 export function ContactSection() {
+  const isDark = useIsDark();
+
   return (
-    <section className="relative pt-section-gap pb-page-y">
+    <section className="relative pt-section-gap pb-[48px] tablet:pb-[96px]">
       <Seam />
-      <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-content-secondary">
+      <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
         CONTACT
       </h2>
       <div className="px-page-x">
@@ -37,7 +40,11 @@ export function ContactSection() {
           >
             <span>{link.label}</span>
             <span className={styles.arrow}>
-              <ArrowUpRightIcon size={ICON_SIZE_SM} weight="regular" className="icon-sm" />
+              <ArrowUpRightIcon
+                size={ICON_SIZE_SM}
+                weight={isDark ? "fill" : "regular"}
+                className="icon-sm"
+              />
             </span>
           </a>
         ))}

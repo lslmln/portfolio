@@ -1,9 +1,22 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import { DebugGrid } from "@/components/debug-grid";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import "./globals.css";
+
+// Runs before hydration so the initial paint already matches the right theme,
+// instead of always starting light and flashing to dark a moment later. A
+// saved manual choice (Navbar's toggle, localStorage) wins if one exists;
+// otherwise falls back to the visitor's OS preference.
+const THEME_INIT_SCRIPT = `
+  try {
+    var saved = localStorage.getItem("theme");
+    var isDark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  } catch (e) {}
+`;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,8 +38,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <Script id="theme-init" strategy="beforeInteractive">
+          {THEME_INIT_SCRIPT}
+        </Script>
         {process.env.NODE_ENV === "development" && <DebugGrid />}
         <div className="flex flex-col rounded-card bg-background-primary">
           <Navbar />

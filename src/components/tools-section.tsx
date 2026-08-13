@@ -11,7 +11,7 @@ export function ToolsSection() {
   return (
     <section className="relative pt-section-gap pb-page-y">
       <Seam />
-      <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-content-secondary">
+      <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
         TOOLS
       </h2>
       <div className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12">

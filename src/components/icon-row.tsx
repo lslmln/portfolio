@@ -15,6 +15,7 @@ import {
   ICON_SIZE_LG,
   ICON_SIZE_MOBILE,
 } from "@/lib/icon-size";
+import { useIsDark } from "@/lib/use-is-dark";
 import { useMediaQuery } from "@/lib/use-media-query";
 import styles from "./icon-row.module.css";
 
@@ -79,6 +80,7 @@ export function IconRow() {
   const [scope, animate] = useAnimate();
   const containerRef = useRef<HTMLDivElement>(null);
   const isTablet = useMediaQuery("(min-width: 768px)");
+  const isDark = useIsDark();
 
   useEffect(() => {
     if (selected !== null) return;
@@ -156,7 +158,7 @@ export function IconRow() {
             className={styles.iconButton}
           >
             <span data-hint-icon className={styles.hintTarget}>
-              <Icon size={iconSize} weight="regular" />
+              <Icon size={iconSize} weight={isDark ? "fill" : "regular"} />
             </span>
           </button>
         ))}

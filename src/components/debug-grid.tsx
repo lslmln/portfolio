@@ -5,7 +5,7 @@
 import { useState } from "react";
 
 export function DebugGrid() {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   return (
     <>

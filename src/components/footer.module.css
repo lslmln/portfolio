@@ -1,0 +1,9 @@
+.footer {
+  background: var(--content-primary);
+  color: var(--background-primary);
+}
+
+:root[data-theme="dark"] .footer {
+  background: #000000;
+  color: var(--content-primary);
+}
