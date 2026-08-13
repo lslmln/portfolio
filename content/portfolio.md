@@ -3,6 +3,7 @@
 *Source of truth for all portfolio copy. Do not invent facts, metrics, employers, or responsibilities beyond what's documented here — use `[PLACEHOLDER]` for anything missing.*
 
 ## About
+- **About page bio copy (given directly, used verbatim on `/about`):** "I'm a product designer based in Singapore. Previously at Crypto.com & IBM. I've been working full-time in design for a little over a year, but this dream started 4 years ago."
 - **Name:** Si Min Lee
 - **Role:** Product Designer
 - **Experience:** 1 year 3 months full-time + 1.5 years internship experience (~2 years 9 months total)
@@ -13,18 +14,33 @@
 - **What the site should communicate:** strong product thinking, visual craft, ability to initiate and work independently, technical fluency, clear communication
 
 ## Career History
-### Crypto.com — `[title / dates: PLACEHOLDER]`
+*Given directly by the user (as the `/about` Timeline section content) — title, dates, location for each. Order below is most-recent-first, matching how it's displayed.*
+
+### Crypto.com — Product Designer
+- Jun 2025 - Aug 2026 · Singapore
 - Most recent role
 - Focus: design systems & fintech products
 
-### NetVirta — `[title / dates: PLACEHOLDER]`
+### IBM — UX Designer Intern
+- Jul 2024 - Dec 2024 · Singapore
+
+### Economic Development Board — Product & Service Designer Intern
+- May 2024 - Jul 2024 · Singapore
+
+### Univers — Product Experience Designer Intern (UI/UX)
+- Jan 2024 - May 2024 · Singapore
+- Industry: IoT for public housing & parks (per the existing `IconRow` caption on the homepage — not separately re-confirmed for this entry)
+
+### NetVirta — UI/UX Designer Intern
+- Jun 2022 - Aug 2022 · Singapore
 - Industry: online fashion / IoT (3D body scanning technology)
 - Integrated 3D body scanning tech with partner brands via white-labelling
 - Ran competitor analysis; designed and prototyped wireflows for a social layer feature (the app only did body scanning at the time — she didn't ship the feature herself while there, but it launched later)
 
-### Consulting — `[employer / title / dates: PLACEHOLDER]`
-
-### Internship(s) — 1.5 years total — `[employer(s) / title(s) / dates: PLACEHOLDER]`
+## Education
+### Yale-NUS College — Development Economics, Optimization & Proofs
+- Aug 2020 - May 2025 · Singapore
+- Formal degree: B.A. (Honours), Economics Major, Mathematical, Computational and Statistical Sciences Minor — this was the original Timeline description; the user replaced it with the shorter phrase above for display, kept here so the formal degree title isn't lost from the record
 
 ## Site Structure
 - **Homepage:** work section, testimonials, `[additional sections: PLACEHOLDER]`

@@ -1,0 +1,63 @@
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--icon);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    transform 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.iconButton[data-selected] {
+  color: var(--content-secondary);
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .iconButton:hover {
+    color: var(--content-secondary);
+  }
+}
+
+.iconButton:active {
+  transform: scale(0.97);
+}
+
+.hintTarget {
+  display: inline-flex;
+}
+
+.link {
+  display: inline-block;
+  color: var(--link);
+  transition: transform 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.link:active {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconButton,
+  .link {
+    transition: none;
+  }
+}
+
+.wrapper {
+  position: absolute;
+  top: 50%;
+  left: var(--spacing-page-x);
+  transform: translateY(-50%);
+  width: fit-content;
+}
+
+@media (min-width: 768px) {
+  .wrapper {
+    left: auto;
+    right: max(var(--spacing-page-x), calc(30vw - var(--icon-row-half-width)));
+  }
+}

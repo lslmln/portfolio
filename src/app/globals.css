@@ -1,26 +1,108 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background-primary: #EEEAE3;
+  --content-primary: #2E2E2E;
+  --content-secondary: #666666;
+  --icon: #999999;
+  --link: #006FF9;
+  --note-blue: #A8DAFF;
+  --note-green: #B3EFBD;
+  --note-teal: #B3F4EF;
+  --note-purple: #D3BDFF;
+  --note-lime: #E3EFB3;
+  --note-pink: #FFA8DB;
+  --note-coral: #FFAFA3;
+  --note-yellow: #FFE299;
+  --nav-height: 0px;
+  --icon-size-sm: 32px;
+  --icon-size-footer: 24px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background-primary: var(--background-primary);
+  --color-content-primary: var(--content-primary);
+  --color-content-secondary: var(--content-secondary);
+  --color-icon: var(--icon);
+  --color-link: var(--link);
+  --color-note-blue: var(--note-blue);
+  --color-note-green: var(--note-green);
+  --color-note-teal: var(--note-teal);
+  --color-note-purple: var(--note-purple);
+  --color-note-lime: var(--note-lime);
+  --color-note-pink: var(--note-pink);
+  --color-note-coral: var(--note-coral);
+  --color-note-yellow: var(--note-yellow);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+@theme {
+  --breakpoint-sm: initial;
+  --breakpoint-md: initial;
+  --breakpoint-lg: initial;
+  --breakpoint-xl: initial;
+  --breakpoint-2xl: initial;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+  --breakpoint-large: 1280px;
+
+  --text-nav: 20px;
+  --text-body: 24px;
+  --text-caption: 16px;
+  --text-title: 32px;
+
+  --tracking-title: 0.2em;
+
+  --spacing-page-x: 32px;
+  --spacing-page-y: 24px;
+  --spacing-text-icon: 4px;
+  --spacing-section-gap: 52px;
+  --spacing-card-spacing: 24px;
+  --spacing-card-row-gap: 48px;
+  --spacing-card-text-gap: 16px;
+  --spacing-button-gap: 16px;
+
+  --radius-button: 12px;
+  --radius-card: 12px;
+
+  --aspect-card: 8 / 5;
+}
+
+@media (max-width: 767px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --text-nav: 16px;
+    --text-body: 20px;
+    --text-caption: 12px;
+    --text-title: 28px;
+
+    --spacing-page-x: 20px;
+    --spacing-page-y: 16px;
+    --spacing-card-spacing: 16px;
+    --spacing-card-text-gap: 12px;
+    --spacing-button-gap: 12px;
+
+    --icon-size-sm: 20px;
+    --icon-size-footer: 16px;
   }
 }
 
+@media (min-width: 768px) {
+  :root {
+    --spacing-section-gap: 80px;
+  }
+}
+
+.icon-sm {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.icon-footer {
+  width: var(--icon-size-footer);
+  height: var(--icon-size-footer);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--content-primary);
 }
