@@ -82,7 +82,8 @@ export function QuotesSection() {
             </button>
           ))}
         </div>
-        <div className={styles.filterFade} aria-hidden="true" />
+        <div className={styles.filterFadeLeft} aria-hidden="true" />
+        <div className={styles.filterFadeRight} aria-hidden="true" />
       </div>
       <div className={`${styles.grid} items-start gap-card-spacing px-page-x py-page-y`}>
         <AnimatePresence mode="popLayout" initial={false}>

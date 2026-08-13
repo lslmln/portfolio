@@ -12,18 +12,23 @@
   display: none;
 }
 
-.filterFade {
+.filterFadeRight {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  width: calc(2 * var(--spacing-page-x));
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    var(--background-primary) 50%,
-    var(--background-primary) 100%
-  );
+  width: var(--spacing-page-x);
+  background: linear-gradient(to right, transparent 0%, var(--background-primary) 100%);
+  pointer-events: none;
+}
+
+.filterFadeLeft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--spacing-page-x);
+  background: linear-gradient(to left, transparent 0%, var(--background-primary) 100%);
   pointer-events: none;
 }
 
