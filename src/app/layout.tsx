@@ -27,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <DebugGrid />
+        {process.env.NODE_ENV === "development" && <DebugGrid />}
         <div className="flex flex-col rounded-card bg-background-primary">
           <Navbar />
           {children}
