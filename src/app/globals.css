@@ -70,6 +70,7 @@
   --text-body: 24px;
   --text-caption: 16px;
   --text-title: 32px;
+  --text-header: 40px;
 
   --tracking-title: 0.2em;
 
@@ -94,6 +95,7 @@
     --text-body: 20px;
     --text-caption: 12px;
     --text-title: 28px;
+    --text-header: 32px;
 
     --spacing-page-x: 20px;
     --spacing-page-y: 16px;
