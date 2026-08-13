@@ -10,7 +10,7 @@ export default function Home() {
     <>
       <main
         className="flex flex-col"
-        style={{ minHeight: "calc(100dvh - var(--nav-height))" }}
+        style={{ minHeight: "calc(100svh - var(--nav-height))" }}
       >
         <div className="relative flex-1">
           <div className="absolute inset-x-0 top-0 bottom-page-y tablet:bottom-0">
