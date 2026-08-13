@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightIcon, LockIcon, XIcon } from "@phosphor-icons/react";
+import { ArrowRightIcon, CircleNotchIcon, LockIcon, XIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -26,6 +26,7 @@ export function WorkSection({
   const [unlockingSlug, setUnlockingSlug] = useState<string | null>(null);
   const [passcodeInput, setPasscodeInput] = useState("");
   const [passcodeError, setPasscodeError] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const isDark = useIsDark();
   const router = useRouter();
 
@@ -35,16 +36,19 @@ export function WorkSection({
     setUnlockingSlug(null);
     setPasscodeInput("");
     setPasscodeError(false);
+    setIsVerifying(false);
   }
 
   async function handleSubmitPasscode() {
-    if (!unlockingCard || !passcodeInput.trim()) return;
+    if (!unlockingCard || !passcodeInput.trim() || isVerifying) return;
+    setIsVerifying(true);
     const isCorrect = await verifyPasscode(passcodeInput);
     if (isCorrect) {
       router.push(`/work/${unlockingCard.slug}`);
       closePasscode();
     } else {
       setPasscodeError(true);
+      setIsVerifying(false);
     }
   }
 
@@ -140,7 +144,7 @@ export function WorkSection({
               <button
                 type="button"
                 onClick={handleSubmitPasscode}
-                disabled={!passcodeInput.trim()}
+                disabled={!passcodeInput.trim() || isVerifying}
                 aria-label="Submit password"
                 className={`group flex shrink-0 items-center justify-center rounded-full bg-[#242424]/50 p-2 backdrop-blur-sm transition-[opacity,transform] duration-150 active:scale-[0.97] ${
                   passcodeInput.trim()
@@ -148,11 +152,19 @@ export function WorkSection({
                     : "pointer-events-none opacity-30"
                 }`}
               >
-                <ArrowRightIcon
-                  size={20}
-                  weight="fill"
-                  className="text-[#EEEAE3] group-hover:text-[#242424]"
-                />
+                {isVerifying ? (
+                  <CircleNotchIcon
+                    size={20}
+                    weight="bold"
+                    className="animate-spin text-[#EEEAE3] group-hover:text-[#242424]"
+                  />
+                ) : (
+                  <ArrowRightIcon
+                    size={20}
+                    weight="fill"
+                    className="text-[#EEEAE3] group-hover:text-[#242424]"
+                  />
+                )}
               </button>
             </div>
             <p
