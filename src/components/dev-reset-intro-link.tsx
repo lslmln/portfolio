@@ -1,9 +1,9 @@
 "use client";
 
+import { INTRO_SEEN_KEY } from "@/lib/loading-complete";
+
 // TEMP: dev-only shortcut to re-trigger the homepage intro animation.
 // Remove before shipping.
-
-const INTRO_SEEN_KEY = "portfolio-intro-seen";
 
 export function DevResetIntroLink() {
   return (

@@ -2,11 +2,10 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { markLoadingComplete } from "@/lib/loading-complete";
+import { INTRO_SEEN_KEY, markLoadingComplete } from "@/lib/loading-complete";
 
 const DURATION_MS = 1600;
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
-const INTRO_SEEN_KEY = "portfolio-intro-seen";
 
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
