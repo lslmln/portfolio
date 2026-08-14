@@ -9,7 +9,12 @@ import {
   LeafIcon,
   ShoppingCartIcon,
 } from "@phosphor-icons/react";
-import { ICON_ROW_WIDTH, ICON_SIZE_LG, ICON_SIZE_MOBILE } from "@/lib/icon-size";
+import {
+  ICON_GAP_MOBILE,
+  ICON_ROW_WIDTH,
+  ICON_SIZE_LG,
+  ICON_SIZE_MOBILE,
+} from "@/lib/icon-size";
 import { useIsDark } from "@/lib/use-is-dark";
 import { useMediaQuery } from "@/lib/use-media-query";
 import styles from "./icon-row.module.css";
@@ -71,6 +76,10 @@ function CaptionText({ active }: { active: (typeof items)[number] }) {
 
 export function IconRow() {
   const [selected, setSelected] = useState<number | null>(null);
+  // Drives the mobile caption's position — kept separate from `selected` so
+  // the caption box doesn't jump to the new icon's row until the old
+  // caption has actually finished fading out (see mobileCaptionTop below).
+  const [displayedSelected, setDisplayedSelected] = useState<number | null>(null);
   const reduceMotion = useReducedMotion();
   const [scope, animate] = useAnimate();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -116,25 +125,37 @@ export function IconRow() {
     return () => clearTimeout(timer);
   }, [selected, animate, reduceMotion, scope]);
 
+  function selectIcon(index: number | null) {
+    setSelected(index);
+    // Nothing was showing yet, so there's no old caption to wait on — jump
+    // straight to position. Otherwise, onExitComplete below handles it.
+    setDisplayedSelected((current) => (current === null ? index : current));
+  }
+
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
       if (!containerRef.current) return;
       if (!containerRef.current.contains(event.target as Node)) {
-        setSelected(null);
+        selectIcon(null);
       }
     }
     document.addEventListener("pointerdown", handlePointerDown);
     return () => document.removeEventListener("pointerdown", handlePointerDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const align = isTablet && selected !== null ? alignmentForIndex(selected) : "left";
   const active = selected === null ? null : items[selected];
   const iconSize = isTablet ? ICON_SIZE_LG : ICON_SIZE_MOBILE;
+  const mobileCaptionTop =
+    displayedSelected !== null
+      ? displayedSelected * (ICON_SIZE_MOBILE + ICON_GAP_MOBILE) + ICON_SIZE_MOBILE / 2
+      : 0;
 
   return (
     <div
       ref={containerRef}
-      className={`${styles.wrapper} flex flex-col items-stretch gap-page-y`}
+      className={`${styles.wrapper} flex flex-col items-start gap-page-y tablet:items-stretch`}
       style={{ "--icon-row-half-width": `${ICON_ROW_WIDTH / 2}px` } as React.CSSProperties}
     >
       <div
@@ -145,7 +166,7 @@ export function IconRow() {
           <button
             key={index}
             type="button"
-            onClick={() => setSelected(index)}
+            onClick={() => selectIcon(index)}
             aria-pressed={selected === index}
             data-selected={selected === index || undefined}
             className={styles.iconButton}
@@ -155,25 +176,59 @@ export function IconRow() {
             </span>
           </button>
         ))}
+
+        {!isTablet && (
+          <div
+            className="absolute left-full"
+            style={{
+              top: mobileCaptionTop,
+              transform: "translateY(-50%)",
+              paddingLeft: "var(--spacing-page-x)",
+              width: "max-content",
+              maxWidth: `calc(100vw - ${ICON_SIZE_MOBILE}px - (2 * var(--spacing-page-x)))`,
+            }}
+          >
+            <AnimatePresence
+              mode="wait"
+              initial={false}
+              onExitComplete={() => setDisplayedSelected(selected)}
+            >
+              {active && (
+                <motion.p
+                  key={selected}
+                  initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
+                  transition={{ type: "spring", duration: 0.25, bounce: 0 }}
+                  className="font-sans font-medium text-caption leading-6 text-content-primary"
+                >
+                  <CaptionText active={active} />
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
 
-      <div className="h-6 w-full">
-        <AnimatePresence mode="wait" initial={false}>
-          {active && (
-            <motion.p
-              key={selected}
-              initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
-              transition={{ type: "spring", duration: 0.25, bounce: 0 }}
-              style={{ textAlign: align }}
-              className="font-sans font-medium text-caption leading-6 text-content-primary"
-            >
-              <CaptionText active={active} />
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </div>
+      {isTablet && (
+        <div className="h-6 w-full">
+          <AnimatePresence mode="wait" initial={false}>
+            {active && (
+              <motion.p
+                key={selected}
+                initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
+                transition={{ type: "spring", duration: 0.25, bounce: 0 }}
+                style={{ textAlign: align }}
+                className="font-sans font-medium text-caption leading-6 text-content-primary"
+              >
+                <CaptionText active={active} />
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 }
