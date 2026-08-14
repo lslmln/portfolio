@@ -3,9 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { CrossfadeReveal } from "@/components/crossfade-reveal";
 import { DebugGrid } from "@/components/debug-grid";
+import { Dev404Link } from "@/components/dev-404-link";
+import { DevResetIntroLink } from "@/components/dev-reset-intro-link";
 import { Footer } from "@/components/footer";
 import { LoadingScreen } from "@/components/loading-screen";
 import { Navbar } from "@/components/navbar";
+import { RouteTransition } from "@/components/route-transition";
 import "./globals.css";
 
 // Runs before hydration so the initial paint already matches the right theme,
@@ -17,6 +20,19 @@ const THEME_INIT_SCRIPT = `
     var saved = localStorage.getItem("theme");
     var isDark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
     document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  } catch (e) {}
+`;
+
+// Reloading (or opening a direct link) always lands at the top of the page,
+// instead of the browser restoring wherever the scroll position happened to
+// be last time. Runs before hydration so there's no flash of the restored
+// position first.
+const SCROLL_RESET_SCRIPT = `
+  try {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
   } catch (e) {}
 `;
 
@@ -46,13 +62,23 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Script id="theme-init" strategy="beforeInteractive">
           {THEME_INIT_SCRIPT}
         </Script>
+        <Script id="scroll-reset" strategy="beforeInteractive">
+          {SCROLL_RESET_SCRIPT}
+        </Script>
         {process.env.NODE_ENV === "development" && <DebugGrid />}
+        {process.env.NODE_ENV === "development" && <Dev404Link />}
+        {process.env.NODE_ENV === "development" && <DevResetIntroLink />}
         <LoadingScreen />
         <div className="flex flex-col rounded-card bg-background-primary">
-          <CrossfadeReveal>
-            <Navbar />
-          </CrossfadeReveal>
-          {children}
+          <RouteTransition
+            navbar={
+              <CrossfadeReveal>
+                <Navbar />
+              </CrossfadeReveal>
+            }
+          >
+            {children}
+          </RouteTransition>
         </div>
         <Footer />
       </body>

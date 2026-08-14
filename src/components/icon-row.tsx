@@ -16,7 +16,7 @@ import {
   ICON_SIZE_MOBILE,
 } from "@/lib/icon-size";
 import { useIsDark } from "@/lib/use-is-dark";
-import { useLoadingComplete } from "@/lib/loading-complete";
+import { useIntroPlayed, useLoadingComplete } from "@/lib/loading-complete";
 import { useMediaQuery } from "@/lib/use-media-query";
 import styles from "./icon-row.module.css";
 
@@ -89,6 +89,16 @@ export function IconRow() {
   const isTablet = useMediaQuery("(min-width: 768px)");
   const isDark = useIsDark();
   const loadingComplete = useLoadingComplete();
+  const introPlayed = useIntroPlayed();
+  // loadingComplete/introPlayed are sticky for the whole browser session —
+  // once the intro has played, they stay true forever. But IconRow remounts
+  // fresh every time the homepage is navigated back to via client-side nav,
+  // not just on the original page load. Without this, every return trip to
+  // home would replay the elaborate fly-up-from-below-screen animation.
+  // Capturing whether loading had *already* resolved before this particular
+  // instance mounted tells them apart.
+  const [mountedAfterLoad] = useState(() => loadingComplete);
+  const useElaborateEntrance = introPlayed && !mountedAfterLoad;
 
   useEffect(() => {
     if (selected !== null) return;
@@ -169,15 +179,17 @@ export function IconRow() {
         {items.map(({ Icon }, index) => (
           <motion.div
             key={index}
-            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: "100vh" }}
+            initial={
+              reduceMotion || !useElaborateEntrance ? { opacity: 0 } : { opacity: 0, y: "100vh" }
+            }
             animate={
               loadingComplete
                 ? { opacity: 1, y: 0 }
-                : reduceMotion
+                : reduceMotion || !useElaborateEntrance
                   ? { opacity: 0 }
                   : { opacity: 0, y: "100vh" }
             }
-            transition={{ duration: 2.2, ease: EASE_OUT_EXPO }}
+            transition={{ duration: useElaborateEntrance ? 2.2 : 0.5, ease: EASE_OUT_EXPO }}
           >
             <button
               type="button"

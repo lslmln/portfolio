@@ -1,18 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { ArrowUpRightIcon, MoonIcon, SunIcon, XIcon } from "@phosphor-icons/react";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
+import { backdropVariants, panelVariants } from "@/lib/modal-variants";
 import { HomeLink } from "./home-link";
 import styles from "./navbar.module.css";
+import { TransitionLink } from "./transition-link";
 
 export function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const [isDark, setIsDark] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   function toggleTheme() {
     setIsDark((current) => {
@@ -70,20 +73,20 @@ export function Navbar() {
     >
       <HomeLink />
       <div className="hidden items-center gap-page-y tablet:flex">
-        <Link
+        <TransitionLink
           href="/about"
           data-selected={pathname === "/about" || undefined}
           className={styles.navLink}
         >
           About
-        </Link>
-        <Link
+        </TransitionLink>
+        <TransitionLink
           href="/work"
           data-selected={pathname === "/work" || undefined}
           className={styles.navLink}
         >
           Work
-        </Link>
+        </TransitionLink>
         {themeToggle}
       </div>
       <button
@@ -96,67 +99,79 @@ export function Navbar() {
         <span className={styles.hamburgerLine} />
       </button>
 
-      {mobileMenuOpen && (
-        <div
-          className={`fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg ${isDark ? "bg-[#000000]/50" : "bg-[#000000]/75"}`}
-        >
-          <div className={`absolute left-page-x top-page-y ${styles.moonButtonWhite}`}>
-            {themeToggle}
-          </div>
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(false)}
-            aria-label="Close menu"
-            className="absolute right-page-x top-page-y transition-transform duration-150 active:scale-[0.97]"
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            variants={backdropVariants}
+            initial={reduceMotion ? "visible" : "hidden"}
+            animate="visible"
+            exit={reduceMotion ? "visible" : "exit"}
+            className={`fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg ${isDark ? "bg-[#000000]/50" : "bg-[#000000]/75"}`}
           >
-            <XIcon size={ICON_SIZE_SM} weight="regular" className="text-white" />
-          </button>
-          <div className="flex flex-col items-center gap-[16px]">
-            <Link
-              href="/"
-              data-selected={pathname === "/" || undefined}
+            <div className={`absolute left-page-x top-page-y ${styles.moonButtonWhite}`}>
+              {themeToggle}
+            </div>
+            <button
+              type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className={`${styles.mobileMenuLink} font-sans font-semibold text-header text-white transition-transform duration-150 active:scale-[0.97]`}
+              aria-label="Close menu"
+              className="absolute right-page-x top-page-y transition-transform duration-150 active:scale-[0.97]"
             >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              data-selected={pathname === "/about" || undefined}
-              onClick={() => setMobileMenuOpen(false)}
-              className={`${styles.mobileMenuLink} font-sans font-semibold text-header text-white transition-transform duration-150 active:scale-[0.97]`}
+              <XIcon size={ICON_SIZE_SM} weight="regular" className="text-white" />
+            </button>
+            <motion.div
+              variants={panelVariants}
+              initial={reduceMotion ? "visible" : "hidden"}
+              animate="visible"
+              exit={reduceMotion ? "visible" : "exit"}
+              className="flex flex-col items-center gap-[16px]"
             >
-              About
-            </Link>
-            <Link
-              href="/work"
-              data-selected={pathname === "/work" || undefined}
-              onClick={() => setMobileMenuOpen(false)}
-              className={`${styles.mobileMenuLink} font-sans font-semibold text-header text-white transition-transform duration-150 active:scale-[0.97]`}
-            >
-              Work
-            </Link>
-          </div>
-          <div className="absolute bottom-page-y left-page-x flex gap-button-gap">
-            <a
-              href="mailto:siminlee.work@gmail.com"
-              className="flex items-center gap-text-icon font-sans font-medium text-body text-content-secondary"
-            >
-              <span>Email</span>
-              <ArrowUpRightIcon size={ICON_SIZE_SM} weight="regular" className="icon-sm" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/si-min-lee/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-text-icon font-sans font-medium text-body text-content-secondary"
-            >
-              <span>LinkedIn</span>
-              <ArrowUpRightIcon size={ICON_SIZE_SM} weight="regular" className="icon-sm" />
-            </a>
-          </div>
-        </div>
-      )}
+              <TransitionLink
+                href="/"
+                data-selected={pathname === "/" || undefined}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`${styles.mobileMenuLink} font-sans font-semibold text-header text-white transition-transform duration-150 active:scale-[0.97]`}
+              >
+                Home
+              </TransitionLink>
+              <TransitionLink
+                href="/about"
+                data-selected={pathname === "/about" || undefined}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`${styles.mobileMenuLink} font-sans font-semibold text-header text-white transition-transform duration-150 active:scale-[0.97]`}
+              >
+                About
+              </TransitionLink>
+              <TransitionLink
+                href="/work"
+                data-selected={pathname === "/work" || undefined}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`${styles.mobileMenuLink} font-sans font-semibold text-header text-white transition-transform duration-150 active:scale-[0.97]`}
+              >
+                Work
+              </TransitionLink>
+            </motion.div>
+            <div className="absolute bottom-page-y left-page-x flex gap-button-gap">
+              <a
+                href="mailto:siminlee.work@gmail.com"
+                className="flex items-center gap-text-icon font-sans font-medium text-body text-content-secondary"
+              >
+                <span>Email</span>
+                <ArrowUpRightIcon size={ICON_SIZE_SM} weight="regular" className="icon-sm" />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/si-min-lee/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-text-icon font-sans font-medium text-body text-content-secondary"
+              >
+                <span>LinkedIn</span>
+                <ArrowUpRightIcon size={ICON_SIZE_SM} weight="regular" className="icon-sm" />
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

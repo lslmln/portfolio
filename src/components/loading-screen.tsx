@@ -6,6 +6,7 @@ import { markLoadingComplete } from "@/lib/loading-complete";
 
 const DURATION_MS = 1600;
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
+const INTRO_SEEN_KEY = "portfolio-intro-seen";
 
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
@@ -16,13 +17,25 @@ export function LoadingScreen() {
   const [value, setValue] = useState(0);
   const [fading, setFading] = useState(false);
   const [hidden, setHidden] = useState(false);
+  // Decided once, via a lazy initializer, rather than re-read inside the
+  // effect below — React 18 Strict Mode (dev only) runs that effect's body
+  // twice, and re-reading sessionStorage on the second pass would see the
+  // "seen" flag the first pass had just written, skipping the animation it
+  // had only just started.
+  const [shouldPlayIntro] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const isHome = window.location.pathname === "/";
+    return isHome && !sessionStorage.getItem(INTRO_SEEN_KEY);
+  });
 
   useEffect(() => {
-    if (reduceMotion) {
-      markLoadingComplete();
+    if (reduceMotion || !shouldPlayIntro) {
+      markLoadingComplete(false);
       setHidden(true);
       return;
     }
+
+    sessionStorage.setItem(INTRO_SEEN_KEY, "1");
 
     let raf: number;
     const start = performance.now();
@@ -39,7 +52,7 @@ export function LoadingScreen() {
     raf = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(raf);
-  }, [reduceMotion]);
+  }, [reduceMotion, shouldPlayIntro]);
 
   useEffect(() => {
     if (hidden) return;
@@ -51,7 +64,7 @@ export function LoadingScreen() {
 
   useEffect(() => {
     if (!fading) return;
-    markLoadingComplete();
+    markLoadingComplete(true);
     const timer = setTimeout(() => setHidden(true), 2200);
     return () => clearTimeout(timer);
   }, [fading]);
@@ -84,10 +97,12 @@ export function LoadingScreen() {
           %
         </motion.span>
       </p>
-      <div
-        className="absolute bottom-0 left-0 h-[8px] rounded-r-button bg-content-primary"
-        style={{ width: `${value}%` }}
-      />
+      <div className="absolute bottom-0 left-0 right-0 h-[8px] overflow-hidden">
+        <div
+          className="h-full rounded-r-button bg-content-primary"
+          style={{ width: `calc(${value}% + ${(value / 100) * 12}px)` }}
+        />
+      </div>
     </motion.div>
   );
 }
