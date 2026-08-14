@@ -49,15 +49,20 @@
 
 .wrapper {
   position: absolute;
-  top: 50%;
+  /* Fixed offset from the container's own top edge, not the svh-dependent
+     flex-1 container's height — avoids the "swim" mobile Safari's toolbar
+     hide/show animation causes when centering (top: 50%) inside an element
+     whose height tracks 100svh, which doesn't update smoothly mid-animation. */
+  top: var(--spacing-page-y);
   left: var(--spacing-page-x);
-  transform: translateY(-50%);
   width: fit-content;
 }
 
 @media (min-width: 768px) {
   .wrapper {
+    top: 50%;
     left: auto;
     right: max(var(--spacing-page-x), calc(30vw - var(--icon-row-half-width)));
+    transform: translateY(-50%);
   }
 }

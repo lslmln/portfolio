@@ -30,9 +30,9 @@ const entries = [
     Icon: GraduationCapIcon,
     company: "Yale-NUS College",
     href: "https://www.yale-nus.edu.sg/",
-    role: "Development Economics, Optimization & Proofs",
+    role: "B.A. (Honours), Economics Major, Mathematical, Computational and Statistical Sciences Minor",
     meta: "Aug 2020 - May 2025 · Singapore",
-    highlight: null,
+    highlight: "Development Economics, Optimization & Proofs",
   },
   {
     Icon: BoatIcon,

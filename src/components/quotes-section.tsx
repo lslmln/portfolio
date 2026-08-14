@@ -49,7 +49,7 @@ const quotesByFilter: Record<string, Quote[]> = {
   Engineers: [
     {
       quote:
-        "Simin is an exceptional designer who constantly looks for ways to communicate more efficiently with engineers. Working with her creates a positive feedback loop where we can collaborate on diverse solutions and continuously improve design management.",
+        "Si Min is an exceptional designer who constantly looks for ways to communicate more efficiently with engineers. Working with her creates a positive feedback loop where we can collaborate on diverse solutions and continuously improve design management.",
       attribution: "Marcus Yip · SVP, Software Engineering @ Crypto.com",
     },
     { quote: "[placeholder text]", attribution: "[placeholder person]" },
