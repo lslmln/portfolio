@@ -3,11 +3,27 @@
 import { CornersOutIcon, XIcon } from "@phosphor-icons/react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./expandable-image.module.css";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
 import { backdropVariants, panelVariants } from "@/lib/modal-variants";
 import { useIsDark } from "@/lib/use-is-dark";
+import { useMediaLoaded } from "@/lib/use-media-loaded";
+import { useMediaQuery } from "@/lib/use-media-query";
+
+const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
+const ZOOM_SCALE = 2;
+// Below this, a click toggles zoom is ambiguous with a tap-to-scroll — pinch
+// takes over instead, matching the site's existing desktop-only-hover gate.
+const DESKTOP_QUERY = "(hover: hover) and (pointer: fine) and (min-width: 1024px)";
+// Minimum finger-spread change (px) before a pinch counts as a zoom gesture,
+// so small tremor while panning with two fingers doesn't false-trigger it.
+const PINCH_THRESHOLD = 40;
+
+function touchDistance(touches: React.TouchList) {
+  const [a, b] = [touches[0], touches[1]];
+  return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+}
 
 const badgeButtonClassName =
   "group flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-modal-button-bg/50 p-2 backdrop-blur-sm transition-[opacity,transform] duration-150 hover:bg-modal-button-bg-hover active:scale-[0.97]";
@@ -30,10 +46,53 @@ export function ExpandableImage({
   const [zoomed, setZoomed] = useState(false);
   const isDark = useIsDark();
   const reduceMotion = useReducedMotion();
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
+  const { loaded, onLoad } = useMediaLoaded();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const pinchStartDistance = useRef<number | null>(null);
+  // Framer's ref-based dragConstraints re-measures panelRef vs. the draggable
+  // element's *current* (transform-inclusive) box, which in practice came
+  // back as a zero-size range here — computing the pannable bounds ourselves
+  // from the fit-size box (panelRef's layout size never changes with scale,
+  // since transforms don't affect layout) sidesteps that entirely.
+  const [dragBounds, setDragBounds] = useState({ left: 0, right: 0, top: 0, bottom: 0 });
+
+  useEffect(() => {
+    if (!expanded || !panelRef.current) return;
+    const rect = panelRef.current.getBoundingClientRect();
+    const dx = (rect.width * (ZOOM_SCALE - 1)) / 2;
+    const dy = (rect.height * (ZOOM_SCALE - 1)) / 2;
+    setDragBounds({ left: -dx, right: dx, top: -dy, bottom: dy });
+  }, [expanded]);
 
   function close() {
     setExpanded(false);
     setZoomed(false);
+    pinchStartDistance.current = null;
+  }
+
+  function handleTouchStart(event: React.TouchEvent) {
+    if (event.touches.length === 2) {
+      pinchStartDistance.current = touchDistance(event.touches);
+    }
+  }
+
+  function handleTouchMove(event: React.TouchEvent) {
+    if (event.touches.length !== 2 || pinchStartDistance.current === null) return;
+    const delta = touchDistance(event.touches) - pinchStartDistance.current;
+    if (delta > PINCH_THRESHOLD && !zoomed) {
+      setZoomed(true);
+      pinchStartDistance.current = null;
+    } else if (delta < -PINCH_THRESHOLD && zoomed) {
+      setZoomed(false);
+      pinchStartDistance.current = null;
+    }
+  }
+
+  function handleTouchEnd(event: React.TouchEvent) {
+    if (event.touches.length < 2) {
+      pinchStartDistance.current = null;
+    }
   }
 
   return (
@@ -43,9 +102,16 @@ export function ExpandableImage({
           type="button"
           onClick={() => setExpanded(true)}
           aria-label={`Expand image: ${alt}`}
-          className={`${styles.imageWrapper} w-full cursor-pointer`}
+          className={`${styles.imageWrapper} w-full cursor-pointer bg-content-secondary/15`}
         >
-          <Image src={src} alt={alt} width={width} height={height} className="h-auto w-full" />
+          <Image
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            onLoad={onLoad}
+            className={`h-auto w-full transition-opacity duration-300 ease-out ${loaded ? "opacity-100" : "opacity-0"}`}
+          />
         </button>
         <button
           type="button"
@@ -75,25 +141,46 @@ export function ExpandableImage({
               <XIcon size={ICON_SIZE_SM} weight="regular" className="text-on-scrim" />
             </button>
             <motion.div
+              ref={panelRef}
               variants={panelVariants}
               initial={reduceMotion ? "visible" : "hidden"}
               animate="visible"
               exit={reduceMotion ? "visible" : "exit"}
               onClick={(event) => event.stopPropagation()}
-              className={`max-h-full max-w-full ${zoomed ? "overflow-auto" : ""}`}
+              style={{ touchAction: "none" }}
+              className="relative inline-flex max-h-full max-w-full items-center justify-center overflow-hidden"
             >
-              <Image
-                src={src}
-                alt={alt}
-                width={width}
-                height={height}
-                onClick={() => setZoomed((current) => !current)}
-                className={
+              <motion.div
+                animate={{
+                  scale: zoomed ? ZOOM_SCALE : 1,
+                  x: zoomed ? undefined : 0,
+                  y: zoomed ? undefined : 0,
+                }}
+                transition={{ duration: reduceMotion ? 0 : 0.3, ease: EASE_OUT_EXPO }}
+                drag={zoomed}
+                dragConstraints={dragBounds}
+                dragElastic={0.05}
+                onTap={isDesktop ? () => setZoomed((current) => !current) : undefined}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className={`inline-flex ${
                   zoomed
-                    ? "h-auto w-auto max-w-none cursor-zoom-out rounded-card"
-                    : "max-h-[85vh] w-auto max-w-full cursor-zoom-in rounded-card object-contain"
-                }
-              />
+                    ? "cursor-grab active:cursor-grabbing"
+                    : isDesktop
+                      ? "cursor-zoom-in"
+                      : ""
+                }`}
+              >
+                <Image
+                  src={src}
+                  alt={alt}
+                  width={width}
+                  height={height}
+                  draggable={false}
+                  className="max-h-[85vh] w-auto max-w-full select-none rounded-card object-contain"
+                />
+              </motion.div>
             </motion.div>
           </motion.div>
         )}
