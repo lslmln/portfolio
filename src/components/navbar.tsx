@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { ArrowUpRightIcon, MoonIcon, SunIcon, XIcon } from "@phosphor-icons/react";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
 import { backdropVariants, panelVariants } from "@/lib/modal-variants";
+import { useDialogA11y } from "@/lib/use-dialog-a11y";
 import { HomeLink } from "./home-link";
 import styles from "./navbar.module.css";
 import { TransitionLink } from "./transition-link";
@@ -16,14 +17,13 @@ export function Navbar() {
   const [isDark, setIsDark] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const reduceMotion = useReducedMotion();
+  const dialogRef = useDialogA11y<HTMLDivElement>(mobileMenuOpen, () => setMobileMenuOpen(false));
 
   function toggleTheme() {
-    setIsDark((current) => {
-      const next = !current;
-      document.documentElement.setAttribute("data-theme", next ? "dark" : "light");
-      localStorage.setItem("theme", next ? "dark" : "light");
-      return next;
-    });
+    const next = !isDark;
+    document.documentElement.setAttribute("data-theme", next ? "dark" : "light");
+    localStorage.setItem("theme", next ? "dark" : "light");
+    setIsDark(next);
   }
 
   useEffect(() => {
@@ -42,6 +42,11 @@ export function Navbar() {
   // icon/label to match. Can't read it during the initial render itself
   // (server has no matchMedia), so this corrects it right after mount.
   useEffect(() => {
+    // Reads real DOM state (already set by the inline theme-init script in
+    // layout.tsx before hydration) — has to happen post-mount, not via a
+    // lazy initializer, or the client's first render would mismatch the
+    // server's.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsDark(document.documentElement.dataset.theme === "dark");
   }, []);
 
@@ -102,13 +107,21 @@ export function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
             variants={backdropVariants}
             initial={reduceMotion ? "visible" : "hidden"}
             animate="visible"
             exit={reduceMotion ? "visible" : "exit"}
+            onClick={() => setMobileMenuOpen(false)}
             className={`fixed inset-0 z-scrim flex items-center justify-center backdrop-blur-lg ${isDark ? "bg-scrim/50" : "bg-scrim/75"}`}
           >
-            <div className={`absolute left-page-x top-page-y ${styles.moonButtonWhite}`}>
+            <div
+              onClick={(event) => event.stopPropagation()}
+              className={`absolute left-page-x top-page-y ${styles.moonButtonWhite}`}
+            >
               {themeToggle}
             </div>
             <button
@@ -124,6 +137,7 @@ export function Navbar() {
               initial={reduceMotion ? "visible" : "hidden"}
               animate="visible"
               exit={reduceMotion ? "visible" : "exit"}
+              onClick={(event) => event.stopPropagation()}
               className="flex flex-col items-center gap-button-gap"
             >
               <TransitionLink
@@ -151,7 +165,10 @@ export function Navbar() {
                 Work
               </TransitionLink>
             </motion.div>
-            <div className="absolute bottom-page-y left-page-x flex gap-button-gap">
+            <div
+              onClick={(event) => event.stopPropagation()}
+              className="absolute bottom-page-y left-page-x flex gap-button-gap"
+            >
               <a
                 href="mailto:siminlee.work@gmail.com"
                 className="flex items-center gap-text-icon font-sans font-medium text-body text-content-secondary"

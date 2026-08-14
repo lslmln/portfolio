@@ -7,9 +7,11 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./expandable-image.module.css";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
 import { backdropVariants, panelVariants } from "@/lib/modal-variants";
+import { useDialogA11y } from "@/lib/use-dialog-a11y";
 import { useIsDark } from "@/lib/use-is-dark";
 import { useMediaLoaded } from "@/lib/use-media-loaded";
 import { useMediaQuery } from "@/lib/use-media-query";
+import { MediaError } from "./media-error";
 
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 const ZOOM_SCALE = 2;
@@ -35,19 +37,27 @@ export function ExpandableImage({
   width,
   height,
   className,
+  sizes = "(min-width: 768px) 50vw, 100vw",
 }: {
   src: string;
   alt: string;
   width: number;
   height: number;
   className?: string;
+  sizes?: string;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [zoomed, setZoomed] = useState(false);
   const isDark = useIsDark();
   const reduceMotion = useReducedMotion();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
-  const { loaded, onLoad } = useMediaLoaded();
+  const { loaded, error, onLoad, onError } = useMediaLoaded();
+  // The modal image can render before the thumbnail's own onLoad has fired
+  // (e.g. clicking Expand immediately) — track its load separately so it
+  // still gets a fade-in rather than popping in opaque, but keep sharing
+  // `error`: if the source is broken, no point re-attempting a bigger copy.
+  const [modalLoaded, setModalLoaded] = useState(false);
+  const dialogRef = useDialogA11y<HTMLDivElement>(expanded, close);
   const panelRef = useRef<HTMLDivElement>(null);
   const pinchStartDistance = useRef<number | null>(null);
   // Framer's ref-based dragConstraints re-measures panelRef vs. the draggable
@@ -102,16 +112,19 @@ export function ExpandableImage({
           type="button"
           onClick={() => setExpanded(true)}
           aria-label={`Expand image: ${alt}`}
-          className={`${styles.imageWrapper} w-full cursor-pointer bg-content-secondary/15`}
+          className={`${styles.imageWrapper} relative w-full cursor-pointer bg-content-secondary/15`}
         >
           <Image
             src={src}
             alt={alt}
             width={width}
             height={height}
+            sizes={sizes}
             onLoad={onLoad}
-            className={`h-auto w-full transition-opacity duration-300 ease-out ${loaded ? "opacity-100" : "opacity-0"}`}
+            onError={onError}
+            className={`h-auto w-full transition-opacity duration-300 ease-out ${loaded && !error ? "opacity-100" : "opacity-0"}`}
           />
+          {error && <MediaError />}
         </button>
         <button
           type="button"
@@ -125,6 +138,10 @@ export function ExpandableImage({
       <AnimatePresence>
         {expanded && (
           <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Expanded image: ${alt}`}
             variants={backdropVariants}
             initial={reduceMotion ? "visible" : "hidden"}
             animate="visible"
@@ -150,37 +167,46 @@ export function ExpandableImage({
               style={{ touchAction: "none" }}
               className="relative inline-flex max-h-full max-w-full items-center justify-center overflow-hidden"
             >
-              <motion.div
-                animate={{
-                  scale: zoomed ? ZOOM_SCALE : 1,
-                  x: zoomed ? undefined : 0,
-                  y: zoomed ? undefined : 0,
-                }}
-                transition={{ duration: reduceMotion ? 0 : 0.3, ease: EASE_OUT_EXPO }}
-                drag={zoomed}
-                dragConstraints={dragBounds}
-                dragElastic={0.05}
-                onTap={isDesktop ? () => setZoomed((current) => !current) : undefined}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                className={`inline-flex ${
-                  zoomed
-                    ? "cursor-grab active:cursor-grabbing"
-                    : isDesktop
-                      ? "cursor-zoom-in"
-                      : ""
-                }`}
-              >
-                <Image
-                  src={src}
-                  alt={alt}
-                  width={width}
-                  height={height}
-                  draggable={false}
-                  className="max-h-[85vh] w-auto max-w-full select-none rounded-card object-contain"
-                />
-              </motion.div>
+              {error ? (
+                <div className="relative flex h-[40vh] w-[40vh] items-center justify-center">
+                  <MediaError />
+                </div>
+              ) : (
+                <motion.div
+                  animate={{
+                    scale: zoomed ? ZOOM_SCALE : 1,
+                    x: zoomed ? undefined : 0,
+                    y: zoomed ? undefined : 0,
+                  }}
+                  transition={{ duration: reduceMotion ? 0 : 0.3, ease: EASE_OUT_EXPO }}
+                  drag={zoomed}
+                  dragConstraints={dragBounds}
+                  dragElastic={0.05}
+                  onTap={isDesktop ? () => setZoomed((current) => !current) : undefined}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  className={`inline-flex ${
+                    zoomed
+                      ? "cursor-grab active:cursor-grabbing"
+                      : isDesktop
+                        ? "cursor-zoom-in"
+                        : ""
+                  }`}
+                >
+                  <Image
+                    src={src}
+                    alt={alt}
+                    width={width}
+                    height={height}
+                    sizes="100vw"
+                    draggable={false}
+                    onLoad={() => setModalLoaded(true)}
+                    onError={onError}
+                    className={`max-h-[85vh] w-auto max-w-full select-none rounded-card object-contain transition-opacity duration-300 ease-out ${modalLoaded ? "opacity-100" : "opacity-0"}`}
+                  />
+                </motion.div>
+              )}
             </motion.div>
           </motion.div>
         )}

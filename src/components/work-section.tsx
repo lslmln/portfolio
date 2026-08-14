@@ -9,13 +9,15 @@ import {
 } from "@phosphor-icons/react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
 import { backdropVariants, panelVariants } from "@/lib/modal-variants";
+import { useDialogA11y } from "@/lib/use-dialog-a11y";
 import { useIsDark } from "@/lib/use-is-dark";
 import { useMediaLoaded } from "@/lib/use-media-loaded";
 import { verifyPasscode } from "@/lib/verify-passcode";
 import { workProjects, type WorkProject } from "@/lib/work-projects";
+import { MediaError } from "./media-error";
 import { COVER_DURATION, useNavigate } from "./route-transition";
 import { Seam } from "./seam";
 import { TransitionLink } from "./transition-link";
@@ -27,19 +29,52 @@ import styles from "./work-section.module.css";
 // the user typed the passcode for — a single shared passcode gates all of
 // them today (see verify-passcode.ts), so there's only one thing to "know."
 const PASSCODE_VERIFIED_KEY = "portfolio-passcode-verified";
+// The passcode check is a Server Action (a network round-trip) — without a
+// client-side cutoff, a dropped connection or slow server leaves the button
+// spinning with no way to retry, since nothing else would ever flip
+// isVerifying back off.
+const VERIFY_TIMEOUT_MS = 8000;
+// A wrong password almost always comes back well under this — showing the
+// spinner immediately would just flash it on and off for a moment, which
+// reads as a glitch rather than useful feedback. Only a check that's
+// genuinely still pending after this long actually shows one.
+const SPINNER_DELAY_MS = 200;
 
-function CardImage({ src, alt }: { src: string; alt: string }) {
-  const { loaded, onLoad } = useMediaLoaded();
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error("verify-passcode-timeout")), ms)),
+  ]);
+}
+
+function CardImage({
+  src,
+  alt,
+  priority = false,
+}: {
+  src: string;
+  alt: string;
+  priority?: boolean;
+}) {
+  const { loaded, error, onLoad, onError } = useMediaLoaded(src);
+  // The priority card is the page's likely LCP element — skip the fade
+  // gate for it too, same reasoning as WorkHeroImage.
+  const visible = priority || loaded;
 
   return (
-    <Image
-      src={src}
-      alt={alt}
-      fill
-      sizes="(min-width: 768px) 50vw, 100vw"
-      onLoad={onLoad}
-      className={`${styles.image} transition-opacity duration-300 ease-out ${loaded ? "opacity-100" : "opacity-0"}`}
-    />
+    <>
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(min-width: 768px) 50vw, 100vw"
+        priority={priority}
+        onLoad={onLoad}
+        onError={onError}
+        className={`${styles.image} transition-opacity duration-300 ease-out ${visible && !error ? "opacity-100" : "opacity-0"}`}
+      />
+      {error && <MediaError />}
+    </>
   );
 }
 
@@ -56,8 +91,10 @@ export function WorkSection({
 }) {
   const [unlockingSlug, setUnlockingSlug] = useState<string | null>(null);
   const [passcodeInput, setPasscodeInput] = useState("");
-  const [passcodeError, setPasscodeError] = useState(false);
+  const [passcodeError, setPasscodeError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
+  const spinnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Starts false on both server and client to avoid a hydration mismatch
   // (sessionStorage isn't available during SSR) — synced from sessionStorage
   // in the effect below immediately after mount, same pattern Navbar uses
@@ -66,38 +103,63 @@ export function WorkSection({
   const isDark = useIsDark();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
+  const dialogRef = useDialogA11y<HTMLDivElement>(unlockingSlug !== null, closePasscode);
 
   useEffect(() => {
+    // sessionStorage is unavailable during SSR — has to be read post-mount,
+    // not via a lazy initializer, or the client's first render would
+    // mismatch the server's (see the comment on `unlocked`'s declaration).
     if (sessionStorage.getItem(PASSCODE_VERIFIED_KEY) === "1") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUnlocked(true);
     }
   }, []);
 
   const unlockingCard = items.find((item) => item.slug === unlockingSlug);
 
+  function clearSpinnerTimer() {
+    if (spinnerTimerRef.current) {
+      clearTimeout(spinnerTimerRef.current);
+      spinnerTimerRef.current = null;
+    }
+  }
+
   function closePasscode() {
+    clearSpinnerTimer();
     setUnlockingSlug(null);
     setPasscodeInput("");
-    setPasscodeError(false);
+    setPasscodeError(null);
     setIsVerifying(false);
+    setShowSpinner(false);
   }
 
   async function handleSubmitPasscode() {
     if (!unlockingCard || !passcodeInput.trim() || isVerifying) return;
     setIsVerifying(true);
-    const isCorrect = await verifyPasscode(passcodeInput);
-    if (isCorrect) {
-      sessionStorage.setItem(PASSCODE_VERIFIED_KEY, "1");
-      setUnlocked(true);
-      navigate(`/work/${unlockingCard.slug}`);
-      // Don't pop the modal closed — let the page-level cover (which sits
-      // above it) rise over it first, so it quietly disappears under the
-      // same crossfade used for every other navigation instead of visibly
-      // animating itself away right before the page covers anyway.
-      setTimeout(closePasscode, reduceMotion ? 0 : COVER_DURATION * 1000);
-    } else {
-      setPasscodeError(true);
+    setPasscodeError(null);
+    spinnerTimerRef.current = setTimeout(() => setShowSpinner(true), SPINNER_DELAY_MS);
+    try {
+      const isCorrect = await withTimeout(verifyPasscode(passcodeInput), VERIFY_TIMEOUT_MS);
+      clearSpinnerTimer();
+      if (isCorrect) {
+        sessionStorage.setItem(PASSCODE_VERIFIED_KEY, "1");
+        setUnlocked(true);
+        navigate(`/work/${unlockingCard.slug}`);
+        // Don't pop the modal closed — let the page-level cover (which sits
+        // above it) rise over it first, so it quietly disappears under the
+        // same crossfade used for every other navigation instead of visibly
+        // animating itself away right before the page covers anyway.
+        setTimeout(closePasscode, reduceMotion ? 0 : COVER_DURATION * 1000);
+      } else {
+        setPasscodeError("Incorrect password. Try again.");
+        setIsVerifying(false);
+        setShowSpinner(false);
+      }
+    } catch {
+      clearSpinnerTimer();
+      setPasscodeError("Something went wrong. Try again.");
       setIsVerifying(false);
+      setShowSpinner(false);
     }
   }
 
@@ -112,7 +174,7 @@ export function WorkSection({
         </h2>
       )}
       <div className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12">
-        {items.map((card) => {
+        {items.map((card, index) => {
           const cardBody = (
             <>
               <div
@@ -121,6 +183,7 @@ export function WorkSection({
                 <CardImage
                   src={isDark && card.imageDark ? card.imageDark : card.image}
                   alt={card.title}
+                  priority={firstOnPage && index === 0}
                 />
                 {card.locked && (
                   <div className="absolute bottom-2 right-2 flex items-center justify-center rounded-card bg-background-primary/50 p-1 backdrop-blur-sm tablet:bottom-4 tablet:right-4 tablet:p-2">
@@ -170,13 +233,33 @@ export function WorkSection({
           );
         })}
       </div>
+      {process.env.NODE_ENV === "development" && (
+        <button
+          type="button"
+          onClick={() => {
+            const lockedCard = items.find((item) => item.locked);
+            if (!lockedCard) return;
+            setUnlockingSlug(lockedCard.slug);
+            setIsVerifying(false);
+            setPasscodeError("Something went wrong. Try again.");
+          }}
+          className="fixed bottom-4 left-[430px] z-[60] rounded-md border border-black/20 bg-white px-3 py-1.5 text-xs font-medium text-black shadow-sm"
+        >
+          Preview passcode error
+        </button>
+      )}
       <AnimatePresence>
         {unlockingCard && (
           <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Enter password"
             variants={backdropVariants}
             initial={reduceMotion ? "visible" : "hidden"}
             animate="visible"
             exit={reduceMotion ? "visible" : "exit"}
+            onClick={closePasscode}
             className={`fixed inset-0 z-scrim flex items-center justify-center px-8 backdrop-blur-lg ${isDark ? "bg-scrim/50" : "bg-scrim/75"}`}
           >
             <button
@@ -192,6 +275,7 @@ export function WorkSection({
               initial={reduceMotion ? "visible" : "hidden"}
               animate="visible"
               exit={reduceMotion ? "visible" : "exit"}
+              onClick={(event) => event.stopPropagation()}
               className="grid max-w-full grid-cols-1 gap-card-text-gap"
             >
               <p className="font-sans font-medium text-body text-white">Enter password</p>
@@ -202,7 +286,7 @@ export function WorkSection({
                   value={passcodeInput}
                   onChange={(event) => {
                     setPasscodeInput(event.target.value);
-                    setPasscodeError(false);
+                    setPasscodeError(null);
                   }}
                   onKeyDown={(event) => {
                     if (event.key === "Enter") handleSubmitPasscode();
@@ -220,7 +304,7 @@ export function WorkSection({
                       : "pointer-events-none opacity-30"
                   }`}
                 >
-                  {isVerifying ? (
+                  {showSpinner ? (
                     <CircleNotchIcon
                       size={20}
                       weight="bold"
@@ -238,7 +322,7 @@ export function WorkSection({
               <p
                 className={`font-sans font-medium text-nav text-danger ${passcodeError ? "visible" : "invisible"}`}
               >
-                Incorrect password. Try again.
+                {passcodeError || "Incorrect password. Try again."}
               </p>
             </motion.div>
           </motion.div>

@@ -160,7 +160,6 @@ export function IconRow() {
     }
     document.addEventListener("pointerdown", handlePointerDown);
     return () => document.removeEventListener("pointerdown", handlePointerDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const align = isTablet && selected !== null ? alignmentForIndex(selected) : "left";
@@ -181,9 +180,9 @@ export function IconRow() {
         ref={scope}
         className="relative flex flex-col items-center gap-page-y tablet:flex-row tablet:gap-page-x"
       >
-        {items.map(({ Icon }, index) => (
+        {items.map(({ Icon, company }, index) => (
           <motion.div
-            key={index}
+            key={company}
             initial={
               reduceMotion || !useElaborateEntrance ? { opacity: 0 } : { opacity: 0, y: "100vh" }
             }

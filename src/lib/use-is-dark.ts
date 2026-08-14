@@ -7,6 +7,10 @@ export function useIsDark() {
 
   useEffect(() => {
     const root = document.documentElement;
+    // Reads real DOM state, unavailable during SSR/the initial client
+    // render — has to happen post-mount, not via a lazy initializer, or
+    // the client's first render would mismatch the server's.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsDark(root.dataset.theme === "dark");
 
     const observer = new MutationObserver(() => {

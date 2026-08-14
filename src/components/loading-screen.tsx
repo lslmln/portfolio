@@ -42,6 +42,11 @@ export function LoadingScreen() {
       return;
     }
 
+    // Genuinely can't be a lazy initializer instead — see the comment above
+    // `hidden`'s declaration: the server always renders hidden=true, so
+    // revealing it has to happen post-mount, in an effect, to avoid a
+    // hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHidden(false);
     sessionStorage.setItem(INTRO_SEEN_KEY, "1");
 

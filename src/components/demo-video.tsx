@@ -2,10 +2,11 @@
 
 import { useReducedMotion } from "framer-motion";
 import { useMediaLoaded } from "@/lib/use-media-loaded";
+import { MediaError } from "./media-error";
 
 export function DemoVideo({ src }: { src: string }) {
   const reduceMotion = useReducedMotion();
-  const { loaded, onLoad } = useMediaLoaded();
+  const { loaded, error, onLoad, onError } = useMediaLoaded();
 
   return (
     <div className="relative aspect-card w-full overflow-hidden rounded-card bg-scrim">
@@ -17,8 +18,10 @@ export function DemoVideo({ src }: { src: string }) {
         playsInline
         autoPlay={!reduceMotion}
         onLoadedData={onLoad}
-        className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-300 ease-out ${loaded ? "opacity-100" : "opacity-0"}`}
+        onError={onError}
+        className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-300 ease-out ${loaded && !error ? "opacity-100" : "opacity-0"}`}
       />
+      {error && <MediaError />}
     </div>
   );
 }

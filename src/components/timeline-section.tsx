@@ -80,8 +80,8 @@ export function TimelineSection() {
         TIMELINE
       </h2>
       <div className="flex flex-col gap-timeline-gap px-page-x py-page-y">
-        {entries.map(({ Icon, company, href, role, meta, highlight }, index) => (
-          <div key={index} className="flex items-start gap-page-x">
+        {entries.map(({ Icon, company, href, role, meta, highlight }) => (
+          <div key={company} className="flex items-start gap-page-x">
             <Icon
               size={iconSize}
               weight={isDark ? "fill" : "regular"}
