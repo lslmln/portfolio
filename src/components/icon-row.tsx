@@ -9,12 +9,7 @@ import {
   LeafIcon,
   ShoppingCartIcon,
 } from "@phosphor-icons/react";
-import {
-  ICON_GAP_MOBILE,
-  ICON_ROW_WIDTH,
-  ICON_SIZE_LG,
-  ICON_SIZE_MOBILE,
-} from "@/lib/icon-size";
+import { ICON_ROW_WIDTH, ICON_SIZE_LG, ICON_SIZE_MOBILE } from "@/lib/icon-size";
 import { useIsDark } from "@/lib/use-is-dark";
 import { useMediaQuery } from "@/lib/use-media-query";
 import styles from "./icon-row.module.css";
@@ -132,16 +127,14 @@ export function IconRow() {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, []);
 
-  const align = selected === null ? "left" : alignmentForIndex(selected);
+  const align = isTablet && selected !== null ? alignmentForIndex(selected) : "left";
   const active = selected === null ? null : items[selected];
   const iconSize = isTablet ? ICON_SIZE_LG : ICON_SIZE_MOBILE;
-  const mobileCaptionTop =
-    selected !== null ? selected * (ICON_SIZE_MOBILE + ICON_GAP_MOBILE) + ICON_SIZE_MOBILE / 2 : 0;
 
   return (
     <div
       ref={containerRef}
-      className={`${styles.wrapper} tablet:flex tablet:flex-col tablet:items-stretch tablet:gap-page-y`}
+      className={`${styles.wrapper} flex flex-col items-stretch gap-page-y`}
       style={{ "--icon-row-half-width": `${ICON_ROW_WIDTH / 2}px` } as React.CSSProperties}
     >
       <div
@@ -162,55 +155,25 @@ export function IconRow() {
             </span>
           </button>
         ))}
-
-        {!isTablet && (
-          <div
-            className="absolute left-full"
-            style={{
-              top: mobileCaptionTop,
-              transform: "translateY(-50%)",
-              paddingLeft: "var(--spacing-page-x)",
-              width: "max-content",
-              maxWidth: `calc(100vw - ${ICON_SIZE_MOBILE}px - (2 * var(--spacing-page-x)))`,
-            }}
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              {active && (
-                <motion.p
-                  key={selected}
-                  initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
-                  transition={{ type: "spring", duration: 0.25, bounce: 0 }}
-                  className="font-sans font-medium text-caption leading-6 text-content-primary"
-                >
-                  <CaptionText active={active} />
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
       </div>
 
-      {isTablet && (
-        <div className="h-6 w-full">
-          <AnimatePresence mode="wait" initial={false}>
-            {active && (
-              <motion.p
-                key={selected}
-                initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
-                transition={{ type: "spring", duration: 0.25, bounce: 0 }}
-                style={{ textAlign: align }}
-                className="font-sans font-medium text-caption leading-6 text-content-primary"
-              >
-                <CaptionText active={active} />
-              </motion.p>
-            )}
-          </AnimatePresence>
-        </div>
-      )}
+      <div className="h-6 w-full">
+        <AnimatePresence mode="wait" initial={false}>
+          {active && (
+            <motion.p
+              key={selected}
+              initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
+              transition={{ type: "spring", duration: 0.25, bounce: 0 }}
+              style={{ textAlign: align }}
+              className="font-sans font-medium text-caption leading-6 text-content-primary"
+            >
+              <CaptionText active={active} />
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
