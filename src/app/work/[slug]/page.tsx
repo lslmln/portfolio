@@ -233,7 +233,7 @@ const projects = [
       },
       {
         type: "videoGallery",
-        videos: ["/videos/baskets-old.mp4", "/videos/bought-basket.mov"],
+        videos: ["/videos/baskets-old.mp4", "/videos/bought-basket.mp4"],
       },
       {
         type: "paragraph",
@@ -256,13 +256,13 @@ const projects = [
         compact: true,
         items: [
           { kind: "image", src: "/images/rebalancing-old.png", alt: "Rebalancing, earlier version" },
-          { kind: "video", src: "/videos/rebalancing.mov" },
+          { kind: "video", src: "/videos/rebalancing.mp4" },
           {
             kind: "image",
             src: "/images/allocation-changes-old.png",
             alt: "Allocation changes, earlier version",
           },
-          { kind: "video", src: "/videos/allocation-changes.mov" },
+          { kind: "video", src: "/videos/allocation-changes.mp4" },
         ],
       },
       {
@@ -382,7 +382,7 @@ const projects = [
     inputAmountContent: [
       {
         type: "videoGallery",
-        videos: ["/videos/input-amount-recording.mov", "/videos/input-amount-phone.mov"],
+        videos: ["/videos/input-amount-recording.mp4", "/videos/input-amount-phone.mp4"],
       },
       {
         type: "paragraph",
@@ -402,7 +402,7 @@ const projects = [
       },
       {
         type: "video",
-        src: "/videos/input-amount-drawer.mov",
+        src: "/videos/input-amount-drawer.mp4",
       },
       {
         type: "paragraph",
@@ -424,7 +424,7 @@ const projects = [
       },
       {
         type: "videoGallery",
-        videos: ["/videos/input-amount-suffix.mov", "/videos/input-amount-light.mov"],
+        videos: ["/videos/input-amount-suffix.mp4", "/videos/input-amount-light.mp4"],
       },
       {
         type: "paragraph",
@@ -443,7 +443,7 @@ const projects = [
       },
       {
         type: "videoGallery",
-        videos: ["/videos/input-switcher.mov", "/videos/input-delete.mov"],
+        videos: ["/videos/input-switcher.mp4", "/videos/input-delete.mp4"],
       },
       {
         type: "paragraph",
@@ -463,7 +463,7 @@ const projects = [
     priceChartContent: [
       {
         type: "videoGallery",
-        videos: ["/videos/price-chart-recording.mov", "/videos/price-chart-phone.mp4"],
+        videos: ["/videos/price-chart-recording.mp4", "/videos/price-chart-phone.mp4"],
       },
       {
         type: "paragraph",
@@ -496,7 +496,7 @@ const projects = [
       },
       {
         type: "videoGallery",
-        videos: ["/videos/price-chart-timeframe.mov", "/videos/price-chart-liveline.mov"],
+        videos: ["/videos/price-chart-timeframe.mp4", "/videos/price-chart-liveline.mp4"],
       },
       {
         type: "paragraph",
@@ -623,7 +623,7 @@ const projects = [
     whatIBuilt: [
       "Turns a screenshot of any UI component into a Figma frame with typography, spacing and colours restyled to match our design system.",
     ],
-    video: "/videos/screenshot-to-figma.mov",
+    video: "/videos/screenshot-to-figma.mp4",
     processContent: [
       {
         type: "paragraph",

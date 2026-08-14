@@ -167,9 +167,14 @@ export function IconRow() {
   const iconSize = isTablet ? ICON_SIZE_LG : ICON_SIZE_MOBILE;
   // Icons stack vertically below the tablet breakpoint (flex-col) and run
   // in a row at tablet+ (flex-row) — the entrance direction follows suit:
-  // fly in from the right when stacked, from below when in a row.
-  const flyInOffset = isTablet ? { y: "100vh" } : { x: "100vw" };
-  const flyInRest = isTablet ? { y: 0 } : { x: 0 };
+  // fly in from the right when stacked, from below when in a row. Both axes
+  // are always set (never just the active one): isTablet starts `false`
+  // until its own effect resolves, so the offset axis can flip between
+  // renders — if the inactive axis were left out of the target, whichever
+  // axis it started on would get "abandoned" mid-value instead of reset,
+  // leaving the icons transformed off-screen at full opacity.
+  const flyInOffset = isTablet ? { x: 0, y: "100vh" } : { x: "100vw", y: 0 };
+  const flyInRest = { x: 0, y: 0 };
   const mobileCaptionTop =
     displayedSelected !== null
       ? displayedSelected * (ICON_SIZE_MOBILE + ICON_GAP_MOBILE) + ICON_SIZE_MOBILE / 2

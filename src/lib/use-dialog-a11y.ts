@@ -17,6 +17,9 @@ export function useDialogA11y<T extends HTMLElement>(open: boolean, onClose: () 
   useEffect(() => {
     if (!open) return;
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     triggerRef.current = document.activeElement;
     const dialog = dialogRef.current;
     const focusable = dialog?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
@@ -44,6 +47,7 @@ export function useDialogA11y<T extends HTMLElement>(open: boolean, onClose: () 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
       if (triggerRef.current instanceof HTMLElement) {
         triggerRef.current.focus();
       }

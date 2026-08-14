@@ -1,7 +1,7 @@
 "use client";
 
 import { CornersOutIcon, XIcon } from "@phosphor-icons/react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import styles from "./expandable-image.module.css";
@@ -25,6 +25,10 @@ const PINCH_THRESHOLD = 40;
 function touchDistance(touches: React.TouchList) {
   const [a, b] = [touches[0], touches[1]];
   return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
 }
 
 const badgeButtonClassName =
@@ -61,12 +65,25 @@ export function ExpandableImage({
   const panelRef = useRef<HTMLDivElement>(null);
   const pinchStartDistance = useRef<number | null>(null);
   const lastDragEndRef = useRef(0);
+  // Last single-finger touch position while panning — null whenever there's
+  // no finger down to track (so a fresh touchstart always re-anchors
+  // instead of jumping from a stale previous position).
+  const lastTouchRef = useRef<{ x: number; y: number } | null>(null);
   // Framer's ref-based dragConstraints re-measures panelRef vs. the draggable
   // element's *current* (transform-inclusive) box, which in practice came
   // back as a zero-size range here — computing the pannable bounds ourselves
   // from the fit-size box (panelRef's layout size never changes with scale,
   // since transforms don't affect layout) sidesteps that entirely.
   const [dragBounds, setDragBounds] = useState({ left: 0, right: 0, top: 0, bottom: 0 });
+  // Shared by both panning paths: on desktop, Framer's own `drag` reads and
+  // writes these directly (passed via `style`, the documented pattern for a
+  // drag target backed by external motion values); on touch, the handlers
+  // below update them by hand instead, since Framer's built-in drag gesture
+  // isn't built to coexist with a second touch point on the same element —
+  // a pinch that hands off to a single remaining finger was losing pan
+  // tracking entirely rather than picking the gesture back up.
+  const panX = useMotionValue(0);
+  const panY = useMotionValue(0);
 
   useEffect(() => {
     if (!expanded || !panelRef.current) return;
@@ -76,33 +93,64 @@ export function ExpandableImage({
     setDragBounds({ left: -dx, right: dx, top: -dy, bottom: dy });
   }, [expanded]);
 
+  useEffect(() => {
+    if (zoomed) return;
+    panX.set(0);
+    panY.set(0);
+  }, [zoomed, panX, panY]);
+
   function close() {
     setExpanded(false);
     setZoomed(false);
     pinchStartDistance.current = null;
+    lastTouchRef.current = null;
   }
 
   function handleTouchStart(event: React.TouchEvent) {
     if (event.touches.length === 2) {
       pinchStartDistance.current = touchDistance(event.touches);
+      lastTouchRef.current = null;
+    } else if (event.touches.length === 1 && zoomed) {
+      const touch = event.touches[0];
+      lastTouchRef.current = { x: touch.clientX, y: touch.clientY };
     }
   }
 
   function handleTouchMove(event: React.TouchEvent) {
-    if (event.touches.length !== 2 || pinchStartDistance.current === null) return;
-    const delta = touchDistance(event.touches) - pinchStartDistance.current;
-    if (delta > PINCH_THRESHOLD && !zoomed) {
-      setZoomed(true);
-      pinchStartDistance.current = null;
-    } else if (delta < -PINCH_THRESHOLD && zoomed) {
-      setZoomed(false);
-      pinchStartDistance.current = null;
+    if (event.touches.length === 2) {
+      if (pinchStartDistance.current === null) return;
+      const delta = touchDistance(event.touches) - pinchStartDistance.current;
+      if (delta > PINCH_THRESHOLD && !zoomed) {
+        setZoomed(true);
+        pinchStartDistance.current = null;
+      } else if (delta < -PINCH_THRESHOLD && zoomed) {
+        setZoomed(false);
+        pinchStartDistance.current = null;
+      }
+      return;
+    }
+
+    if (event.touches.length === 1 && zoomed && lastTouchRef.current) {
+      const touch = event.touches[0];
+      const dx = touch.clientX - lastTouchRef.current.x;
+      const dy = touch.clientY - lastTouchRef.current.y;
+      lastTouchRef.current = { x: touch.clientX, y: touch.clientY };
+      panX.set(clamp(panX.get() + dx, dragBounds.left, dragBounds.right));
+      panY.set(clamp(panY.get() + dy, dragBounds.top, dragBounds.bottom));
     }
   }
 
   function handleTouchEnd(event: React.TouchEvent) {
     if (event.touches.length < 2) {
       pinchStartDistance.current = null;
+    }
+    if (event.touches.length === 0) {
+      lastTouchRef.current = null;
+    } else if (event.touches.length === 1 && zoomed) {
+      // A finger was lifted out of a two-finger gesture — re-anchor to the
+      // one still down instead of using its old (now-stale) position.
+      const touch = event.touches[0];
+      lastTouchRef.current = { x: touch.clientX, y: touch.clientY };
     }
   }
 
@@ -174,23 +222,16 @@ export function ExpandableImage({
                 </div>
               ) : (
                 <motion.div
-                  style={{ touchAction: "none" }}
-                  animate={{
-                    scale: zoomed ? ZOOM_SCALE : 1,
-                    x: zoomed ? undefined : 0,
-                    y: zoomed ? undefined : 0,
-                  }}
+                  style={{ touchAction: "none", x: panX, y: panY }}
+                  animate={{ scale: zoomed ? ZOOM_SCALE : 1 }}
                   transition={{ duration: reduceMotion ? 0 : 0.3, ease: EASE_OUT_EXPO }}
-                  // Always on (instead of gated behind `zoomed`) — pinned to
-                  // a zero range/elastic when not zoomed, so it's fully
-                  // inert but already "warm": a pinch that flips `zoomed`
-                  // mid-touch just widens the constraints on an
-                  // already-tracked gesture, rather than needing a fresh
-                  // pointerdown after the prop turns on, which drag={zoomed}
-                  // never got since the fingers were already down.
-                  drag
-                  dragConstraints={zoomed ? dragBounds : { top: 0, bottom: 0, left: 0, right: 0 }}
-                  dragElastic={zoomed ? 0.05 : 0}
+                  // Desktop only — Framer's drag reads/writes panX/panY
+                  // directly since they're bound via `style` above. Touch
+                  // panning is handled by hand in the touch handlers below
+                  // instead, updating the same two motion values.
+                  drag={isDesktop && zoomed}
+                  dragConstraints={dragBounds}
+                  dragElastic={0.05}
                   onDragEnd={() => {
                     lastDragEndRef.current = Date.now();
                   }}

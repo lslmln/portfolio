@@ -52,13 +52,13 @@ export function RouteTransition({
   const [covering, setCovering] = useState(false);
   const [coverDuration, setCoverDuration] = useState(COVER_DURATION);
   const [navStalled, setNavStalled] = useState(false);
+  // State, not a ref — read during render to drive ReloadButton's href, so
+  // it has to be something a render can actually observe.
+  const [lastHref, setLastHref] = useState<string | null>(null);
   // Refs, not state — read at call time so a stale render closure or a
   // duplicate animation-complete event can't re-run the swap.
   const coveringRef = useRef(false);
   const pendingHrefRef = useRef<string | null>(null);
-  // Kept separately from pendingHrefRef (which is nulled out the moment
-  // router.push fires) so the stall fallback still has something to retry.
-  const lastHrefRef = useRef<string | null>(null);
   const navStallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // True when navigate() was called for the page we're already on (e.g.
   // clicking the "Si Min Lee" logo while already home) — there's no route
@@ -98,7 +98,7 @@ export function RouteTransition({
     if (pendingHrefRef.current) {
       const href = pendingHrefRef.current;
       pendingHrefRef.current = null;
-      lastHrefRef.current = href;
+      setLastHref(href);
       router.push(href, { scroll: false });
       navStallTimerRef.current = setTimeout(handleNavStall, NAV_STALL_MS);
     }
@@ -142,7 +142,7 @@ export function RouteTransition({
         <button
           type="button"
           onClick={() => {
-            lastHrefRef.current = pathname;
+            setLastHref(pathname);
             setNavStalled(true);
           }}
           className="fixed bottom-4 left-[610px] z-[60] rounded-md border border-black/20 bg-white px-3 py-1.5 text-xs font-medium text-black shadow-sm"
@@ -161,7 +161,7 @@ export function RouteTransition({
             style={{ minHeight: "calc(100svh - var(--nav-height) - var(--footer-height))" }}
           >
             <ErrorMessage message="This is taking longer than expected.">
-              <ReloadButton href={lastHrefRef.current ?? undefined} />
+              <ReloadButton href={lastHref ?? undefined} />
             </ErrorMessage>
           </div>
         ) : (
