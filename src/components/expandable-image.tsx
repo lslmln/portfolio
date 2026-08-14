@@ -60,6 +60,7 @@ export function ExpandableImage({
   const dialogRef = useDialogA11y<HTMLDivElement>(expanded, close);
   const panelRef = useRef<HTMLDivElement>(null);
   const pinchStartDistance = useRef<number | null>(null);
+  const lastDragEndRef = useRef(0);
   // Framer's ref-based dragConstraints re-measures panelRef vs. the draggable
   // element's *current* (transform-inclusive) box, which in practice came
   // back as a zero-size range here — computing the pannable bounds ourselves
@@ -173,16 +174,38 @@ export function ExpandableImage({
                 </div>
               ) : (
                 <motion.div
+                  style={{ touchAction: "none" }}
                   animate={{
                     scale: zoomed ? ZOOM_SCALE : 1,
                     x: zoomed ? undefined : 0,
                     y: zoomed ? undefined : 0,
                   }}
                   transition={{ duration: reduceMotion ? 0 : 0.3, ease: EASE_OUT_EXPO }}
-                  drag={zoomed}
-                  dragConstraints={dragBounds}
-                  dragElastic={0.05}
-                  onTap={isDesktop ? () => setZoomed((current) => !current) : undefined}
+                  // Always on (instead of gated behind `zoomed`) — pinned to
+                  // a zero range/elastic when not zoomed, so it's fully
+                  // inert but already "warm": a pinch that flips `zoomed`
+                  // mid-touch just widens the constraints on an
+                  // already-tracked gesture, rather than needing a fresh
+                  // pointerdown after the prop turns on, which drag={zoomed}
+                  // never got since the fingers were already down.
+                  drag
+                  dragConstraints={zoomed ? dragBounds : { top: 0, bottom: 0, left: 0, right: 0 }}
+                  dragElastic={zoomed ? 0.05 : 0}
+                  onDragEnd={() => {
+                    lastDragEndRef.current = Date.now();
+                  }}
+                  onTap={
+                    isDesktop
+                      ? () => {
+                          // A pan that ends right under the cursor can still
+                          // read as a "tap" to Framer's gesture recognizer —
+                          // this stops that from also toggling zoom back off
+                          // mid-drag.
+                          if (Date.now() - lastDragEndRef.current < 100) return;
+                          setZoomed((current) => !current);
+                        }
+                      : undefined
+                  }
                   onTouchStart={handleTouchStart}
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleTouchEnd}

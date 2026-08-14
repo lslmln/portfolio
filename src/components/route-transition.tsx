@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { ErrorMessage } from "./error-message";
+import { ErrorMessage, ReloadButton } from "./error-message";
 
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 export const COVER_DURATION = 0.5;
@@ -100,14 +100,17 @@ export function RouteTransition({
       pendingHrefRef.current = null;
       lastHrefRef.current = href;
       router.push(href, { scroll: false });
-      navStallTimerRef.current = setTimeout(() => setNavStalled(true), NAV_STALL_MS);
+      navStallTimerRef.current = setTimeout(handleNavStall, NAV_STALL_MS);
     }
   }
 
-  function retryStalledNav() {
-    // A hard navigation sidesteps whatever the client-side router got stuck
-    // on, instead of racing another soft push against the same failure.
-    if (lastHrefRef.current) window.location.href = lastHrefRef.current;
+  function handleNavStall() {
+    // Reveal (same as a successful nav) instead of leaving the cover
+    // opaque — the swapped-in error content below takes its place, so
+    // there's nothing left that needs hiding.
+    setNavStalled(true);
+    coveringRef.current = false;
+    setCovering(false);
   }
 
   // Fires once the actual route content changes — whether we initiated it
@@ -140,9 +143,6 @@ export function RouteTransition({
           type="button"
           onClick={() => {
             lastHrefRef.current = pathname;
-            coveringRef.current = true;
-            setCoverDuration(0);
-            setCovering(true);
             setNavStalled(true);
           }}
           className="fixed bottom-4 left-[610px] z-[60] rounded-md border border-black/20 bg-white px-3 py-1.5 text-xs font-medium text-black shadow-sm"
@@ -151,15 +151,30 @@ export function RouteTransition({
         </button>
       )}
       <div className="relative">
+        {navStalled ? (
+          // Swapped in for shown.children (not just painted over it) so the
+          // page's real height shrinks to match — same one-viewport layout
+          // as NotFoundContent, instead of leaving the old (possibly much
+          // taller) page's height in the document under an opaque cover.
+          <div
+            className="flex items-center px-page-x"
+            style={{ minHeight: "calc(100svh - var(--nav-height) - var(--footer-height))" }}
+          >
+            <ErrorMessage message="This is taking longer than expected.">
+              <ReloadButton href={lastHrefRef.current ?? undefined} />
+            </ErrorMessage>
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: reduceMotion ? 0 : COLD_LOAD_DURATION, ease: EASE_OUT_EXPO }}
+          >
+            {shown.children}
+          </motion.div>
+        )}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: reduceMotion ? 0 : COLD_LOAD_DURATION, ease: EASE_OUT_EXPO }}
-        >
-          {shown.children}
-        </motion.div>
-        <motion.div
-          aria-hidden={!navStalled}
+          aria-hidden
           className="pointer-events-none absolute inset-0 z-route-cover bg-background-primary"
           initial={false}
           animate={{ opacity: covering ? 1 : 0 }}
@@ -167,29 +182,6 @@ export function RouteTransition({
           onAnimationComplete={handleCoverAnimationComplete}
         />
       </div>
-      {navStalled && (
-        // The cover above sits inside a `relative` wrapper sized to the
-        // (possibly very tall) page it's covering, so centering the message
-        // inside it could land far below the fold — this is fixed to the
-        // viewport instead, same as NotFoundContent, just without a footer
-        // to leave room for since nothing else is visible while it's shown.
-        <div
-          className="pointer-events-none fixed inset-x-0 bottom-0 z-route-cover flex items-center px-page-x"
-          style={{ top: "var(--nav-height)" }}
-        >
-          <div className="pointer-events-auto">
-            <ErrorMessage message="This is taking longer than expected.">
-              <button
-                type="button"
-                onClick={retryStalledNav}
-                className="cursor-pointer rounded-card border-2 border-content-primary px-4 py-2 font-sans font-medium text-body text-content-primary transition-transform duration-150 active:scale-[0.97]"
-              >
-                Reload
-              </button>
-            </ErrorMessage>
-          </div>
-        </div>
-      )}
     </NavigateContext.Provider>
   );
 }

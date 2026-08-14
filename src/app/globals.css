@@ -111,6 +111,8 @@ html {
   --spacing-highlight-gap: 12px;
   --spacing-input-height: 52px;
   --spacing-section-end: 48px;
+  --spacing-button-padding-x: 16px;
+  --spacing-button-padding-y: 8px;
 
   --radius-button: 12px;
   --radius-card: 12px;
@@ -137,6 +139,7 @@ html {
     --spacing-card-spacing: 16px;
     --spacing-card-text-gap: 12px;
     --spacing-button-gap: 12px;
+    --spacing-button-padding-x: 12px;
 
     --icon-size-sm: 20px;
     --icon-size-footer: 16px;

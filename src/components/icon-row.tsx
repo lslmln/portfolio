@@ -165,6 +165,11 @@ export function IconRow() {
   const align = isTablet && selected !== null ? alignmentForIndex(selected) : "left";
   const active = selected === null ? null : items[selected];
   const iconSize = isTablet ? ICON_SIZE_LG : ICON_SIZE_MOBILE;
+  // Icons stack vertically below the tablet breakpoint (flex-col) and run
+  // in a row at tablet+ (flex-row) — the entrance direction follows suit:
+  // fly in from the right when stacked, from below when in a row.
+  const flyInOffset = isTablet ? { y: "100vh" } : { x: "100vw" };
+  const flyInRest = isTablet ? { y: 0 } : { x: 0 };
   const mobileCaptionTop =
     displayedSelected !== null
       ? displayedSelected * (ICON_SIZE_MOBILE + ICON_GAP_MOBILE) + ICON_SIZE_MOBILE / 2
@@ -184,14 +189,16 @@ export function IconRow() {
           <motion.div
             key={company}
             initial={
-              reduceMotion || !useElaborateEntrance ? { opacity: 0 } : { opacity: 0, y: "100vh" }
+              reduceMotion || !useElaborateEntrance
+                ? { opacity: 0 }
+                : { opacity: 0, ...flyInOffset }
             }
             animate={
               loadingComplete
-                ? { opacity: 1, y: 0 }
+                ? { opacity: 1, ...flyInRest }
                 : reduceMotion || !useElaborateEntrance
                   ? { opacity: 0 }
-                  : { opacity: 0, y: "100vh" }
+                  : { opacity: 0, ...flyInOffset }
             }
             transition={{ duration: useElaborateEntrance ? 2.2 : 0.5, ease: EASE_OUT_EXPO }}
           >
