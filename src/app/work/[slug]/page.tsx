@@ -780,12 +780,14 @@ export default async function WorkDetailPage({
 
   return (
     <>
-      <div className="grid grid-cols-1 items-center gap-card-text-gap px-page-x py-page-y tablet:grid-cols-12">
-        <div className="relative aspect-card w-full overflow-hidden rounded-card tablet:col-span-3">
+      <div className="grid grid-cols-1 items-center gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12">
+        <div className="min-w-0 tablet:col-span-3">
           <WorkHeroImage
             image={workProject.image}
             imageDark={workProject.imageDark}
             alt={title}
+            width={workProject.heroWidth}
+            height={workProject.heroHeight}
           />
         </div>
         <h1 className="font-sans font-semibold text-header text-content-primary tablet:col-span-9">

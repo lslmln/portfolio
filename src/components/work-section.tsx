@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
 import { backdropVariants, panelVariants } from "@/lib/modal-variants";
 import { useIsDark } from "@/lib/use-is-dark";
+import { useMediaLoaded } from "@/lib/use-media-loaded";
 import { verifyPasscode } from "@/lib/verify-passcode";
 import { workProjects, type WorkProject } from "@/lib/work-projects";
 import { COVER_DURATION, useNavigate } from "./route-transition";
@@ -26,6 +27,21 @@ import styles from "./work-section.module.css";
 // the user typed the passcode for — a single shared passcode gates all of
 // them today (see verify-passcode.ts), so there's only one thing to "know."
 const PASSCODE_VERIFIED_KEY = "portfolio-passcode-verified";
+
+function CardImage({ src, alt }: { src: string; alt: string }) {
+  const { loaded, onLoad } = useMediaLoaded();
+
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes="(min-width: 768px) 50vw, 100vw"
+      onLoad={onLoad}
+      className={`${styles.image} transition-opacity duration-300 ease-out ${loaded ? "opacity-100" : "opacity-0"}`}
+    />
+  );
+}
 
 export function WorkSection({
   firstOnPage = false,
@@ -99,13 +115,12 @@ export function WorkSection({
         {items.map((card) => {
           const cardBody = (
             <>
-              <div className={`${styles.imageWrapper} aspect-card w-full rounded-card`}>
-                <Image
+              <div
+                className={`${styles.imageWrapper} aspect-card w-full rounded-card bg-content-secondary/15`}
+              >
+                <CardImage
                   src={isDark && card.imageDark ? card.imageDark : card.image}
                   alt={card.title}
-                  fill
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  className={styles.image}
                 />
                 {card.locked && (
                   <div className="absolute bottom-2 right-2 flex items-center justify-center rounded-card bg-background-primary/50 p-1 backdrop-blur-sm tablet:bottom-4 tablet:right-4 tablet:p-2">

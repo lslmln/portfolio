@@ -4,6 +4,7 @@ import Script from "next/script";
 import { CrossfadeReveal } from "@/components/crossfade-reveal";
 import { DebugGrid } from "@/components/debug-grid";
 import { Dev404Link } from "@/components/dev-404-link";
+import { DevMediaLoadingToggle } from "@/components/dev-media-loading-toggle";
 import { DevResetIntroLink } from "@/components/dev-reset-intro-link";
 import { Footer } from "@/components/footer";
 import { LoadingScreen } from "@/components/loading-screen";
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {process.env.NODE_ENV === "development" && <DebugGrid />}
         {process.env.NODE_ENV === "development" && <Dev404Link />}
         {process.env.NODE_ENV === "development" && <DevResetIntroLink />}
+        {process.env.NODE_ENV === "development" && <DevMediaLoadingToggle />}
         <LoadingScreen />
         <div className="flex flex-col rounded-card bg-background-primary">
           <RouteTransition
