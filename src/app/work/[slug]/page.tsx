@@ -15,6 +15,106 @@ type ProcessBlock =
   | { type: "paragraph"; text: ReactNode }
   | { type: "image"; src: string; alt: string };
 
+type BuiltBlock =
+  | { type: "paragraph"; text: ReactNode }
+  | { type: "gallery"; images: readonly { src: string; alt: string }[] }
+  | { type: "video"; src: string }
+  | { type: "videoGallery"; videos: readonly string[] }
+  | {
+      type: "mixedGallery";
+      compact?: boolean;
+      items: readonly (
+        | { kind: "image"; src: string; alt: string }
+        | { kind: "video"; src: string }
+      )[];
+    };
+
+function renderBuiltBlocks(blocks: readonly BuiltBlock[]) {
+  return blocks.map((block, index) =>
+    block.type === "gallery" ? (
+      <div
+        key={index}
+        className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12"
+      >
+        {block.images.map((image, imageIndex) => (
+          <ExpandableImage
+            key={imageIndex}
+            src={image.src}
+            alt={image.alt}
+            width={1600}
+            height={1000}
+            className="tablet:col-span-6"
+          />
+        ))}
+      </div>
+    ) : block.type === "video" ? (
+      <div
+        key={index}
+        className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12"
+      >
+        <div className="tablet:col-span-6">
+          <DemoVideo src={block.src} />
+        </div>
+      </div>
+    ) : block.type === "videoGallery" ? (
+      <div
+        key={index}
+        className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12"
+      >
+        {block.videos.map((video, videoIndex) => (
+          <div key={videoIndex} className="tablet:col-span-6">
+            <DemoVideo src={video} />
+          </div>
+        ))}
+      </div>
+    ) : block.type === "mixedGallery" ? (
+      <div
+        key={index}
+        className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12"
+      >
+        {block.items.map((item, itemIndex) =>
+          item.kind === "video" ? (
+            <div
+              key={itemIndex}
+              className={block.compact ? "tablet:col-span-3" : "tablet:col-span-6"}
+            >
+              <DemoVideo src={item.src} />
+            </div>
+          ) : (
+            <ExpandableImage
+              key={itemIndex}
+              src={item.src}
+              alt={item.alt}
+              width={1600}
+              height={1000}
+              className={block.compact ? "tablet:col-span-3" : "tablet:col-span-6"}
+            />
+          ),
+        )}
+      </div>
+    ) : (
+      <p
+        key={index}
+        className={`px-page-x py-page-y font-sans font-medium text-body ${styles.secondaryText}`}
+      >
+        {block.text}
+      </p>
+    ),
+  );
+}
+
+function BuiltSection({ heading, blocks }: { heading: string; blocks: readonly BuiltBlock[] }) {
+  return (
+    <section className="relative pt-section-gap pb-page-y">
+      <Seam />
+      <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
+        {heading}
+      </h2>
+      {renderBuiltBlocks(blocks)}
+    </section>
+  );
+}
+
 const projects = [
   {
     slug: "feature-flow-revamp",
@@ -269,16 +369,36 @@ const projects = [
         "Design and write up documentation in Figma → Prototype animations + use skills to improve them → Describe specs to dev who will build animation for me to review",
     },
     whatIBuilt: [
-      "I placed a strong focus on the core components most users would encounter and that would shape their overall experience: the input amount component, the price chart, and the logic for handling alerts as our product suite grew.",
+      <>
+        I placed a{" "}
+        <span className={styles.highlight}>
+          strong focus on the core components most users would encounter and that
+          would shape their overall experience
+        </span>
+        : the input amount component, the price chart, and the logic for handling
+        alerts as our product suite grew.
+      </>,
     ],
-    builtContent: [
+    inputAmountContent: [
       {
         type: "videoGallery",
         videos: ["/videos/input-amount-recording.mov", "/videos/input-amount-phone.mov"],
       },
       {
         type: "paragraph",
-        text: "One of the major changes in this revamp was making the trade drawer its own tab in the bottom nav, which meant it now needed to support trading across all assets and trade types (e.g. market order, limit order). Thus it was critical to revamp the input amount experience, making it feel premium and giving users a reason to stay and engage with our different offerings.",
+        text: (
+          <>
+            One of the major changes in this revamp was making the trade drawer
+            its own tab in the bottom nav, which meant it now needed to support
+            trading across all assets and trade types (e.g. market order, limit
+            order).{" "}
+            <span className={styles.highlight}>
+              Thus it was critical to revamp the input amount experience, making
+              it feel premium and giving users a reason to stay and engage with
+              our different offerings.
+            </span>
+          </>
+        ),
       },
       {
         type: "video",
@@ -286,7 +406,21 @@ const projects = [
       },
       {
         type: "paragraph",
-        text: "I did extensive competitor research (e.g. Coinbase, Kraken, Robinhood) and ended up heavily inspired by Family, which achieved a seamless, premium feel through its top / bottom gradients when numbers were added or removed, bouncing commas, and scaling down large numbers to keep them readable. I took Family's approach and adjusted it to fit our own design direction, one general principle across the revamp was left alignment, which meant values shifted less as digits were added or removed, and improved the overall alignment and readability of the page.",
+        text: (
+          <>
+            I did extensive competitor research (e.g. Coinbase, Kraken, Robinhood)
+            and ended up heavily inspired by Family, which achieved a seamless,
+            premium feel through its top / bottom gradients when numbers were
+            added or removed, bouncing commas, and scaling down large numbers to
+            keep them readable. I took Family&apos;s approach and adjusted it to
+            fit our own design direction,{" "}
+            <span className={styles.highlight}>
+              one general principle across the revamp was left alignment, which
+              meant values shifted less as digits were added or removed,
+            </span>{" "}
+            and improved the overall alignment and readability of the page.
+          </>
+        ),
       },
       {
         type: "videoGallery",
@@ -294,7 +428,18 @@ const projects = [
       },
       {
         type: "paragraph",
-        text: "Getting the suffix to work correctly was one of the harder problems to solve, since it had to reposition dynamically as users added or removed digits. I also explored a light mode variant to make sure the design would scale accessibly, since we wanted the option to offer users a light mode in the future.",
+        text: (
+          <>
+            <span className={styles.highlight}>
+              Getting the suffix to work correctly was one of the harder problems
+              to solve, since it had to reposition dynamically as users added or
+              removed digits.
+            </span>{" "}
+            I also explored a light mode variant to make sure the design would
+            scale accessibly, since we wanted the option to offer users a light
+            mode in the future.
+          </>
+        ),
       },
       {
         type: "videoGallery",
@@ -302,19 +447,52 @@ const projects = [
       },
       {
         type: "paragraph",
-        text: "Other micro-interactions included a switcher animation between input types — partly for feedback, partly just for user delight — and press-and-hold to delete for faster input correction. We kept the existing dynamic error messaging, since it's actionable and helps users correct mistakes with minimal effort.",
+        text: (
+          <>
+            Other micro-interactions included a switcher animation between input
+            types — partly for feedback, partly just for user delight — and
+            press-and-hold to delete for faster input correction.{" "}
+            <span className={styles.highlight}>
+              We kept the existing dynamic error messaging, since it&apos;s
+              actionable and helps users correct mistakes with minimal effort.
+            </span>
+          </>
+        ),
       },
+    ],
+    priceChartContent: [
       {
         type: "videoGallery",
         videos: ["/videos/price-chart-recording.mov", "/videos/price-chart-phone.mp4"],
       },
       {
         type: "paragraph",
-        text: "The existing price chart felt outdated: the whole chart rescaled whenever a value moved beyond the axis range, the loading animation fully reloaded (with a skeleton state) on every timeframe switch, and scrubbing snapped numbers instantly with no transition. This was disorienting, since there was no continuity for the eye to follow. The chart also felt cramped and could afford more visual space.",
+        text: (
+          <>
+            The existing price chart felt outdated: the whole chart rescaled
+            whenever a value moved beyond the axis range, the loading animation
+            fully reloaded (with a skeleton state) on every timeframe switch, and
+            scrubbing snapped numbers instantly with no transition.{" "}
+            <span className={styles.highlight}>
+              This was disorienting, since there was no continuity for the eye to
+              follow.
+            </span>{" "}
+            The chart also felt cramped and could afford more visual space.
+          </>
+        ),
       },
       {
         type: "paragraph",
-        text: "To fix the rescaling, I added extra buffer room to the chart's axis range, so it's less likely to rescale while a user is actively viewing it.",
+        text: (
+          <>
+            To fix the rescaling, I added extra buffer room to the chart&apos;s
+            axis range,{" "}
+            <span className={styles.highlight}>
+              so it&apos;s less likely to rescale while a user is actively viewing
+              it.
+            </span>
+          </>
+        ),
       },
       {
         type: "videoGallery",
@@ -322,7 +500,19 @@ const projects = [
       },
       {
         type: "paragraph",
-        text: "When switching between timeframes, I took cues from Family's approach: the chart snaps smoothly along the y-axis so each transition has continuity, rather than fully reloading. When scrubbing, a rolling lift/press interaction transitions into a subtle sliding animation, making values easier to read while still feeling delightful.",
+        text: (
+          <>
+            When switching between timeframes, I took cues from Family&apos;s
+            approach:{" "}
+            <span className={styles.highlight}>
+              the chart snaps smoothly along the y-axis so each transition has
+              continuity, rather than fully reloading.
+            </span>{" "}
+            When scrubbing, a rolling lift/press interaction transitions into a
+            subtle sliding animation, making values easier to read while still
+            feeling delightful.
+          </>
+        ),
       },
       {
         type: "paragraph",
@@ -339,23 +529,54 @@ const projects = [
             </a>{" "}
             — where the current value stays fixed at a set x-position while only
             the y-value moves, and historical data scrolls off to the left as new
-            points arrive. This makes movement easy to track, since the eye only
-            has to follow one point rather than a chart repositioning on both axes
-            at once, while also giving the chart more room to breathe.
+            points arrive.{" "}
+            <span className={styles.highlight}>
+              This makes movement easy to track, since the eye only has to follow
+              one point rather than a chart repositioning on both axes at once,
+            </span>{" "}
+            while also giving the chart more room to breathe.
           </>
         ),
       },
+    ],
+    inlineAlertContent: [
       {
         type: "videoGallery",
         videos: ["/videos/inline-alert-old.mp4", "/videos/inline-alert.mp4"],
       },
       {
         type: "paragraph",
-        text: "Previously, there was no differentiation between alert types, a serious risk warning looked identical to a simple informational nudge. I addressed this by introducing warning and danger alerts on top of informational ones, differentiated by coloured backgrounds and triangle warning fill icons that stand out clearly against the black background, so severity is legible at a glance.",
+        text: (
+          <>
+            Previously, there was no differentiation between alert types, a
+            serious risk warning looked identical to a simple informational
+            nudge. I addressed this by introducing warning and danger alerts on
+            top of informational ones,{" "}
+            <span className={styles.highlight}>
+              differentiated by coloured backgrounds and triangle warning fill
+              icons that stand out clearly against the black background, so
+              severity is legible at a glance.
+            </span>
+          </>
+        ),
       },
       {
         type: "paragraph",
-        text: "Given that we had introduced multiple types of alerts, I wanted to tackle corner cases where users had multiple alerts, and help users digest info hierarchy by grouping related alerts together. I also allowed them to condense to save space, capping the total number of alerts at three visible at once. They must be ordered by severity: danger, then warning, then info. Ideally, we could analyse real usage data on how often more than three alerts could realistically appear at once, to validate whether this limit suited the app's needs.",
+        text: (
+          <>
+            Given that we had introduced multiple types of alerts, I wanted to
+            tackle corner cases where users had multiple alerts, and help users
+            digest info hierarchy by grouping related alerts together. I also
+            allowed them to condense to save space,{" "}
+            <span className={styles.highlight}>
+              capping the total number of alerts at three visible at once. They
+              must be ordered by severity: danger, then warning, then info.
+            </span>{" "}
+            Ideally, we could analyse real usage data on how often more than
+            three alerts could realistically appear at once, to validate whether
+            this limit suited the app&apos;s needs.
+          </>
+        ),
       },
     ],
   },
@@ -624,78 +845,16 @@ export default async function WorkDetailPage({
         video={"video" in project ? project.video : undefined}
         secondary
       />
-      {"builtContent" in project &&
-        project.builtContent.map((block, index) =>
-          block.type === "gallery" ? (
-            <div
-              key={index}
-              className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12"
-            >
-              {block.images.map((image, imageIndex) => (
-                <ExpandableImage
-                  key={imageIndex}
-                  src={image.src}
-                  alt={image.alt}
-                  width={1600}
-                  height={1000}
-                  className="tablet:col-span-6"
-                />
-              ))}
-            </div>
-          ) : block.type === "video" ? (
-            <div
-              key={index}
-              className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12"
-            >
-              <div className="tablet:col-span-6">
-                <DemoVideo src={block.src} />
-              </div>
-            </div>
-          ) : block.type === "videoGallery" ? (
-            <div
-              key={index}
-              className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12"
-            >
-              {block.videos.map((video, videoIndex) => (
-                <div key={videoIndex} className="tablet:col-span-6">
-                  <DemoVideo src={video} />
-                </div>
-              ))}
-            </div>
-          ) : block.type === "mixedGallery" ? (
-            <div
-              key={index}
-              className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12"
-            >
-              {block.items.map((item, itemIndex) =>
-                item.kind === "video" ? (
-                  <div
-                    key={itemIndex}
-                    className={block.compact ? "tablet:col-span-3" : "tablet:col-span-6"}
-                  >
-                    <DemoVideo src={item.src} />
-                  </div>
-                ) : (
-                  <ExpandableImage
-                    key={itemIndex}
-                    src={item.src}
-                    alt={item.alt}
-                    width={1600}
-                    height={1000}
-                    className={block.compact ? "tablet:col-span-3" : "tablet:col-span-6"}
-                  />
-                ),
-              )}
-            </div>
-          ) : (
-            <p
-              key={index}
-              className={`px-page-x py-page-y font-sans font-medium text-body ${styles.secondaryText}`}
-            >
-              {block.text}
-            </p>
-          ),
-        )}
+      {"builtContent" in project && renderBuiltBlocks(project.builtContent)}
+      {"inputAmountContent" in project && (
+        <BuiltSection heading="INPUT AMOUNT" blocks={project.inputAmountContent} />
+      )}
+      {"priceChartContent" in project && (
+        <BuiltSection heading="PRICE CHART" blocks={project.priceChartContent} />
+      )}
+      {"inlineAlertContent" in project && (
+        <BuiltSection heading="INLINE ALERT" blocks={project.inlineAlertContent} />
+      )}
       {"processContent" in project && (
         <section className="relative pt-section-gap pb-page-y">
           <Seam />
