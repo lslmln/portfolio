@@ -6,10 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
-// Symmetric, so the fade in and the fade out read as the same speed —
-// EASE_OUT_EXPO decelerates hard at the end, which made one direction feel
-// slower than the other.
-const COVER_EASE = [0.65, 0, 0.35, 1] as const;
 export const COVER_DURATION = 0.5;
 const COLD_LOAD_DURATION = 0.4;
 
@@ -44,7 +40,6 @@ export function RouteTransition({
   const router = useRouter();
   const pathname = usePathname();
   const reduceMotion = useReducedMotion();
-  const isHome = pathname === "/";
 
   const [shown, setShown] = useState({ pathname, children });
   const [covering, setCovering] = useState(false);
@@ -104,7 +99,7 @@ export function RouteTransition({
       {navbar}
       <div className="relative">
         <motion.div
-          initial={{ opacity: isHome ? 1 : 0 }}
+          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: reduceMotion ? 0 : COLD_LOAD_DURATION, ease: EASE_OUT_EXPO }}
         >
@@ -112,10 +107,10 @@ export function RouteTransition({
         </motion.div>
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-[150] bg-background-primary"
+          className="pointer-events-none absolute inset-0 z-route-cover bg-background-primary"
           initial={false}
           animate={{ opacity: covering ? 1 : 0 }}
-          transition={{ duration: coverDuration, ease: COVER_EASE }}
+          transition={{ duration: coverDuration, ease: EASE_OUT_EXPO }}
           onAnimationComplete={handleCoverAnimationComplete}
         />
       </div>

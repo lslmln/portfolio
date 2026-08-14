@@ -1,12 +1,21 @@
+import type { ReactNode } from "react";
+import { DemoVideo } from "./demo-video";
 import { Seam } from "./seam";
+import styles from "./text-section.module.css";
 
 export function TextSection({
   heading,
   paragraphs,
+  video,
+  paragraphGap = false,
+  secondary = false,
   firstOnPage = false,
 }: {
   heading: string;
-  paragraphs: readonly string[];
+  paragraphs: readonly ReactNode[];
+  video?: string;
+  paragraphGap?: boolean;
+  secondary?: boolean;
   firstOnPage?: boolean;
 }) {
   return (
@@ -15,9 +24,19 @@ export function TextSection({
       <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
         {heading}
       </h2>
-      <div className="px-page-x">
+      <div className="px-page-x py-page-y">
+        {video && (
+          <div className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap pb-card-text-gap tablet:grid-cols-12">
+            <div className="tablet:col-span-6">
+              <DemoVideo src={video} />
+            </div>
+          </div>
+        )}
         {paragraphs.map((paragraph, index) => (
-          <p key={index} className="font-sans font-medium text-body text-content-primary">
+          <p
+            key={index}
+            className={`font-sans font-medium text-body ${secondary ? styles.secondaryText : "text-content-primary"} ${paragraphGap ? "mb-card-text-gap" : ""}`}
+          >
             {paragraph}
           </p>
         ))}

@@ -16,7 +16,6 @@ export function LoadingScreen() {
   const reduceMotion = useReducedMotion();
   const [value, setValue] = useState(0);
   const [fading, setFading] = useState(false);
-  const [hidden, setHidden] = useState(false);
   // Decided once, via a lazy initializer, rather than re-read inside the
   // effect below — React 18 Strict Mode (dev only) runs that effect's body
   // twice, and re-reading sessionStorage on the second pass would see the
@@ -27,14 +26,24 @@ export function LoadingScreen() {
     const isHome = window.location.pathname === "/";
     return isHome && !sessionStorage.getItem(INTRO_SEEN_KEY);
   });
+  // Always starts hidden — on both the server *and* the client's first
+  // render — so hydration never has anything to disagree about (the server
+  // has no sessionStorage, so it can only ever assume "don't show it";
+  // computing this from shouldPlayIntro instead, which the client evaluates
+  // for real, made the client's first render diverge from the server's
+  // whenever a fresh session actually should play the intro — a genuine
+  // hydration mismatch, not just the earlier flash-of-overlay issue this
+  // was trying to fix). The effect below is the only thing allowed to
+  // reveal it, post-mount, which sidesteps hydration entirely.
+  const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
     if (reduceMotion || !shouldPlayIntro) {
       markLoadingComplete(false);
-      setHidden(true);
       return;
     }
 
+    setHidden(false);
     sessionStorage.setItem(INTRO_SEEN_KEY, "1");
 
     let raf: number;
@@ -73,7 +82,7 @@ export function LoadingScreen() {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[200] bg-background-primary"
+      className="fixed inset-0 z-loading bg-background-primary"
       animate={{ opacity: fading ? 0 : 1 }}
       transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
     >
@@ -97,7 +106,7 @@ export function LoadingScreen() {
           %
         </motion.span>
       </p>
-      <div className="absolute bottom-0 left-0 right-0 h-[8px] overflow-hidden">
+      <div className="absolute bottom-0 left-0 right-0 h-progress-height overflow-hidden">
         <div
           className="h-full rounded-r-button bg-content-primary"
           style={{ width: `calc(${value}% + ${(value / 100) * 12}px)` }}

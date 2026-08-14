@@ -15,12 +15,12 @@ export function ContactSection() {
   const isDark = useIsDark();
 
   return (
-    <section className="relative pt-section-gap pb-[48px] tablet:pb-[96px]">
+    <section className="relative pt-section-gap pb-section-end">
       <Seam />
       <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
         CONTACT
       </h2>
-      <div className="px-page-x">
+      <div className="px-page-x py-page-y">
         <p className="font-sans font-medium text-body text-content-primary">
           Let&apos;s build together.
         </p>

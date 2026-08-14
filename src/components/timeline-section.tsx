@@ -79,7 +79,7 @@ export function TimelineSection() {
       <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
         TIMELINE
       </h2>
-      <div className="flex flex-col gap-[80px] px-page-x py-page-y">
+      <div className="flex flex-col gap-timeline-gap px-page-x py-page-y">
         {entries.map(({ Icon, company, href, role, meta, highlight }, index) => (
           <div key={index} className="flex items-start gap-page-x">
             <Icon
@@ -105,7 +105,7 @@ export function TimelineSection() {
               </p>
               <p className="font-sans font-medium text-nav text-content-secondary">{meta}</p>
               {highlight && (
-                <p className="mt-[12px] font-sans font-medium text-caption leading-6 text-content-primary">
+                <p className="mt-highlight-gap font-sans font-medium text-caption leading-6 text-content-primary">
                   {highlight}
                 </p>
               )}

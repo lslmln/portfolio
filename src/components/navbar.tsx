@@ -93,7 +93,7 @@ export function Navbar() {
         type="button"
         onClick={() => setMobileMenuOpen(true)}
         aria-label="Open menu"
-        className={`${styles.hamburger} flex flex-col items-center gap-[6px] tablet:hidden`}
+        className={`${styles.hamburger} flex flex-col items-center gap-hamburger-gap tablet:hidden`}
       >
         <span className={styles.hamburgerLine} />
         <span className={styles.hamburgerLine} />
@@ -106,7 +106,7 @@ export function Navbar() {
             initial={reduceMotion ? "visible" : "hidden"}
             animate="visible"
             exit={reduceMotion ? "visible" : "exit"}
-            className={`fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg ${isDark ? "bg-[#000000]/50" : "bg-[#000000]/75"}`}
+            className={`fixed inset-0 z-scrim flex items-center justify-center backdrop-blur-lg ${isDark ? "bg-scrim/50" : "bg-scrim/75"}`}
           >
             <div className={`absolute left-page-x top-page-y ${styles.moonButtonWhite}`}>
               {themeToggle}
@@ -124,7 +124,7 @@ export function Navbar() {
               initial={reduceMotion ? "visible" : "hidden"}
               animate="visible"
               exit={reduceMotion ? "visible" : "exit"}
-              className="flex flex-col items-center gap-[16px]"
+              className="flex flex-col items-center gap-button-gap"
             >
               <TransitionLink
                 href="/"

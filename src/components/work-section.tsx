@@ -1,9 +1,15 @@
 "use client";
 
-import { ArrowRightIcon, CircleNotchIcon, LockIcon, XIcon } from "@phosphor-icons/react";
+import {
+  ArrowRightIcon,
+  CircleNotchIcon,
+  LockIcon,
+  LockOpenIcon,
+  XIcon,
+} from "@phosphor-icons/react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
 import { backdropVariants, panelVariants } from "@/lib/modal-variants";
 import { useIsDark } from "@/lib/use-is-dark";
@@ -13,6 +19,13 @@ import { COVER_DURATION, useNavigate } from "./route-transition";
 import { Seam } from "./seam";
 import { TransitionLink } from "./transition-link";
 import styles from "./work-section.module.css";
+
+// Session-scoped, not persistent — matches the loading-screen intro's own
+// "seen" flag: survives reloads within the tab, clears on a fresh
+// tab/session. Once verified, every locked card unlocks, not just the one
+// the user typed the passcode for — a single shared passcode gates all of
+// them today (see verify-passcode.ts), so there's only one thing to "know."
+const PASSCODE_VERIFIED_KEY = "portfolio-passcode-verified";
 
 export function WorkSection({
   firstOnPage = false,
@@ -29,9 +42,20 @@ export function WorkSection({
   const [passcodeInput, setPasscodeInput] = useState("");
   const [passcodeError, setPasscodeError] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  // Starts false on both server and client to avoid a hydration mismatch
+  // (sessionStorage isn't available during SSR) — synced from sessionStorage
+  // in the effect below immediately after mount, same pattern Navbar uses
+  // for isDark.
+  const [unlocked, setUnlocked] = useState(false);
   const isDark = useIsDark();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (sessionStorage.getItem(PASSCODE_VERIFIED_KEY) === "1") {
+      setUnlocked(true);
+    }
+  }, []);
 
   const unlockingCard = items.find((item) => item.slug === unlockingSlug);
 
@@ -47,6 +71,8 @@ export function WorkSection({
     setIsVerifying(true);
     const isCorrect = await verifyPasscode(passcodeInput);
     if (isCorrect) {
+      sessionStorage.setItem(PASSCODE_VERIFIED_KEY, "1");
+      setUnlocked(true);
       navigate(`/work/${unlockingCard.slug}`);
       // Don't pop the modal closed — let the page-level cover (which sits
       // above it) rise over it first, so it quietly disappears under the
@@ -61,7 +87,7 @@ export function WorkSection({
 
   return (
     <section
-      className={`relative ${firstOnPage ? "" : "pt-section-gap"} ${lastOnPage ? "pb-[48px] tablet:pb-[96px]" : "pb-page-y"}`}
+      className={`relative ${firstOnPage ? "" : "pt-section-gap"} ${lastOnPage ? "pb-section-end" : "pb-page-y"}`}
     >
       {!firstOnPage && <Seam />}
       {!firstOnPage && (
@@ -75,18 +101,27 @@ export function WorkSection({
             <>
               <div className={`${styles.imageWrapper} aspect-card w-full rounded-card`}>
                 <Image
-                  src="/images/work-placeholder.jpg"
+                  src={isDark && card.imageDark ? card.imageDark : card.image}
                   alt={card.title}
                   fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
                   className={styles.image}
                 />
                 {card.locked && (
                   <div className="absolute bottom-2 right-2 flex items-center justify-center rounded-card bg-background-primary/50 p-1 backdrop-blur-sm tablet:bottom-4 tablet:right-4 tablet:p-2">
-                    <LockIcon
-                      size={ICON_SIZE_SM}
-                      weight="fill"
-                      className="icon-sm text-content-primary"
-                    />
+                    {unlocked ? (
+                      <LockOpenIcon
+                        size={ICON_SIZE_SM}
+                        weight="fill"
+                        className="icon-sm text-content-primary"
+                      />
+                    ) : (
+                      <LockIcon
+                        size={ICON_SIZE_SM}
+                        weight="fill"
+                        className="icon-sm text-content-primary"
+                      />
+                    )}
                   </div>
                 )}
               </div>
@@ -96,7 +131,7 @@ export function WorkSection({
             </>
           );
 
-          if (card.locked) {
+          if (card.locked && !unlocked) {
             return (
               <button
                 key={card.slug}
@@ -127,7 +162,7 @@ export function WorkSection({
             initial={reduceMotion ? "visible" : "hidden"}
             animate="visible"
             exit={reduceMotion ? "visible" : "exit"}
-            className={`fixed inset-0 z-50 flex items-center justify-center px-8 backdrop-blur-lg ${isDark ? "bg-[#000000]/50" : "bg-[#000000]/75"}`}
+            className={`fixed inset-0 z-scrim flex items-center justify-center px-8 backdrop-blur-lg ${isDark ? "bg-scrim/50" : "bg-scrim/75"}`}
           >
             <button
               type="button"
@@ -157,16 +192,16 @@ export function WorkSection({
                   onKeyDown={(event) => {
                     if (event.key === "Enter") handleSubmitPasscode();
                   }}
-                  className="h-[52px] w-full min-w-0 rounded-card border-2 border-white bg-transparent px-3 font-sans font-medium text-body text-white focus:border-[#75ACF0]"
+                  className="h-input-height w-full min-w-0 rounded-card border-2 border-white bg-transparent px-3 font-sans font-medium text-body text-white focus:border-modal-focus"
                 />
                 <button
                   type="button"
                   onClick={handleSubmitPasscode}
                   disabled={!passcodeInput.trim() || isVerifying}
                   aria-label="Submit password"
-                  className={`group flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#242424]/50 p-2 backdrop-blur-sm transition-[opacity,transform] duration-150 active:scale-[0.97] ${
+                  className={`group flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-modal-button-bg/50 p-2 backdrop-blur-sm transition-[opacity,transform] duration-150 active:scale-[0.97] ${
                     passcodeInput.trim()
-                      ? "opacity-100 hover:bg-[#EEEAE3]"
+                      ? "opacity-100 hover:bg-modal-button-bg-hover"
                       : "pointer-events-none opacity-30"
                   }`}
                 >
@@ -174,19 +209,19 @@ export function WorkSection({
                     <CircleNotchIcon
                       size={20}
                       weight="bold"
-                      className="animate-spin text-[#EEEAE3] group-hover:text-[#242424]"
+                      className="animate-spin text-modal-button-bg-hover group-hover:text-modal-button-bg"
                     />
                   ) : (
                     <ArrowRightIcon
                       size={20}
                       weight="fill"
-                      className="text-[#EEEAE3] group-hover:text-[#242424]"
+                      className="text-modal-button-bg-hover group-hover:text-modal-button-bg"
                     />
                   )}
                 </button>
               </div>
               <p
-                className={`font-sans font-medium text-nav text-[#F07575] ${passcodeError ? "visible" : "invisible"}`}
+                className={`font-sans font-medium text-nav text-danger ${passcodeError ? "visible" : "invisible"}`}
               >
                 Incorrect password. Try again.
               </p>

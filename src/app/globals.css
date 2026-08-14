@@ -23,13 +23,24 @@ html {
   --footer-height: 0px;
   --icon-size-sm: 32px;
   --icon-size-footer: 24px;
+  --scrim: #000000;
+  --danger: #F07575;
+  /* Fixed, non-theme-reactive — the locked-card passcode modal always
+     renders on a black scrim regardless of data-theme, so its own button
+     colors and focus ring don't swap with the rest of the site. */
+  --modal-button-bg: #242424;
+  --modal-button-bg-hover: #EEEAE3;
+  --modal-focus: #75ACF0;
+  /* Always-white text/icon color on a fixed-dark scrim (mobile menu,
+     passcode modal) — not theme-reactive, same reasoning as modal-*. */
+  --on-scrim: #ffffff;
 }
 
 :root[data-theme="dark"] {
   --background-primary: #242424;
-  --content-primary: #EEEAE3;
-  --content-secondary: #B3B3B3;
-  --heading: #CCCCCC;
+  --content-primary: #E6E6E6;
+  --content-secondary: #BFBFBF;
+  --heading: #BFBFBF;
   --icon: #666666;
   --link: #75ACF0;
   --note-blue: #2D5776;
@@ -57,6 +68,12 @@ html {
   --color-note-pink: var(--note-pink);
   --color-note-coral: var(--note-coral);
   --color-note-yellow: var(--note-yellow);
+  --color-scrim: var(--scrim);
+  --color-danger: var(--danger);
+  --color-modal-button-bg: var(--modal-button-bg);
+  --color-modal-button-bg-hover: var(--modal-button-bg-hover);
+  --color-modal-focus: var(--modal-focus);
+  --color-on-scrim: var(--on-scrim);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -87,11 +104,24 @@ html {
   --spacing-card-row-gap: 48px;
   --spacing-card-text-gap: 16px;
   --spacing-button-gap: 16px;
+  --spacing-timeline-gap: 80px;
+  --spacing-hamburger-gap: 6px;
+  --spacing-progress-height: 8px;
+  --spacing-seam-thickness: 2px;
+  --spacing-highlight-gap: 12px;
+  --spacing-input-height: 52px;
+  --spacing-section-end: 48px;
 
   --radius-button: 12px;
   --radius-card: 12px;
 
   --aspect-card: 8 / 5;
+
+  /* Stacking order, low to high: page content < scrim (menu/modal
+     backdrops) < route-transition cover < loading-screen intro. */
+  --z-index-scrim: 50;
+  --z-index-route-cover: 150;
+  --z-index-loading: 200;
 }
 
 @media (max-width: 767px) {
@@ -116,6 +146,7 @@ html {
 @media (min-width: 768px) {
   :root {
     --spacing-section-gap: 80px;
+    --spacing-section-end: 96px;
   }
 }
 

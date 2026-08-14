@@ -1,0 +1,40 @@
+.content {
+  display: flow-root;
+}
+
+/* Light mode: body copy is black (content-primary), highlighted phrases are
+   bold black. Dark mode keeps the grey-body / white-unbold-highlight
+   treatment. Two different "which token means emphasis" schemes per theme,
+   not expressible with Tailwind's text-content-* utilities alone, so this
+   lives in CSS with a dark-mode override, same pattern as seam.module.css. */
+.secondaryText {
+  color: var(--content-primary);
+}
+
+:root[data-theme="dark"] .secondaryText {
+  color: var(--content-secondary);
+  font-weight: 400;
+}
+
+.highlight {
+  color: var(--content-primary);
+  font-weight: 700;
+}
+
+:root[data-theme="dark"] .highlight {
+  font-weight: 500;
+}
+
+.floatImage {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--spacing-card-text-gap);
+}
+
+@media (min-width: 768px) {
+  .floatImage {
+    float: right;
+    width: 25%;
+    margin-left: var(--spacing-card-text-gap);
+  }
+}

@@ -1,0 +1,12 @@
+/* Light mode: body copy is black (content-primary). Dark mode: grey
+   (content-secondary) and regular weight instead of medium. Mirrors
+   page.module.css's .secondaryText for the work-detail sections that opt
+   into this scheme via the `secondary` prop. */
+.secondaryText {
+  color: var(--content-primary);
+}
+
+:root[data-theme="dark"] .secondaryText {
+  color: var(--content-secondary);
+  font-weight: 400;
+}

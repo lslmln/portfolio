@@ -1,0 +1,5 @@
+.imageWrapper {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+}

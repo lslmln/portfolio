@@ -22,8 +22,27 @@
   transform-origin: left;
 }
 
-.navLink:active::after,
-.navLink[data-selected]::after {
+.navLink:active::after {
+  transform: scaleX(1);
+}
+
+/* Persistent "current page" indicator — a separate pseudo-element from the
+   hover-sweep ::after above, with no transition at all: a route change
+   (data-selected turning on/off) should reflect the current page instantly,
+   not replay the hover-sweep animation on the way out. */
+.navLink::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 4px;
+  border-radius: var(--radius-button);
+  background: currentColor;
+  transform: scaleX(0);
+}
+
+.navLink[data-selected]::before {
   transform: scaleX(1);
 }
 
@@ -72,7 +91,7 @@
 }
 
 .moonButtonWhite {
-  color: #fff;
+  color: var(--on-scrim);
 }
 
 .hamburger {
