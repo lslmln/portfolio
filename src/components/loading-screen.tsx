@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { markLoadingComplete } from "@/lib/loading-complete";
 
 const DURATION_MS = 1600;
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
@@ -18,6 +19,7 @@ export function LoadingScreen() {
 
   useEffect(() => {
     if (reduceMotion) {
+      markLoadingComplete();
       setHidden(true);
       return;
     }
@@ -49,7 +51,8 @@ export function LoadingScreen() {
 
   useEffect(() => {
     if (!fading) return;
-    const timer = setTimeout(() => setHidden(true), 500);
+    markLoadingComplete();
+    const timer = setTimeout(() => setHidden(true), 2200);
     return () => clearTimeout(timer);
   }, [fading]);
 
@@ -61,6 +64,17 @@ export function LoadingScreen() {
       animate={{ opacity: fading ? 0 : 1 }}
       transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
     >
+      <div className="absolute" style={{ left: "32px", top: "50%", transform: "translateY(-50%)" }}>
+        <motion.div
+          initial={{ opacity: 0, y: 0 }}
+          animate={{ opacity: fading ? 0 : value / 100, y: fading ? -192 : 0 }}
+          transition={{ duration: fading ? 2.2 : 0, ease: EASE_OUT_EXPO }}
+          className="font-sans font-semibold text-header text-content-primary"
+        >
+          <p className="whitespace-nowrap">Si Min Lee</p>
+          <p className="whitespace-nowrap">— Product Designer</p>
+        </motion.div>
+      </div>
       <p
         className="absolute flex font-sans font-semibold text-header text-content-primary"
         style={{ left: "32px", bottom: "24px" }}

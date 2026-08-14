@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  overflow-y: scroll;
+}
+
 :root {
   --background-primary: #EEEAE3;
   --content-primary: #2E2E2E;

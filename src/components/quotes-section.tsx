@@ -39,7 +39,11 @@ const quotesByFilter: Record<string, Quote[]> = {
     },
   ],
   "Product Designers": [
-    { quote: "[placeholder text]", attribution: "[placeholder person]" },
+    {
+      quote:
+        "I had the pleasure of working with Si Min at CDC when she was a recent graduate with valuable internship experience in UI/UX design. Although UX was not her academic major, she demonstrated an impressive ability to learn quickly and contribute meaningfully to our projects. She is dependable and has a keen eye for detail. I was particularly impressed by her thoughtful and active involvement in the research process for our equities product, including user interviews and competitor research. Her contributions helped strengthen the user journey and elevate the overall design. She consistently approached her work with care, curiosity, and professionalism. Si Min would be a valuable addition to any team, and I look forward to seeing where her career takes her.",
+      attribution: "Sally Kau · Senior Product Designer @ Crypto.com",
+    },
     { quote: "[placeholder text]", attribution: "[placeholder person]" },
   ],
   "Product Managers": [

@@ -16,8 +16,11 @@ import {
   ICON_SIZE_MOBILE,
 } from "@/lib/icon-size";
 import { useIsDark } from "@/lib/use-is-dark";
+import { useLoadingComplete } from "@/lib/loading-complete";
 import { useMediaQuery } from "@/lib/use-media-query";
 import styles from "./icon-row.module.css";
+
+const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 
 const items = [
   {
@@ -85,6 +88,7 @@ export function IconRow() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isTablet = useMediaQuery("(min-width: 768px)");
   const isDark = useIsDark();
+  const loadingComplete = useLoadingComplete();
 
   useEffect(() => {
     if (selected !== null) return;
@@ -163,18 +167,30 @@ export function IconRow() {
         className="relative flex flex-col items-center gap-page-y tablet:flex-row tablet:gap-page-x"
       >
         {items.map(({ Icon }, index) => (
-          <button
+          <motion.div
             key={index}
-            type="button"
-            onClick={() => selectIcon(index)}
-            aria-pressed={selected === index}
-            data-selected={selected === index || undefined}
-            className={styles.iconButton}
+            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: "100vh" }}
+            animate={
+              loadingComplete
+                ? { opacity: 1, y: 0 }
+                : reduceMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: "100vh" }
+            }
+            transition={{ duration: 2.2, ease: EASE_OUT_EXPO }}
           >
-            <span data-hint-icon className={styles.hintTarget}>
-              <Icon size={iconSize} weight={isDark ? "fill" : "regular"} />
-            </span>
-          </button>
+            <button
+              type="button"
+              onClick={() => selectIcon(index)}
+              aria-pressed={selected === index}
+              data-selected={selected === index || undefined}
+              className={styles.iconButton}
+            >
+              <span data-hint-icon className={styles.hintTarget}>
+                <Icon size={iconSize} weight={isDark ? "fill" : "regular"} />
+              </span>
+            </button>
+          </motion.div>
         ))}
 
         {!isTablet && (

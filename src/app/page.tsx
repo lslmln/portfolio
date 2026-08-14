@@ -1,4 +1,5 @@
 import { ContactSection } from "@/components/contact-section";
+import { CrossfadeReveal } from "@/components/crossfade-reveal";
 import { IconRow } from "@/components/icon-row";
 import { QuotesSection } from "@/components/quotes-section";
 import { ScrollCue } from "@/components/scroll-cue";
@@ -17,7 +18,7 @@ export default function Home() {
             <IconRow />
           </div>
         </div>
-        <div className="flex items-end justify-between px-page-x pb-page-y">
+        <CrossfadeReveal className="flex items-end justify-between px-page-x pb-page-y">
           <div>
             <p className="font-sans font-medium text-body text-content-secondary">
               Si Min was @ Crypto.com
@@ -32,7 +33,7 @@ export default function Home() {
           <div className="hidden desktop:block">
             <ScrollCue />
           </div>
-        </div>
+        </CrossfadeReveal>
       </main>
       <WorkSection />
       <ToolsSection />

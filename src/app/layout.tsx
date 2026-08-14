@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import { CrossfadeReveal } from "@/components/crossfade-reveal";
 import { DebugGrid } from "@/components/debug-grid";
 import { Footer } from "@/components/footer";
 import { LoadingScreen } from "@/components/loading-screen";
@@ -48,7 +49,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {process.env.NODE_ENV === "development" && <DebugGrid />}
         <LoadingScreen />
         <div className="flex flex-col rounded-card bg-background-primary">
-          <Navbar />
+          <CrossfadeReveal>
+            <Navbar />
+          </CrossfadeReveal>
           {children}
         </div>
         <Footer />
