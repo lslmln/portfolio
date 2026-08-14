@@ -16,7 +16,7 @@ import {
   ICON_SIZE_MOBILE,
 } from "@/lib/icon-size";
 import { useIsDark } from "@/lib/use-is-dark";
-import { useIntroPlayed, useLoadingComplete } from "@/lib/loading-complete";
+import { INTRO_SEEN_KEY, useLoadingComplete } from "@/lib/loading-complete";
 import { useMediaQuery } from "@/lib/use-media-query";
 import styles from "./icon-row.module.css";
 
@@ -89,16 +89,21 @@ export function IconRow() {
   const isTablet = useMediaQuery("(min-width: 768px)");
   const isDark = useIsDark();
   const loadingComplete = useLoadingComplete();
-  const introPlayed = useIntroPlayed();
-  // loadingComplete/introPlayed are sticky for the whole browser session —
-  // once the intro has played, they stay true forever. But IconRow remounts
-  // fresh every time the homepage is navigated back to via client-side nav,
-  // not just on the original page load. Without this, every return trip to
-  // home would replay the elaborate fly-up-from-below-screen animation.
-  // Capturing whether loading had *already* resolved before this particular
-  // instance mounted tells them apart.
-  const [mountedAfterLoad] = useState(() => loadingComplete);
-  const useElaborateEntrance = introPlayed && !mountedAfterLoad;
+  // Whether *this* mount gets the elaborate fly-up-from-below-screen
+  // entrance. Decided once, synchronously, via a lazy initializer — Framer
+  // Motion only honors the `initial` prop on an element's very first render,
+  // and the async `loadingComplete` store is still false at that instant
+  // (the loading screen's effect hasn't run yet), so deriving this from a
+  // subscribed value would always miss the initial y offset and collapse
+  // the entrance into a plain fade. Checking sessionStorage directly here
+  // mirrors the same check loading-screen.tsx does to decide whether to
+  // play at all. loadingComplete already being true at mount means this is
+  // a remount from client-side nav back to home, not the true first load —
+  // skip the elaborate entrance so it doesn't replay every return trip.
+  const [useElaborateEntrance] = useState(() => {
+    if (typeof window === "undefined" || loadingComplete) return false;
+    return window.location.pathname === "/" && !sessionStorage.getItem(INTRO_SEEN_KEY);
+  });
 
   useEffect(() => {
     if (selected !== null) return;

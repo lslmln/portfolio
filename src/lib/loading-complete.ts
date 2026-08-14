@@ -2,6 +2,8 @@
 
 import { useSyncExternalStore } from "react";
 
+export const INTRO_SEEN_KEY = "portfolio-intro-seen";
+
 let complete = false;
 let introPlayed = false;
 const listeners = new Set<() => void>();
