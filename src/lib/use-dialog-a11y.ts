@@ -23,11 +23,19 @@ export function useDialogA11y<T extends HTMLElement>(open: boolean, onClose: () 
     triggerRef.current = document.activeElement;
     const dialog = dialogRef.current;
     const focusable = dialog?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-    // Prefer an element the caller explicitly marked with `autofocus` (e.g.
-    // the passcode input) over just grabbing the first focusable element —
-    // relevant now that a dialog's first focusable element (a leading close
-    // button) isn't necessarily the one that should actually receive focus.
-    const autoFocusTarget = dialog?.querySelector<HTMLElement>("[autofocus]");
+    // Prefer an element the caller explicitly marked via data-autofocus
+    // (e.g. the passcode input) over just grabbing the first focusable
+    // element — relevant now that a dialog's first focusable element (a
+    // leading close button) isn't necessarily the one that should actually
+    // receive focus. Deliberately not React's `autoFocus` prop / the plain
+    // `autofocus` HTML attribute: React implements `autoFocus` by calling
+    // .focus() directly rather than setting the DOM attribute, so a
+    // querySelector("[autofocus]") here would always find nothing and
+    // silently fall back to focusable[0] instead — which, for the passcode
+    // modal, is the close button rendered before the input, stealing focus
+    // right back off it a moment after React's own autoFocus had already
+    // (correctly) put it there.
+    const autoFocusTarget = dialog?.querySelector<HTMLElement>("[data-autofocus]");
     (autoFocusTarget ?? focusable?.[0])?.focus({ preventScroll: true });
 
     function handleKeyDown(event: KeyboardEvent) {

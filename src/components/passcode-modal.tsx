@@ -137,6 +137,7 @@ export function PasscodeModal({
                 <input
                   type="password"
                   autoFocus
+                  data-autofocus
                   value={passcodeInput}
                   onChange={(event) => {
                     setPasscodeInput(event.target.value);
