@@ -637,41 +637,40 @@ const projects = [
     ],
     reflections: [
       <>
-        This project made me realise how much I enjoy{" "}
-        <span className={styles.highlight}>design systems work</span>. As a
-        feature designer, you&apos;re usually focused on solving one problem
-        at a time. Working on the system behind those features gave me the
-        opportunity to step back and map out how the same patterns needed to
-        work across the entire product.
+        This project made me realise how much I enjoy design systems work.
+        As a feature designer, you&apos;re usually focused on solving one
+        problem at a time. Working on the system behind those features gave
+        me the chance to step back and see how the same patterns needed to
+        work across the whole product.
       </>,
       <>
-        I loved the level of detail it required—thinking through different
-        asset types, states, behaviours and edge cases, then iterating on
-        the same component until the logic felt right.{" "}
-        <span className={styles.highlight}>
-          It&apos;s the kind of meticulous problem-solving I naturally
-          gravitate towards.
-        </span>
+        I really liked how much detail you could get into. Thinking through
+        all the different asset types, states, behaviours and edge cases,
+        then iterating on one component over and over until everything
+        clicks. I&apos;m quite happy spending a ridiculous amount of time on
+        one thing if it means getting the logic right.
       </>,
       <>
-        Coming from a maths background, I find something particularly
-        satisfying about systems work: there is a creative side to designing
-        how something feels and looks, but also a very logical side to
-        figuring out{" "}
-        <span className={styles.highlight}>
-          how everything connects, what happens when something changes, and
-          whether the system holds up across every case.
-        </span>
+        I did a maths minor in college and really enjoyed proofs. I think
+        what I loved about them was the rigor: starting from what you know,
+        questioning your assumptions, and being able to trace why something
+        holds rather than just accepting that it works. I find myself doing
+        something similar in design systems, thinking through the different
+        conditions a component needs to support, looking for the cases that
+        break my assumptions, and iterating until the logic holds together.
+      </>,
+      <>
+        The inline alert system was a good example. What started as a
+        simple component quickly became a set of decisions around severity,
+        grouping, ordering, limits, placement and different states. You
+        keep finding cases that challenge the original idea, and each one
+        forces you to make the system a little more robust.
       </>,
       <>
         Getting the chance to work on both feature design and the design
-        system was especially valuable.{" "}
-        <span className={styles.highlight}>
-          You understand the system differently when you&apos;ve
-          experienced all the different features it needs to support.
-        </span>{" "}
-        It made me appreciate how much foresight and rigour goes into
-        building patterns that can scale beyond any single feature.
+        system was especially valuable. You understand the system
+        differently when you&apos;ve experienced all the different features
+        it needs to support.
       </>,
     ],
   },
