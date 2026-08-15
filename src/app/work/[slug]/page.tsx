@@ -19,7 +19,10 @@ type BuiltBlock =
   | { type: "paragraph"; text: ReactNode }
   | { type: "gallery"; images: readonly { src: string; alt: string }[] }
   | { type: "video"; src: string }
-  | { type: "videoGallery"; videos: readonly string[] }
+  | {
+      type: "videoGallery";
+      videos: readonly (string | { src: string; background?: string })[];
+    }
   | {
       type: "mixedGallery";
       compact?: boolean;
@@ -61,11 +64,14 @@ function renderBuiltBlocks(blocks: readonly BuiltBlock[]) {
         key={index}
         className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12"
       >
-        {block.videos.map((video, videoIndex) => (
-          <div key={videoIndex} className="tablet:col-span-6">
-            <DemoVideo src={video} />
-          </div>
-        ))}
+        {block.videos.map((video, videoIndex) => {
+          const { src, background } = typeof video === "string" ? { src: video } : video;
+          return (
+            <div key={videoIndex} className="tablet:col-span-6">
+              <DemoVideo src={src} background={background} />
+            </div>
+          );
+        })}
       </div>
     ) : block.type === "mixedGallery" ? (
       <div
@@ -496,7 +502,10 @@ const projects = [
       },
       {
         type: "videoGallery",
-        videos: ["/videos/price-chart-timeframe.mp4", "/videos/price-chart-liveline.mp4"],
+        videos: [
+          "/videos/price-chart-timeframe.mp4",
+          { src: "/videos/price-chart-liveline.mp4", background: "bg-white" },
+        ],
       },
       {
         type: "paragraph",
