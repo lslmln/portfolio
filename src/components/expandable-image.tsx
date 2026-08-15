@@ -202,7 +202,7 @@ export function ExpandableImage({
               type="button"
               onClick={close}
               aria-label="Close"
-              className="absolute right-page-x top-page-y cursor-pointer transition-transform duration-150 active:scale-[0.97]"
+              className="absolute right-page-x top-page-y z-10 cursor-pointer transition-transform duration-150 active:scale-[0.97]"
             >
               <XIcon size={ICON_SIZE_SM} weight="regular" className="text-on-scrim" />
             </button>

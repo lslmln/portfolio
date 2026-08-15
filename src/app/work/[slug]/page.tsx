@@ -83,7 +83,7 @@ function renderBuiltBlocks(blocks: readonly BuiltBlock[]) {
           item.kind === "video" ? (
             <div
               key={itemIndex}
-              className={block.compact ? "tablet:col-span-3" : "tablet:col-span-6"}
+              className={block.compact ? "tablet:col-span-6 desktop:col-span-3" : "tablet:col-span-6"}
             >
               <DemoVideo src={item.src} />
             </div>
@@ -94,7 +94,7 @@ function renderBuiltBlocks(blocks: readonly BuiltBlock[]) {
               alt={item.alt}
               width={1600}
               height={1000}
-              className={block.compact ? "tablet:col-span-3" : "tablet:col-span-6"}
+              className={block.compact ? "tablet:col-span-6 desktop:col-span-3" : "tablet:col-span-6"}
             />
           ),
         )}
