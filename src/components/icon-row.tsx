@@ -9,7 +9,7 @@ import {
   LeafIcon,
   ShoppingCartIcon,
 } from "@phosphor-icons/react";
-import { ICON_ROW_WIDTH, ICON_SIZE_LG, ICON_SIZE_MOBILE } from "@/lib/icon-size";
+import { ICON_SIZE_LG, ICON_SIZE_MOBILE, ICON_SIZE_TABLET, iconRowWidth } from "@/lib/icon-size";
 import { useIsDark } from "@/lib/use-is-dark";
 import { INTRO_SEEN_KEY, useLoadingComplete } from "@/lib/loading-complete";
 import { useMediaQuery } from "@/lib/use-media-query";
@@ -78,6 +78,7 @@ export function IconRow() {
   const [scope, animate] = useAnimate();
   const containerRef = useRef<HTMLDivElement>(null);
   const isTablet = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const isDark = useIsDark();
   const loadingComplete = useLoadingComplete();
   // Whether *this* mount gets the elaborate fly-up-from-below-screen
@@ -152,7 +153,7 @@ export function IconRow() {
 
   const align = isTablet && selected !== null ? alignmentForIndex(selected) : "left";
   const active = selected === null ? null : items[selected];
-  const iconSize = isTablet ? ICON_SIZE_LG : ICON_SIZE_MOBILE;
+  const iconSize = isDesktop ? ICON_SIZE_LG : isTablet ? ICON_SIZE_TABLET : ICON_SIZE_MOBILE;
   // Icons stack vertically below the tablet breakpoint (flex-col) and run
   // in a row at tablet+ (flex-row) — the entrance direction follows suit:
   // fly in from the right when stacked, from below when in a row. Both axes
@@ -168,7 +169,7 @@ export function IconRow() {
     <div
       ref={containerRef}
       className={`${styles.wrapper} flex flex-col items-start gap-page-y tablet:items-stretch`}
-      style={{ "--icon-row-half-width": `${ICON_ROW_WIDTH / 2}px` } as React.CSSProperties}
+      style={{ "--icon-row-half-width": `${iconRowWidth(iconSize) / 2}px` } as React.CSSProperties}
     >
       <div
         ref={scope}
