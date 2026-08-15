@@ -71,7 +71,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {process.env.NODE_ENV === "development" && <DevResetIntroLink />}
         {process.env.NODE_ENV === "development" && <DevMediaLoadingToggle />}
         <LoadingScreen />
-        <div className="flex flex-col rounded-card bg-background-primary">
+        <div className="flex flex-1 flex-col rounded-card bg-background-primary">
           <RouteTransition
             navbar={
               <CrossfadeReveal>
