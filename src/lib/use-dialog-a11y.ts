@@ -66,6 +66,15 @@ export function useDialogA11y<T extends HTMLElement>(open: boolean, onClose: () 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      // Blur whatever's still focused inside the dialog (the passcode
+      // input, most often) before restoring body's scroll lock below —
+      // otherwise the on-screen keyboard's own closing animation and the
+      // position:fixed→static layout change land at the same instant while
+      // the dialog is still fading out, reading as the keyboard flickering
+      // and the background jumping instead of one clean settle.
+      if (dialog && dialog.contains(document.activeElement)) {
+        (document.activeElement as HTMLElement | null)?.blur();
+      }
       body.style.position = previousBodyStyle.position;
       body.style.top = previousBodyStyle.top;
       body.style.width = previousBodyStyle.width;
