@@ -52,7 +52,7 @@ const geistMono = Geist_Mono({
 });
 
 const SITE_URL = "https://simin.design";
-const SITE_TITLE = "Si Min Lee — Product Designer";
+const SITE_TITLE = "Si Min Lee · Product Designer";
 const SITE_DESCRIPTION =
   "Si Min Lee is a product designer specialising in fintech, design systems, and AI-powered tools. Previously @ Crypto.com and IBM.";
 

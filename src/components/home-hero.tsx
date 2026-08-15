@@ -11,7 +11,7 @@ export function HomeHero() {
       className="flex flex-col"
       style={{ minHeight: "calc(100svh - var(--nav-height))" }}
     >
-      <h1 className="sr-only">Si Min Lee — Product Designer</h1>
+      <h1 className="sr-only">Si Min Lee · Product Designer</h1>
       <div className="relative flex-1">
         <div className="absolute inset-x-0 top-0 bottom-page-y tablet:bottom-0">
           <IconRow />
