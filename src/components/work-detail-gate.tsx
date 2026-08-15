@@ -77,6 +77,7 @@ export function WorkDetailGate({ children }: { children: ReactNode }) {
       <HomeHero />
       <PasscodeModal
         open={modalOpen}
+        autoFocusInput={false}
         onClose={() => {
           closePasscode();
           // The fresh HomeHero this push mounts would otherwise still fade

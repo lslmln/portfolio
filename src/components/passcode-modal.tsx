@@ -33,6 +33,10 @@ export function PasscodeModal({
   onClose,
   onVerified,
   previewError,
+  // False for a locked page opened directly by URL — see useDialogA11y's
+  // autoFocus param for why the input shouldn't visibly select itself when
+  // there's no real tap behind this open to raise the keyboard anyway.
+  autoFocusInput = true,
 }: {
   open: boolean;
   onClose: () => void;
@@ -40,6 +44,7 @@ export function PasscodeModal({
   // Dev-only: lets a caller preview the error state without actually
   // entering a wrong passcode.
   previewError?: string;
+  autoFocusInput?: boolean;
 }) {
   const [passcodeInput, setPasscodeInput] = useState("");
   const [passcodeError, setPasscodeError] = useState<string | null>(previewError ?? null);
@@ -48,7 +53,7 @@ export function PasscodeModal({
   const spinnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isDark = useIsDark();
   const reduceMotion = useReducedMotion();
-  const dialogRef = useDialogA11y<HTMLDivElement>(open, onClose);
+  const dialogRef = useDialogA11y<HTMLDivElement>(open, onClose, { autoFocus: autoFocusInput });
   // Portalled straight to <body> — otherwise this renders inside
   // RouteTransition's page-content wrapper, which fades in from opacity 0
   // on every cold load. Nested inside that fade, the backdrop blur and
@@ -106,6 +111,7 @@ export function PasscodeModal({
           role="dialog"
           aria-modal="true"
           aria-label="Enter password"
+          tabIndex={-1}
           variants={backdropVariants}
           initial={reduceMotion ? "visible" : "hidden"}
           animate="visible"
