@@ -20,10 +20,15 @@ function CardImage({
   src,
   alt,
   priority = false,
+  // WIP cards already show their own always-on overlay — it doubles as the
+  // "nothing to see here" state, so the generic MediaError box shouldn't
+  // also render underneath it on a real or previewed failure.
+  showErrorState = true,
 }: {
   src: string;
   alt: string;
   priority?: boolean;
+  showErrorState?: boolean;
 }) {
   const { loaded, error, onLoad, onError } = useMediaLoaded(src);
   // The priority card is the page's likely LCP element — skip the fade
@@ -42,7 +47,7 @@ function CardImage({
         onError={onError}
         className={`${styles.image} transition-opacity duration-300 ease-out ${visible && !error ? "opacity-100" : "opacity-0"}`}
       />
-      {error && <MediaError />}
+      {error && showErrorState && <MediaError />}
     </>
   );
 }
@@ -120,6 +125,7 @@ export function WorkSection({
                   src={isDark && card.imageDark ? card.imageDark : card.image}
                   alt={card.title}
                   priority={firstOnPage && index === 0}
+                  showErrorState={!card.wip}
                 />
                 {card.locked && (
                   <div className="absolute bottom-2 right-2 flex items-center justify-center rounded-card bg-background-primary/50 p-1 backdrop-blur-sm tablet:bottom-4 tablet:right-4 tablet:p-2">
@@ -140,13 +146,9 @@ export function WorkSection({
                 )}
                 {card.wip && (
                   <div
-                    className={`absolute inset-0 flex flex-col items-center justify-center gap-card-text-gap rounded-card text-center backdrop-blur-sm ${isDark ? "bg-scrim/50" : "bg-scrim/75"}`}
+                    className={`absolute inset-0 flex flex-col items-center justify-center gap-card-text-gap rounded-card p-2 text-center backdrop-blur-sm tablet:p-4 ${isDark ? "bg-scrim/50" : "bg-scrim/75"}`}
                   >
-                    <HourglassSimpleMediumIcon
-                      size={wipIconSize}
-                      weight="fill"
-                      className="text-on-scrim"
-                    />
+                    <HourglassSimpleMediumIcon size={wipIconSize} weight="fill" className="text-icon" />
                     <p className="font-sans font-medium text-body text-on-scrim">
                       WIP - Check back in a couple days
                     </p>
