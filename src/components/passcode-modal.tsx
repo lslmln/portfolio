@@ -51,6 +51,19 @@ export function PasscodeModal({
   const [isVerifying, setIsVerifying] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
   const spinnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // iOS Safari's on-screen "hide keyboard" chevron dismisses the keyboard
+  // visually without actually blurring the input — document.activeElement
+  // can still report the input as focused afterward. useDialogA11y's own
+  // close-time blur relies on document.activeElement, so it can miss this
+  // case; blurring the input directly here first, regardless of what
+  // activeElement currently claims, avoids the keyboard re-flashing for a
+  // moment as iOS reconciles a later blur() against that stale state.
+  function handleClose() {
+    inputRef.current?.blur();
+    onClose();
+  }
   const isDark = useIsDark();
   const reduceMotion = useReducedMotion();
   const dialogRef = useDialogA11y<HTMLDivElement>(open, onClose, { autoFocus: autoFocusInput });
@@ -87,6 +100,7 @@ export function PasscodeModal({
       const isCorrect = await withTimeout(verifyPasscode(passcodeInput), VERIFY_TIMEOUT_MS);
       clearSpinnerTimer();
       if (isCorrect) {
+        inputRef.current?.blur();
         onVerified();
       } else {
         setPasscodeError("Incorrect password. Try again.");
@@ -116,13 +130,13 @@ export function PasscodeModal({
           initial={reduceMotion ? "visible" : "hidden"}
           animate="visible"
           exit={reduceMotion ? "visible" : "exit"}
-          onClick={onClose}
+          onClick={handleClose}
           className={`fixed inset-0 z-scrim flex flex-col items-stretch justify-start backdrop-blur-lg desktop:flex-row desktop:items-center desktop:justify-center desktop:px-8 ${isDark ? "bg-scrim/50" : "bg-scrim/75"}`}
         >
           <div className="flex justify-end px-page-x py-page-y desktop:p-0">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               aria-label="Close"
               className="cursor-pointer transition-transform duration-150 active:scale-[0.97] desktop:absolute desktop:right-page-x desktop:top-page-y"
             >
@@ -141,6 +155,7 @@ export function PasscodeModal({
               <p className="font-sans font-medium text-body text-white">Enter password</p>
               <div className="flex items-center gap-card-text-gap">
                 <input
+                  ref={inputRef}
                   type="password"
                   autoFocus
                   data-autofocus
