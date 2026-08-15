@@ -2,6 +2,9 @@ export interface WorkProject {
   slug: string;
   title: string;
   locked?: boolean;
+  // Card shows a blurred "WIP" overlay and isn't clickable — case study
+  // isn't written yet.
+  wip?: boolean;
   image: string;
   imageDark?: string;
   // Real aspect ratio of `image`/`imageDark`, used only by the work-detail
@@ -43,6 +46,7 @@ export const workProjects: WorkProject[] = [
   {
     slug: "tokenized-stocks",
     title: "Bringing tokenized stocks to every day investors",
+    wip: true,
     image: "/images/work-placeholder.jpg",
     heroWidth: 1600,
     heroHeight: 900,

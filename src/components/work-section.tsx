@@ -1,11 +1,12 @@
 "use client";
 
-import { LockIcon, LockOpenIcon } from "@phosphor-icons/react";
+import { HourglassSimpleMediumIcon, LockIcon, LockOpenIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
 import { PASSCODE_VERIFIED_KEY } from "@/lib/passcode";
 import { useIsDark } from "@/lib/use-is-dark";
+import { useMediaErrorIconSize } from "@/lib/use-media-error-icon-size";
 import { useMediaLoaded } from "@/lib/use-media-loaded";
 import { workProjects, type WorkProject } from "@/lib/work-projects";
 import { MediaError } from "./media-error";
@@ -66,6 +67,7 @@ export function WorkSection({
   const [unlocked, setUnlocked] = useState(false);
   const isDark = useIsDark();
   const navigate = useNavigate();
+  const wipIconSize = useMediaErrorIconSize();
 
   useEffect(() => {
     // sessionStorage is unavailable during SSR — has to be read post-mount,
@@ -136,6 +138,20 @@ export function WorkSection({
                     )}
                   </div>
                 )}
+                {card.wip && (
+                  <div
+                    className={`absolute inset-0 flex flex-col items-center justify-center gap-card-text-gap rounded-card text-center backdrop-blur-sm ${isDark ? "bg-scrim/50" : "bg-scrim/75"}`}
+                  >
+                    <HourglassSimpleMediumIcon
+                      size={wipIconSize}
+                      weight="fill"
+                      className="text-on-scrim"
+                    />
+                    <p className="font-sans font-medium text-body text-on-scrim">
+                      WIP - Check back in a couple days
+                    </p>
+                  </div>
+                )}
               </div>
               <p className="font-sans font-medium text-body text-content-primary">
                 {card.title}
@@ -153,6 +169,17 @@ export function WorkSection({
               >
                 {cardBody}
               </button>
+            );
+          }
+
+          if (card.wip) {
+            return (
+              <div
+                key={card.slug}
+                className="flex flex-col gap-card-text-gap tablet:col-span-6"
+              >
+                {cardBody}
+              </div>
             );
           }
 
