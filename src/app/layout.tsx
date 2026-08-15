@@ -53,7 +53,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: { template: "%s · Si Min", default: "Si Min" },
-  description: "Product designer based in Singapore.",
+  description: "Trading & Design Systems Product Designer at Crypto.com.",
 };
 
 // Keeps the visual viewport fixed when the on-screen keyboard opens (the
