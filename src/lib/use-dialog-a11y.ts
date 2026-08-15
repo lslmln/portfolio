@@ -28,7 +28,7 @@ export function useDialogA11y<T extends HTMLElement>(open: boolean, onClose: () 
     // relevant now that a dialog's first focusable element (a leading close
     // button) isn't necessarily the one that should actually receive focus.
     const autoFocusTarget = dialog?.querySelector<HTMLElement>("[autofocus]");
-    (autoFocusTarget ?? focusable?.[0])?.focus();
+    (autoFocusTarget ?? focusable?.[0])?.focus({ preventScroll: true });
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -63,7 +63,11 @@ export function useDialogA11y<T extends HTMLElement>(open: boolean, onClose: () 
       }
       unlockScroll();
       if (triggerRef.current instanceof HTMLElement) {
-        triggerRef.current.focus();
+        // Without preventScroll, focus()'s default browser behavior scrolls
+        // the trigger element into view — if the page had moved at all since
+        // the dialog opened, closing it would jump the page to reveal
+        // whatever originally triggered it, instead of staying put.
+        triggerRef.current.focus({ preventScroll: true });
       }
     };
     // onClose intentionally omitted — callers pass a fresh function each

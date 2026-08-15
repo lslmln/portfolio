@@ -230,28 +230,35 @@ export function ExpandableImage({
                   style={{ touchAction: "none", x: panX, y: panY }}
                   animate={{ scale: zoomed ? ZOOM_SCALE : 1 }}
                   transition={{ duration: reduceMotion ? 0 : 0.3, ease: EASE_OUT_EXPO }}
-                  // Desktop only — Framer's drag reads/writes panX/panY
-                  // directly since they're bound via `style` above. Touch
-                  // panning is handled by hand in the touch handlers below
-                  // instead, updating the same two motion values.
-                  drag={isDesktop && zoomed}
-                  dragConstraints={dragBounds}
-                  dragElastic={0.05}
-                  onDragEnd={() => {
-                    lastDragEndRef.current = Date.now();
-                  }}
-                  onTap={
-                    isDesktop
-                      ? () => {
+                  // Desktop only, and not just the `drag` boolean — Framer's
+                  // own gesture recognizer can still intercept real touch
+                  // events on mobile/tablet even with drag={false} as long as
+                  // dragConstraints/dragElastic/onDragEnd are present, since
+                  // it doesn't know a gesture won't turn into a drag until
+                  // after it's already started listening. Touch panning is
+                  // handled entirely by hand in the touch handlers below
+                  // instead, updating the same two motion values — omitting
+                  // these props outside of isDesktop keeps Framer from ever
+                  // getting a chance to compete with them for the same
+                  // touch stream.
+                  {...(isDesktop
+                    ? {
+                        drag: zoomed,
+                        dragConstraints: dragBounds,
+                        dragElastic: 0.05,
+                        onDragEnd: () => {
+                          lastDragEndRef.current = Date.now();
+                        },
+                        onTap: () => {
                           // A pan that ends right under the cursor can still
                           // read as a "tap" to Framer's gesture recognizer —
                           // this stops that from also toggling zoom back off
                           // mid-drag.
                           if (Date.now() - lastDragEndRef.current < 100) return;
                           setZoomed((current) => !current);
-                        }
-                      : undefined
-                  }
+                        },
+                      }
+                    : {})}
                   onTouchStart={handleTouchStart}
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleTouchEnd}
