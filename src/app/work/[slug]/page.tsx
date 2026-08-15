@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { DemoVideo } from "@/components/demo-video";
@@ -747,6 +748,16 @@ const projects = [
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const title = workProjects.find((p) => p.slug === slug)?.title;
+  return { title: title ?? "Work" };
 }
 
 // Cyclic "next 2" order, so across all detail pages every finished project

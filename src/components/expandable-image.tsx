@@ -86,12 +86,17 @@ export function ExpandableImage({
   const panY = useMotionValue(0);
 
   useEffect(() => {
-    if (!expanded || !panelRef.current) return;
+    // Re-measures once the modal's own (full-res) image actually finishes
+    // loading, not just when the dialog opens — panelRef's rect is 0x0 at
+    // that instant (the image hasn't decoded yet), which permanently
+    // clamped every pan to zero for the rest of the session since this
+    // effect never re-ran afterward.
+    if (!expanded || !modalLoaded || !panelRef.current) return;
     const rect = panelRef.current.getBoundingClientRect();
     const dx = (rect.width * (ZOOM_SCALE - 1)) / 2;
     const dy = (rect.height * (ZOOM_SCALE - 1)) / 2;
     setDragBounds({ left: -dx, right: dx, top: -dy, bottom: dy });
-  }, [expanded]);
+  }, [expanded, modalLoaded]);
 
   useEffect(() => {
     if (zoomed) return;
@@ -251,11 +256,13 @@ export function ExpandableImage({
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleTouchEnd}
                   className={`inline-flex ${
-                    zoomed
-                      ? "cursor-grab active:cursor-grabbing"
-                      : isDesktop
-                        ? "cursor-zoom-in"
-                        : ""
+                    !modalLoaded
+                      ? "h-[40vh] w-[40vh] rounded-card bg-content-secondary/15"
+                      : zoomed
+                        ? "cursor-grab active:cursor-grabbing"
+                        : isDesktop
+                          ? "cursor-zoom-in"
+                          : ""
                   }`}
                 >
                   <Image
