@@ -1,7 +1,6 @@
 "use client";
 
 import { LockIcon, LockOpenIcon } from "@phosphor-icons/react";
-import { useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
@@ -11,7 +10,7 @@ import { useMediaLoaded } from "@/lib/use-media-loaded";
 import { workProjects, type WorkProject } from "@/lib/work-projects";
 import { MediaError } from "./media-error";
 import { PasscodeModal } from "./passcode-modal";
-import { COVER_DURATION, useNavigate } from "./route-transition";
+import { useNavigate } from "./route-transition";
 import { Seam } from "./seam";
 import { TransitionLink } from "./transition-link";
 import styles from "./work-section.module.css";
@@ -67,7 +66,6 @@ export function WorkSection({
   const [unlocked, setUnlocked] = useState(false);
   const isDark = useIsDark();
   const navigate = useNavigate();
-  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     // sessionStorage is unavailable during SSR — has to be read post-mount,
@@ -90,11 +88,13 @@ export function WorkSection({
     sessionStorage.setItem(PASSCODE_VERIFIED_KEY, "1");
     setUnlocked(true);
     if (unlockingCard) navigate(`/work/${unlockingCard.slug}`);
-    // Don't pop the modal closed — let the page-level cover (which sits
-    // above it) rise over it first, so it quietly disappears under the
-    // same crossfade used for every other navigation instead of visibly
-    // animating itself away right before the page covers anyway.
-    setTimeout(closePasscode, reduceMotion ? 0 : COVER_DURATION * 1000);
+    // Close right away rather than waiting for the cover to fully hide it:
+    // the modal is portalled to <body> and covers the whole viewport
+    // (including the navbar), but the cover only ever covers the area below
+    // it — leaving the modal open for the whole fade-in would show that
+    // mismatch as a seam right at the navbar whenever it's in view. Its own
+    // exit fade is quick enough to just blend into the cover rising anyway.
+    closePasscode();
   }
 
   return (

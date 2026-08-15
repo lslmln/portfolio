@@ -11,7 +11,11 @@ import {
 } from "@phosphor-icons/react";
 import { ICON_SIZE_LG, ICON_SIZE_MOBILE, ICON_SIZE_TABLET, iconRowWidth } from "@/lib/icon-size";
 import { useIsDark } from "@/lib/use-is-dark";
-import { INTRO_SEEN_KEY, useLoadingComplete } from "@/lib/loading-complete";
+import {
+  INTRO_SEEN_KEY,
+  SKIP_HERO_ENTRANCE_KEY,
+  useLoadingComplete,
+} from "@/lib/loading-complete";
 import { useMediaQuery } from "@/lib/use-media-query";
 import styles from "./icon-row.module.css";
 
@@ -96,6 +100,11 @@ export function IconRow() {
     if (typeof window === "undefined" || loadingComplete) return false;
     return window.location.pathname === "/" && !sessionStorage.getItem(INTRO_SEEN_KEY);
   });
+  // Consumed once here, not cleared here — see SKIP_HERO_ENTRANCE_KEY's own
+  // comment for why the setter owns clearing it instead.
+  const [skipEntrance] = useState(
+    () => typeof window !== "undefined" && sessionStorage.getItem(SKIP_HERO_ENTRANCE_KEY) === "1",
+  );
 
   useEffect(() => {
     if (selected !== null) return;
@@ -189,16 +198,20 @@ export function IconRow() {
             // is ever inconsistent.
             suppressHydrationWarning
             initial={
-              reduceMotion || !useElaborateEntrance
-                ? { opacity: 0 }
-                : { opacity: 0, ...flyInOffset }
-            }
-            animate={
-              loadingComplete
+              skipEntrance
                 ? { opacity: 1, ...flyInRest }
                 : reduceMotion || !useElaborateEntrance
                   ? { opacity: 0 }
                   : { opacity: 0, ...flyInOffset }
+            }
+            animate={
+              skipEntrance
+                ? { opacity: 1, ...flyInRest }
+                : loadingComplete
+                  ? { opacity: 1, ...flyInRest }
+                  : reduceMotion || !useElaborateEntrance
+                    ? { opacity: 0 }
+                    : { opacity: 0, ...flyInOffset }
             }
             transition={{ duration: useElaborateEntrance ? 2.2 : 0.5, ease: EASE_OUT_EXPO }}
           >

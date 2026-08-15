@@ -2,7 +2,11 @@
 
 import { motion } from "framer-motion";
 import { useState, type ReactNode } from "react";
-import { useIntroPlayed, useLoadingComplete } from "@/lib/loading-complete";
+import {
+  SKIP_HERO_ENTRANCE_KEY,
+  useIntroPlayed,
+  useLoadingComplete,
+} from "@/lib/loading-complete";
 
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 
@@ -22,12 +26,17 @@ export function CrossfadeReveal({
   // get the elaborate delayed reveal.
   const [mountedAfterLoad] = useState(() => loadingComplete);
   const useElaborateEntrance = introPlayed && !mountedAfterLoad;
+  // See SKIP_HERO_ENTRANCE_KEY's own comment — consumed once, cleared by
+  // whoever set it.
+  const [skipEntrance] = useState(
+    () => typeof window !== "undefined" && sessionStorage.getItem(SKIP_HERO_ENTRANCE_KEY) === "1",
+  );
 
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: loadingComplete ? 1 : 0 }}
+      initial={{ opacity: skipEntrance ? 1 : 0 }}
+      animate={{ opacity: skipEntrance ? 1 : loadingComplete ? 1 : 0 }}
       transition={{
         duration: useElaborateEntrance ? 1.8 : 0.5,
         delay: loadingComplete && useElaborateEntrance ? 0.6 : 0,
