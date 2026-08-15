@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { lockScroll } from "./scroll-root";
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -17,22 +18,7 @@ export function useDialogA11y<T extends HTMLElement>(open: boolean, onClose: () 
   useEffect(() => {
     if (!open) return;
 
-    // Plain `overflow: hidden` on body doesn't reliably block touch-scroll
-    // on iOS Safari — pinning the body in place with `position: fixed` (and
-    // restoring the scroll offset on close) is the part that actually works
-    // there, not just on desktop.
-    const scrollY = window.scrollY;
-    const body = document.body;
-    const previousBodyStyle = {
-      position: body.style.position,
-      top: body.style.top,
-      width: body.style.width,
-      overflow: body.style.overflow,
-    };
-    body.style.position = "fixed";
-    body.style.top = `-${scrollY}px`;
-    body.style.width = "100%";
-    body.style.overflow = "hidden";
+    const unlockScroll = lockScroll();
 
     triggerRef.current = document.activeElement;
     const dialog = dialogRef.current;
@@ -67,19 +53,15 @@ export function useDialogA11y<T extends HTMLElement>(open: boolean, onClose: () 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       // Blur whatever's still focused inside the dialog (the passcode
-      // input, most often) before restoring body's scroll lock below —
+      // input, most often) before releasing the scroll lock below —
       // otherwise the on-screen keyboard's own closing animation and the
-      // position:fixed→static layout change land at the same instant while
+      // scroll-lock's own layout change land at the same instant while
       // the dialog is still fading out, reading as the keyboard flickering
       // and the background jumping instead of one clean settle.
       if (dialog && dialog.contains(document.activeElement)) {
         (document.activeElement as HTMLElement | null)?.blur();
       }
-      body.style.position = previousBodyStyle.position;
-      body.style.top = previousBodyStyle.top;
-      body.style.width = previousBodyStyle.width;
-      body.style.overflow = previousBodyStyle.overflow;
-      window.scrollTo(0, scrollY);
+      unlockScroll();
       if (triggerRef.current instanceof HTMLElement) {
         triggerRef.current.focus();
       }

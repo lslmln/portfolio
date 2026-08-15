@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { MOBILE_QUERY } from "@/lib/scroll-root";
+import { useMediaQuery } from "@/lib/use-media-query";
 
 // `overscroll-behavior-y: none` (globals.css, on html/body) doesn't reliably
 // suppress the native rubber-band bounce on iOS Safari/Chrome (both WebKit) —
@@ -12,8 +14,18 @@ import { useEffect } from "react";
 // every other scroll gesture (including mid-page scrolling and the body
 // scroll-lock in use-dialog-a11y.ts, which pins scrollTop/scrollHeight so
 // both boundary checks below are already satisfied) is untouched.
+//
+// Skipped entirely on mobile — below the tablet breakpoint, html/body are
+// permanently pinned (globals.css) and never scroll at all, so
+// document.documentElement.scrollTop below would always read 0, making
+// `atTop` always true and blocking normal scroll gestures on #scroll-root
+// instead of just the boundary bounce.
 export function PreventOverscrollBounce() {
+  const isMobile = useMediaQuery(MOBILE_QUERY);
+
   useEffect(() => {
+    if (isMobile) return;
+
     let startY = 0;
 
     function handleTouchStart(event: TouchEvent) {
@@ -43,7 +55,7 @@ export function PreventOverscrollBounce() {
       document.removeEventListener("touchstart", handleTouchStart);
       document.removeEventListener("touchmove", handleTouchMove);
     };
-  }, []);
+  }, [isMobile]);
 
   return null;
 }

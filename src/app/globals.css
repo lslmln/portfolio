@@ -5,6 +5,34 @@ html {
   overscroll-behavior-y: none;
 }
 
+/* Below tablet: html/body are pinned in place and #scroll-root (layout.tsx)
+   becomes the real scrolling element instead of the document — the
+   fixed-shell technique for suppressing iOS Safari's native rubber-band
+   bounce at the page's top/bottom edges, which overscroll-behavior alone
+   doesn't reliably suppress there. Keep this breakpoint in sync with
+   scroll-root.ts's matching MOBILE_QUERY. */
+@media (max-width: 767.98px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+  }
+
+  #scroll-root {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 :root {
   --background-primary: #EEEAE3;
   --content-primary: #2E2E2E;

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { MouseEvent } from "react";
+import { scrollToTop } from "@/lib/scroll-root";
 import { useNavigate } from "./route-transition";
 import styles from "./navbar.module.css";
 
@@ -19,7 +20,7 @@ export function HomeLink() {
       const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
-      window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+      scrollToTop(0, prefersReducedMotion ? "auto" : "smooth");
       return;
     }
     navigate("/");

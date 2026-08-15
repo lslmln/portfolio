@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
+import { scrollToTop } from "@/lib/scroll-root";
 import { ErrorMessage, ReloadButton } from "./error-message";
 
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
@@ -90,7 +91,7 @@ export function RouteTransition({
     if (sameRouteResetRef.current) {
       sameRouteResetRef.current = false;
       coveringRef.current = false;
-      window.scrollTo(0, 0);
+      scrollToTop(0);
       setCovering(false);
       return;
     }
@@ -126,7 +127,7 @@ export function RouteTransition({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setNavStalled(false);
     coveringRef.current = false;
-    window.scrollTo(0, 0);
+    scrollToTop(0);
     setShown({ pathname, children });
     setCovering(false);
     // shown intentionally omitted — this effect is what writes shown, and

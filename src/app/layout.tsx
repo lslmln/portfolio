@@ -36,6 +36,8 @@ const SCROLL_RESET_SCRIPT = `
       window.history.scrollRestoration = "manual";
     }
     window.scrollTo(0, 0);
+    var scrollRoot = document.getElementById("scroll-root");
+    if (scrollRoot) scrollRoot.scrollTop = 0;
   } catch (e) {}
 `;
 
@@ -85,18 +87,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {process.env.NODE_ENV === "development" && <DevMediaErrorToggle />}
         <PreventOverscrollBounce />
         <LoadingScreen />
-        <div className="flex flex-1 flex-col rounded-card bg-background-primary">
-          <RouteTransition
-            navbar={
-              <CrossfadeReveal>
-                <Navbar />
-              </CrossfadeReveal>
-            }
-          >
-            {children}
-          </RouteTransition>
+        <div id="scroll-root" className="flex flex-1 flex-col">
+          <div className="flex flex-1 flex-col rounded-card bg-background-primary">
+            <RouteTransition
+              navbar={
+                <CrossfadeReveal>
+                  <Navbar />
+                </CrossfadeReveal>
+              }
+            >
+              {children}
+            </RouteTransition>
+          </div>
+          <Footer />
         </div>
-        <Footer />
       </body>
     </html>
   );
