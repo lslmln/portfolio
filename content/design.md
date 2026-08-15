@@ -183,7 +183,7 @@ For every interactive component, document:
 - Content (all 4, given directly — "-->" in the user's message meant "wraps to the next line," not literal arrow content, so it's not rendered):
   - "Design" / "Figma · Framer · Adobe CS"
   - "Analytics" / "Dovetail · Mixpanel · Amplitude · Tableau"
-  - "Development" / "Claude Code · Cursor · VS Code"
+  - "Development" / "Claude Code · Cursor · VS Code · GitHub"
   - "Collaboration" / "Jira · Notion · Google Workspace"
 
 #### Homepage — Quotes section (`QuotesSection` component, `src/components/quotes-section.tsx`, `quotes-section.module.css`) — renamed from "Testimonials"

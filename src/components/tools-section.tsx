@@ -3,7 +3,7 @@ import { Seam } from "./seam";
 const tools = [
   { label: "Design", items: "Figma · Framer · Adobe CS" },
   { label: "Analytics", items: "Dovetail · Mixpanel · Amplitude · Tableau" },
-  { label: "Development", items: "Claude Code · Cursor · VS Code" },
+  { label: "Development", items: "Claude Code · Cursor · VS Code · GitHub" },
   { label: "Collaboration", items: "Jira · Notion · Google Workspace" },
 ];
 

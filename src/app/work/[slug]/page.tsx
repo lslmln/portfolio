@@ -101,12 +101,12 @@ function renderBuiltBlocks(blocks: readonly BuiltBlock[]) {
         )}
       </div>
     ) : (
-      <p
+      <div
         key={index}
         className={`px-page-x py-page-y font-sans font-medium text-body ${styles.secondaryText}`}
       >
         {block.text}
-      </p>
+      </div>
     ),
   );
 }
@@ -154,7 +154,7 @@ const projects = [
     ],
     scope: {
       time: "~2 weeks in Jul 2026",
-      toolsUsed: "Claude Code · Cursor · Figma",
+      toolsUsed: "Claude Code · Cursor · Figma · GitHub",
       process:
         "Design in Figma → View designs on a simulator via MCP → Push changes as a pull request to the shared repo → Share videos and design rationale with the team for review → Merge once approved",
     },
@@ -339,6 +339,47 @@ const projects = [
         ),
       },
     ],
+    reflections: [
+      <>
+        This revamp gave me a closer look at what happens when a product
+        grows through{" "}
+        <span className={styles.highlight}>
+          many teams working independently
+        </span>
+        . Individual features can make sense on their own, but when they
+        start interacting with one another, inconsistencies and gaps appear
+        across the wider experience.
+      </>,
+      <>
+        It made me realise how important{" "}
+        <span className={styles.highlight}>foresight and shared patterns</span>{" "}
+        become as a product scales. Instead of designing only for the
+        feature in front of you, you have to anticipate the different
+        products, states and behaviours that will eventually need to
+        coexist. The goal isn&apos;t to make everything identical, but to
+        make the overall experience feel intentional and connected.
+      </>,
+      <>
+        I also found that{" "}
+        <span className={styles.highlight}>
+          progressive disclosure is as much about timing as it is about
+          reducing information.
+        </span>{" "}
+        Rebalancing only needs to appear when it&apos;s relevant, whale
+        allocation changes only need to surface when something has changed,
+        and the DCA calculator doesn&apos;t need to remain once a recurring
+        buy is already set up.
+      </>,
+      <>
+        Most importantly, designing for beginners often meant{" "}
+        <span className={styles.highlight}>
+          removing interpretation rather than adding explanation
+        </span>
+        . Simplifying the DCA calculator, removing unnecessary variables and
+        using more neutral signals made the experience easier to understand
+        without adding more content.
+      </>,
+    ],
   },
   {
     slug: "design-system-revamp",
@@ -369,10 +410,18 @@ const projects = [
         </TransitionLink>
         .
       </>,
+      <>
+        I worked alongside a Principal Product Designer as a two-person
+        design team, partnering with 6 engineers and a TPM. We each owned
+        individual components, taking them from exploration through
+        implementation and cross-checking with each other to ensure the
+        system stayed cohesive. The components shown here are some of the
+        areas I owned.
+      </>,
     ],
     scope: {
       time: "~3 months, Apr–Jul 2026",
-      toolsUsed: "Claude Code · Cursor · Figma",
+      toolsUsed: "Claude Code · Cursor · Figma · GitHub",
       process:
         "Design and write up documentation in Figma → Prototype animations + use skills to improve them → Describe specs to dev who will build animation for me to review",
     },
@@ -586,6 +635,45 @@ const projects = [
         ),
       },
     ],
+    reflections: [
+      <>
+        This project made me realise how much I enjoy{" "}
+        <span className={styles.highlight}>design systems work</span>. As a
+        feature designer, you&apos;re usually focused on solving one problem
+        at a time. Working on the system behind those features gave me the
+        opportunity to step back and map out how the same patterns needed to
+        work across the entire product.
+      </>,
+      <>
+        I loved the level of detail it required—thinking through different
+        asset types, states, behaviours and edge cases, then iterating on
+        the same component until the logic felt right.{" "}
+        <span className={styles.highlight}>
+          It&apos;s the kind of meticulous problem-solving I naturally
+          gravitate towards.
+        </span>
+      </>,
+      <>
+        Coming from a maths background, I find something particularly
+        satisfying about systems work: there is a creative side to designing
+        how something feels and looks, but also a very logical side to
+        figuring out{" "}
+        <span className={styles.highlight}>
+          how everything connects, what happens when something changes, and
+          whether the system holds up across every case.
+        </span>
+      </>,
+      <>
+        Getting the chance to work on both feature design and the design
+        system was especially valuable.{" "}
+        <span className={styles.highlight}>
+          You understand the system differently when you&apos;ve
+          experienced all the different features it needs to support.
+        </span>{" "}
+        It made me appreciate how much foresight and rigour goes into
+        building patterns that can scale beyond any single feature.
+      </>,
+    ],
   },
   {
     slug: "screenshot-to-figma",
@@ -736,13 +824,274 @@ const projects = [
   },
   {
     slug: "tokenized-stocks",
-    context: ["[PLACEHOLDER — tokenized-stocks context]"],
+    context: [
+      <>
+        Crypto.com wanted to introduce tokenized stocks as a new asset class
+        for beginner investors, bringing stocks like AAPL, NVDA and TSLA into
+        the app with a{" "}
+        <span className={styles.highlight}>
+          crypto-native proposition: 24/7 trading, starting from $1, and 0%
+          commission.
+        </span>{" "}
+        For beginner users, this was an exciting but unfamiliar product.{" "}
+        <span className={styles.highlight}>
+          We needed to make tokenized stocks easy to discover, understand, and
+          feel confident trading.
+        </span>
+      </>,
+      <>
+        I was the main product designer from concept to launch, owning the
+        end-to-end experience. A second senior product designer joined midway
+        to support user research and testing.
+      </>,
+    ],
     scope: {
-      time: "[PLACEHOLDER]",
-      toolsUsed: "[PLACEHOLDER]",
-      process: "[PLACEHOLDER]",
+      time: "~4 months, Dec 2025–Mar 2026",
+      toolsUsed: "Figma · Jira · Dovetail",
     },
-    whatIBuilt: ["[PLACEHOLDER — what I built]"],
+    discoverabilityContent: [
+      {
+        type: "gallery",
+        images: [
+          { src: "/images/tokenized-stocks-homepage.png", alt: "Tokenized stocks on the Home feed" },
+        ],
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            I revisited key trading touchpoints across{" "}
+            <span className={styles.highlight}>
+              Home, Markets, Search, Accounts and Buy
+            </span>{" "}
+            to determine where tokenized stocks should appear.
+          </>
+        ),
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            We initially explored a dedicated Stocks tab, but concerns from
+            the US implementation of TradFi stocks suggested this could limit
+            discovery. Instead, we tested{" "}
+            <span className={styles.highlight}>
+              mixing tokenized stocks into Home alongside crypto.
+            </span>{" "}
+            During user testing with existing Crypto.com users, the stocks
+            stood out immediately because they were new and unfamiliar, which
+            was exactly the kind of attention we wanted to create for a new
+            product.
+          </>
+        ),
+      },
+      {
+        type: "gallery",
+        images: [
+          {
+            src: "/images/tokenized-stocks-market-search-accounts.png",
+            alt: "Tokenized stocks separated from crypto in Markets, Search and Accounts",
+          },
+        ],
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            <span className={styles.highlight}>
+              We kept tokenized stocks mixed into Home for discovery, but
+              separated them in Markets, Search and Accounts,
+            </span>{" "}
+            where users had different intentions.
+            <ul className={styles.contentList}>
+              <li>
+                <strong>Home:</strong> Users are browsing a broad feed, so
+                mixing stocks with crypto created more opportunities for
+                discovery.
+              </li>
+              <li>
+                <strong>Markets:</strong> Users are comparing assets within an
+                asset class, so separating tokenized stocks from crypto made
+                those comparisons more relevant.
+              </li>
+              <li>
+                <strong>Accounts:</strong> Users are managing their
+                portfolio, where keeping asset classes distinct made their
+                holdings easier to scan and understand.
+              </li>
+              <li>
+                <strong>Search:</strong> Users may already know what
+                they&apos;re looking for or be exploring. Separating asset
+                classes reduces confusion when they encounter tokenized
+                stocks alongside crypto results.
+              </li>
+            </ul>
+            <p className="mt-card-text-gap">
+              Essentially, we would mix for discovery, separate for
+              understanding.
+            </p>
+          </>
+        ),
+      },
+    ],
+    understandingContent: [
+      {
+        type: "paragraph",
+        text: "We went through several iterations of naming, labels and tickers.",
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            We changed &ldquo;Stock Tokens&rdquo; &rarr; &ldquo;Tokenized
+            Stocks&rdquo; after{" "}
+            <span className={styles.highlight}>
+              testing showed the latter was more recognizable.
+            </span>
+          </>
+        ),
+      },
+      {
+        type: "gallery",
+        images: [
+          {
+            src: "/images/tokenized-stocks-token-mention.png",
+            alt: "Tokenized Stocks naming and ticker treatment",
+          },
+        ],
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            As for tickers, we explored variations like cAAPL and !AAPL, but
+            ultimately kept the familiar underlying stock ticker. We also
+            reviewed terminology across the app, replacing{" "}
+            <span className={styles.highlight}>&ldquo;crypto&rdquo; with &ldquo;asset&rdquo;</span>{" "}
+            in places where the language now needed to encompass both crypto
+            and tokenized stocks. We chose &ldquo;asset&rdquo; over
+            &ldquo;token&rdquo; as it was more general and approachable for
+            beginner users. Lastly, we added clearer references to tokens
+            across trade flows and confirmation screens.
+          </>
+        ),
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            Even with these changes, testing revealed a deeper issue: users
+            recognized the underlying company, but{" "}
+            <span className={styles.highlight}>
+              some still weren&apos;t sure whether they were trading a
+              tokenized stock or the actual stock itself.
+            </span>{" "}
+            For users who had never encountered tokenized stocks before,{" "}
+            <span className={styles.highlight}>
+              the familiar ticker led them to assume they were buying the
+              traditional stock.
+            </span>
+          </>
+        ),
+      },
+      {
+        type: "gallery",
+        images: [
+          {
+            src: "/images/tokenized-stocks-token-education.png",
+            alt: "Tokenized Stock badges and educational cues on the asset details page",
+          },
+        ],
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            This led us to introduce{" "}
+            <span className={styles.highlight}>
+              more prominent Tokenized Stock badges and educational cues
+            </span>{" "}
+            on the asset details page, giving users the context they needed
+            while exploring an asset before deciding whether to trade.
+          </>
+        ),
+      },
+    ],
+    cryptoExperienceContent: [
+      {
+        type: "paragraph",
+        text: (
+          <>
+            We kept the familiar Crypto.com asset-detail structure so
+            tokenized stocks felt native to the existing experience. At the
+            same time, we introduced{" "}
+            <span className={styles.highlight}>
+              stock-specific information from the underlying asset
+            </span>{" "}
+            to give users relevant signals when evaluating it.
+          </>
+        ),
+      },
+      {
+        type: "gallery",
+        images: [
+          { src: "/images/analyst-ratings-old.png", alt: "Analyst ratings brought into tokenized stocks" },
+        ],
+      },
+      {
+        type: "paragraph",
+        text: "Analyst ratings, for example, had performed particularly well in the traditional stock experience. Users responded positively to the visual sentiment and could quickly understand what it meant and how they might act on it, so we brought it into tokenized stocks and gave it greater prominence on the page.",
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            The result was a familiar experience for existing users, while
+            introducing{" "}
+            <span className={styles.highlight}>
+              relevant stock signals from the underlying asset
+            </span>{" "}
+            to help users understand and get comfortable with this new asset
+            class.
+          </>
+        ),
+      },
+    ],
+    reflections: [
+      <>
+        This project touched almost every part of the trading experience and
+        required coordination across multiple teams. Working with a lean
+        design team also gave me broad ownership across a high-visibility
+        product launch and exposure to many different parts of the app.
+      </>,
+      <>
+        One of my biggest takeaways was that{" "}
+        <span className={styles.highlight}>
+          consistency doesn&apos;t always mean making every experience look
+          the same
+        </span>
+        . What matters more is maintaining consistency with the user&apos;s
+        mental model. The way we mixed tokenized stocks with crypto for
+        discovery, but separated them when users were browsing or managing
+        their assets, was a good example of this.
+      </>,
+      <>
+        The results speak for themselves:{" "}
+        <span className={styles.highlight}>
+          around 1 in 4 active RoW users trade tokenized stocks
+        </span>
+        , with the product{" "}
+        <a
+          href="https://crypto.com/company-news/tokenized-stocks-eea-launch"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={iconRowStyles.link}
+        >
+          now expanding into the EEA
+        </a>
+        .
+      </>,
+    ],
   },
 ] as const;
 
@@ -765,17 +1114,11 @@ export async function generateMetadata({
 // projects are excluded from the pool entirely — nothing should recommend a
 // case study that isn't written yet.
 function getMoreLikeThis(slug: string) {
-  // screenshot-to-figma's context directly references both the asset-detail
-  // and design-system revamps ("from the components... to the flow of our
-  // core features"), so its "more like this" points at those two specifically
-  // — asset details left, components/DS right — instead of the generic cycle.
-  if (slug === "screenshot-to-figma") {
-    return [
-      workProjects.find((p) => p.slug === "feature-flow-revamp")!,
-      workProjects.find((p) => p.slug === "design-system-revamp")!,
-    ];
-  }
-
+  // Plain cyclic "next 2" for every project — with N recommendable projects,
+  // this gives each project exactly 2 appearances across all N pages' "more
+  // like this" lists (each one is the "next 2" for exactly 2 predecessors in
+  // the cycle). Don't special-case any one slug here — a hardcoded override
+  // breaks that even distribution for whichever project it stops recommending.
   const recommendable = workProjects.filter((p) => !p.wip);
   const index = recommendable.findIndex((p) => p.slug === slug);
   const start = index === -1 ? 0 : index;
@@ -843,34 +1186,42 @@ export default async function WorkDetailPage({
                 {project.scope.time}
               </p>
             </div>
-            <div>
-              <p className="font-sans font-medium text-nav text-content-secondary">
-                Tools used
-              </p>
-              <p className="font-sans font-medium text-body text-content-primary">
-                {project.scope.toolsUsed}
-              </p>
-            </div>
+            {("model" in project.scope || "process" in project.scope) && (
+              <div>
+                <p className="font-sans font-medium text-nav text-content-secondary">
+                  Tools used
+                </p>
+                <p className="font-sans font-medium text-body text-content-primary">
+                  {project.scope.toolsUsed}
+                </p>
+              </div>
+            )}
           </div>
           <div className="tablet:col-span-6">
             <p className="font-sans font-medium text-nav text-content-secondary">
-              {"model" in project.scope ? "Model" : "Process"}
+              {"model" in project.scope ? "Model" : "process" in project.scope ? "Process" : "Tools used"}
             </p>
             <p className="font-sans font-medium text-body text-content-primary">
-              {"model" in project.scope ? project.scope.model : project.scope.process}
+              {"model" in project.scope
+                ? project.scope.model
+                : "process" in project.scope
+                  ? project.scope.process
+                  : project.scope.toolsUsed}
             </p>
           </div>
         </div>
       </section>
-      <TextSection
-        heading="WHAT I BUILT"
-        paragraphs={project.whatIBuilt}
-        video={"video" in project ? project.video : undefined}
-        videoFullWidth={
-          "whatIBuiltVideoFullWidth" in project ? project.whatIBuiltVideoFullWidth : false
-        }
-        secondary
-      />
+      {"whatIBuilt" in project && (
+        <TextSection
+          heading="WHAT I BUILT"
+          paragraphs={project.whatIBuilt}
+          video={"video" in project ? project.video : undefined}
+          videoFullWidth={
+            "whatIBuiltVideoFullWidth" in project ? project.whatIBuiltVideoFullWidth : false
+          }
+          secondary
+        />
+      )}
       {"builtContent" in project && renderBuiltBlocks(project.builtContent)}
       {"inputAmountContent" in project && (
         <BuiltSection heading="INPUT AMOUNT" blocks={project.inputAmountContent} />
@@ -880,6 +1231,24 @@ export default async function WorkDetailPage({
       )}
       {"inlineAlertContent" in project && (
         <BuiltSection heading="INLINE ALERT" blocks={project.inlineAlertContent} />
+      )}
+      {"discoverabilityContent" in project && (
+        <BuiltSection
+          heading="MAKING A NEW ASSET DISCOVERABLE"
+          blocks={project.discoverabilityContent}
+        />
+      )}
+      {"understandingContent" in project && (
+        <BuiltSection
+          heading="HELPING BEGINNERS UNDERSTAND WHAT THEY'RE BUYING"
+          blocks={project.understandingContent}
+        />
+      )}
+      {"cryptoExperienceContent" in project && (
+        <BuiltSection
+          heading="BRINGING STOCKS INTO A CRYPTO EXPERIENCE"
+          blocks={project.cryptoExperienceContent}
+        />
       )}
       {"processContent" in project && (
         <section className="relative pt-section-gap pb-page-y">
