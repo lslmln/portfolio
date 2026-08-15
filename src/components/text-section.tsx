@@ -29,7 +29,11 @@ export function TextSection({
       <div className="px-page-x py-page-y">
         {video && (
           <div className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap pb-card-text-gap tablet:grid-cols-12">
-            <div className={videoFullWidth ? "tablet:col-span-12" : "tablet:col-span-6"}>
+            <div
+              className={
+                videoFullWidth ? "tablet:col-span-12 desktop:col-span-6" : "tablet:col-span-6"
+              }
+            >
               <DemoVideo src={video} />
             </div>
           </div>
