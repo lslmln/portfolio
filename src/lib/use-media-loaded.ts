@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useMediaErrorPreviewForced } from "./media-error-preview";
 import { useMediaLoadingPreviewForced } from "./media-loading-preview";
 
 export function useMediaLoaded(src?: string) {
@@ -16,10 +17,11 @@ export function useMediaLoaded(src?: string) {
     setLoaded(false);
     setError(false);
   }
-  const forced = useMediaLoadingPreviewForced();
+  const forcedLoading = useMediaLoadingPreviewForced();
+  const forcedError = useMediaErrorPreviewForced();
   return {
-    loaded: forced ? false : loaded,
-    error,
+    loaded: forcedLoading ? false : loaded,
+    error: forcedError ? true : error,
     onLoad: () => setLoaded(true),
     onError: () => setError(true),
   };

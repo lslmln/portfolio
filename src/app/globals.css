@@ -2,6 +2,7 @@
 
 html {
   overflow-y: scroll;
+  overscroll-behavior-y: none;
 }
 
 :root {
@@ -165,6 +166,7 @@ html {
 
 body {
   background: var(--content-primary);
+  overscroll-behavior-y: none;
 }
 
 :root[data-theme="dark"] body {

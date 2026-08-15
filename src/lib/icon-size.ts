@@ -8,6 +8,12 @@ export const ICON_SIZE_MOBILE = 72;
 export const ICON_SIZE_SM = 32;
 export const ICON_SIZE_FOOTER = 24;
 
+// MediaError's broken-media icon — its own 3-tier scale (32/64/96), distinct
+// from the pairs above: mobile reuses ICON_SIZE_SM (same 32px value), but
+// tablet and desktop each need a size no other component uses.
+export const ICON_SIZE_MEDIA_ERROR_TABLET = 64;
+export const ICON_SIZE_MEDIA_ERROR_DESKTOP = 96;
+
 // Must stay in sync with --spacing-page-x in globals.css (the gap between icons on tablet/desktop/large).
 export const ICON_ROW_GAP = 32;
 

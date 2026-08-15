@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Seam } from "./seam";
 import styles from "./quotes-section.module.css";
 
-const filters = ["Design Directors", "Product Designers", "Product Managers", "Engineers"];
+const filters = ["Design Directors", "Product Designers", "Engineers"];
 
 const noteColors = [
   "bg-note-blue",
@@ -20,11 +20,8 @@ const noteColors = [
 
 type Quote = { quote: string; attribution: string };
 
-// PLACEHOLDER quotes below (Product Designers, Product Managers, and the second
-// Engineers entry) are temporary filler so the grid has something to preview in
-// every filter — not real testimonials. Literal "[placeholder text]" / "[placeholder
-// person]" per the user, so it's unmistakable in the rendered page, not just in code.
-// Replace with the real quotes when given.
+// Product Managers tab and the second Engineers quote are hidden for now —
+// no real content for either yet. Re-add once given.
 const quotesByFilter: Record<string, Quote[]> = {
   "Design Directors": [
     {
@@ -50,17 +47,12 @@ const quotesByFilter: Record<string, Quote[]> = {
       attribution: "Clifford Goh · User Experience Designer @ IBM",
     },
   ],
-  "Product Managers": [
-    { quote: "[placeholder text]", attribution: "[placeholder person]" },
-    { quote: "[placeholder text]", attribution: "[placeholder person]" },
-  ],
   Engineers: [
     {
       quote:
         "Si Min is an exceptional designer who constantly looks for ways to communicate more efficiently with engineers. Working with her creates a positive feedback loop where we can collaborate on diverse solutions and continuously improve design management.",
       attribution: "Marcus Yip · SVP, Software Engineering @ Crypto.com",
     },
-    { quote: "[placeholder text]", attribution: "[placeholder person]" },
   ],
 };
 

@@ -282,14 +282,14 @@ const projects = [
             of, crypto baskets also support optional rebalancing, letting users
             buy/sell to maintain a target ratio. Whale baskets instead track real
             allocation shifts of specific whales (e.g. Jensen Huang), updating
-            automatically as those whales&apos; positions change. To surface this
-            difference, rebalancing for crypto baskets appear during the trade
-            flow (not shown) and as a toggle post-purchase, so the option is
-            always available to users.{" "}
+            automatically as those whales&apos; positions change.{" "}
             <span className={styles.highlight}>
-              For whale baskets, any allocation changes are surfaced as an inline
-              alert prompting users to review the latest trades. This way, it only
-              appears when it&apos;s needed.
+              To surface this difference, rebalancing for crypto baskets appear
+              during the trade flow (not shown) and as a toggle post-purchase, so
+              the option is always available to users. For whale baskets, any
+              allocation changes are surfaced as an inline alert prompting users
+              to review the latest trades. This way, it only appears when
+              it&apos;s needed.
             </span>
           </>
         ),
@@ -458,11 +458,7 @@ const projects = [
           <>
             Other micro-interactions included a switcher animation between input
             types — partly for feedback, partly just for user delight — and
-            press-and-hold to delete for faster input correction.{" "}
-            <span className={styles.highlight}>
-              We kept the existing dynamic error messaging, since it&apos;s
-              actionable and helps users correct mistakes with minimal effort.
-            </span>
+            press-and-hold to delete for faster input correction.
           </>
         ),
       },
