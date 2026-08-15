@@ -145,8 +145,16 @@ export function WorkSection({
                   </div>
                 )}
                 {card.wip && (
+                  // -inset-px (rather than inset-0) deliberately overshoots the
+                  // wrapper's edge by 1px on every side — Chrome sometimes
+                  // leaves a hairline of the unblurred image visible along a
+                  // backdrop-blur element's rounded edge otherwise, since the
+                  // blur's own render bounds don't always land exactly flush
+                  // with the parent's overflow-hidden clip. imageWrapper's own
+                  // overflow: hidden trims the 1px overshoot back to the
+                  // correct rounded shape.
                   <div
-                    className={`absolute inset-0 flex flex-col items-center justify-center gap-card-text-gap rounded-card p-2 text-center backdrop-blur-sm tablet:p-4 ${isDark ? "bg-scrim/50" : "bg-scrim/75"}`}
+                    className={`absolute -inset-px flex flex-col items-center justify-center gap-card-text-gap rounded-card p-2 text-center backdrop-blur-sm tablet:p-4 ${isDark ? "bg-scrim/80" : "bg-scrim/90"}`}
                   >
                     <HourglassSimpleMediumIcon size={wipIconSize} weight="fill" className="text-icon" />
                     <p className="font-sans font-medium text-body text-on-scrim">
