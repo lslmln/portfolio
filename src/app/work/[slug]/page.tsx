@@ -628,11 +628,11 @@ const projects = [
       toolsUsed: "Cursor · Figma",
       model: "Claude Opus 4.6 / Sonnet 4.6",
     },
-    whatIBuiltHeading: "WHAT I DID",
     whatIBuilt: [
       "Turns a screenshot of any UI component into a Figma frame with typography, spacing and colours restyled to match our design system.",
     ],
     video: "/videos/screenshot-to-figma.mp4",
+    whatIBuiltVideoFullWidth: true,
     processContent: [
       {
         type: "paragraph",
@@ -790,7 +790,7 @@ export default async function WorkDetailPage({
   return (
     <>
       <div className="grid grid-cols-1 items-center gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12">
-        <div className="min-w-0 tablet:col-span-3">
+        <div className="min-w-0 tablet:col-span-6 desktop:col-span-3">
           <WorkHeroImage
             image={workProject.image}
             imageDark={workProject.imageDark}
@@ -799,7 +799,7 @@ export default async function WorkDetailPage({
             height={workProject.heroHeight}
           />
         </div>
-        <h1 className="font-sans font-semibold text-header tablet:text-header-tablet desktop:text-header text-content-primary tablet:col-span-9">
+        <h1 className="font-sans font-semibold text-header tablet:text-body desktop:text-header text-content-primary tablet:col-span-6 desktop:col-span-9">
           {title}
         </h1>
       </div>
@@ -851,9 +851,12 @@ export default async function WorkDetailPage({
         </div>
       </section>
       <TextSection
-        heading={"whatIBuiltHeading" in project ? project.whatIBuiltHeading : "WHAT I BUILT"}
+        heading="WHAT I BUILT"
         paragraphs={project.whatIBuilt}
         video={"video" in project ? project.video : undefined}
+        videoFullWidth={
+          "whatIBuiltVideoFullWidth" in project ? project.whatIBuiltVideoFullWidth : false
+        }
         secondary
       />
       {"builtContent" in project && renderBuiltBlocks(project.builtContent)}

@@ -7,6 +7,7 @@ export function TextSection({
   heading,
   paragraphs,
   video,
+  videoFullWidth = false,
   paragraphGap = false,
   secondary = false,
   firstOnPage = false,
@@ -14,6 +15,7 @@ export function TextSection({
   heading: string;
   paragraphs: readonly ReactNode[];
   video?: string;
+  videoFullWidth?: boolean;
   paragraphGap?: boolean;
   secondary?: boolean;
   firstOnPage?: boolean;
@@ -27,7 +29,7 @@ export function TextSection({
       <div className="px-page-x py-page-y">
         {video && (
           <div className="grid grid-cols-1 gap-x-card-spacing gap-y-card-row-gap pb-card-text-gap tablet:grid-cols-12">
-            <div className="tablet:col-span-6">
+            <div className={videoFullWidth ? "tablet:col-span-12" : "tablet:col-span-6"}>
               <DemoVideo src={video} />
             </div>
           </div>
