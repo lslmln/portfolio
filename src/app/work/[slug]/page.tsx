@@ -640,21 +640,30 @@ const projects = [
         This project made me realise how much I enjoy design systems work.
         As a feature designer, you&apos;re usually focused on solving one
         problem at a time. Working on the system behind those features gave
-        me the chance to step back and see how the same patterns needed to
-        work across the whole product.
+        me{" "}
+        <span className={styles.highlight}>
+          the chance to step back and see how the same patterns needed to
+          work across the whole product.
+        </span>
       </>,
       <>
-        I really liked how much detail you could get into. Thinking through
-        all the different asset types, states, behaviours and edge cases,
-        then iterating on one component over and over until everything
-        clicks. I&apos;m quite happy spending a ridiculous amount of time on
-        one thing if it means getting the logic right.
+        I really liked how much detail you could get into.{" "}
+        <span className={styles.highlight}>
+          Thinking through all the different asset types, states, behaviours
+          and edge cases, then iterating on one component over and over
+          until everything clicks.
+        </span>{" "}
+        I&apos;m quite happy spending a ridiculous amount of time on one
+        thing if it means getting the logic right.
       </>,
       <>
         I did a maths minor in college and really enjoyed proofs. I think
-        what I loved about them was the rigor: starting from what you know,
-        questioning your assumptions, and being able to trace why something
-        holds rather than just accepting that it works. I find myself doing
+        what I loved about them was the rigor:{" "}
+        <span className={styles.highlight}>
+          starting from what you know, questioning your assumptions, and
+          being able to trace why something holds
+        </span>{" "}
+        rather than just accepting that it works. I find myself doing
         something similar in design systems, thinking through the different
         conditions a component needs to support, looking for the cases that
         break my assumptions, and iterating until the logic holds together.
@@ -662,15 +671,19 @@ const projects = [
       <>
         The inline alert system was a good example. What started as a
         simple component quickly became a set of decisions around severity,
-        grouping, ordering, limits, placement and different states. You
-        keep finding cases that challenge the original idea, and each one
-        forces you to make the system a little more robust.
+        grouping, ordering, limits, placement and different states.{" "}
+        <span className={styles.highlight}>
+          You keep finding cases that challenge the original idea, and each
+          one forces you to make the system a little more robust.
+        </span>
       </>,
       <>
         Getting the chance to work on both feature design and the design
-        system was especially valuable. You understand the system
-        differently when you&apos;ve experienced all the different features
-        it needs to support.
+        system was especially valuable.{" "}
+        <span className={styles.highlight}>
+          You understand the system differently when you&apos;ve experienced
+          all the different features it needs to support.
+        </span>
       </>,
     ],
   },
