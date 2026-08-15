@@ -791,7 +791,7 @@ export default async function WorkDetailPage({
   const content = (
     <>
       <div className="grid grid-cols-1 items-center gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12">
-        <div className="min-w-0 tablet:col-span-6 desktop:col-span-3">
+        <div className="min-w-0 tablet:col-span-6 desktop:col-span-4">
           <WorkHeroImage
             image={workProject.image}
             imageDark={workProject.imageDark}
@@ -800,7 +800,7 @@ export default async function WorkDetailPage({
             height={workProject.heroHeight}
           />
         </div>
-        <h1 className="font-sans font-semibold text-header tablet:text-body desktop:text-header text-content-primary tablet:col-span-6 desktop:col-span-9">
+        <h1 className="font-sans font-semibold text-header tablet:text-body desktop:text-header text-content-primary tablet:col-span-6 desktop:col-span-8">
           {title}
         </h1>
       </div>
