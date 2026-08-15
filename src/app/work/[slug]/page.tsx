@@ -749,8 +749,10 @@ export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
 
-// Cyclic "next 2" order, so across all 4 detail pages every project shows up
-// in at least one "more like this" list (never left orphaned).
+// Cyclic "next 2" order, so across all detail pages every finished project
+// shows up in at least one "more like this" list (never left orphaned). WIP
+// projects are excluded from the pool entirely — nothing should recommend a
+// case study that isn't written yet.
 function getMoreLikeThis(slug: string) {
   // screenshot-to-figma's context directly references both the asset-detail
   // and design-system revamps ("from the components... to the flow of our
@@ -763,10 +765,12 @@ function getMoreLikeThis(slug: string) {
     ];
   }
 
-  const index = workProjects.findIndex((p) => p.slug === slug);
+  const recommendable = workProjects.filter((p) => !p.wip);
+  const index = recommendable.findIndex((p) => p.slug === slug);
+  const start = index === -1 ? 0 : index;
   return [
-    workProjects[(index + 1) % workProjects.length],
-    workProjects[(index + 2) % workProjects.length],
+    recommendable[(start + 1) % recommendable.length],
+    recommendable[(start + 2) % recommendable.length],
   ];
 }
 
