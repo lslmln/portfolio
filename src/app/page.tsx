@@ -5,7 +5,7 @@ import { QuotesSection } from "@/components/quotes-section";
 import { ToolsSection } from "@/components/tools-section";
 import { WorkSection } from "@/components/work-section";
 
-export const metadata: Metadata = { title: "Home" };
+export const metadata: Metadata = { title: "Home · Si Min" };
 
 export default function Home() {
   return (
