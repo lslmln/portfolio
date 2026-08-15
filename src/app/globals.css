@@ -93,6 +93,10 @@ html {
   --text-caption: 16px;
   --text-title: 32px;
   --text-header: 40px;
+  /* Work-detail page title only, at the tablet breakpoint only — not a
+     replacement for --text-header itself, which stays the mobile/desktop
+     size everywhere else (nav menu, loading screen, error state). */
+  --text-header-tablet: 36px;
 
   --tracking-title: 0.2em;
 

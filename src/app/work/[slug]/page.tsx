@@ -799,7 +799,7 @@ export default async function WorkDetailPage({
             height={workProject.heroHeight}
           />
         </div>
-        <h1 className="font-sans font-semibold text-header text-content-primary tablet:col-span-9">
+        <h1 className="font-sans font-semibold text-header tablet:text-header-tablet desktop:text-header text-content-primary tablet:col-span-9">
           {title}
         </h1>
       </div>

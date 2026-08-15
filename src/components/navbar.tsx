@@ -77,7 +77,7 @@ export function Navbar() {
       className="flex w-full items-center justify-between px-page-x py-page-y font-sans font-semibold text-nav text-content-primary"
     >
       <HomeLink />
-      <div className="hidden items-center gap-page-y tablet:flex">
+      <div className="hidden items-center gap-page-y desktop:flex">
         <TransitionLink
           href="/about"
           data-selected={pathname === "/about" || undefined}
@@ -98,7 +98,7 @@ export function Navbar() {
         type="button"
         onClick={() => setMobileMenuOpen(true)}
         aria-label="Open menu"
-        className={`${styles.hamburger} flex flex-col items-center gap-hamburger-gap tablet:hidden`}
+        className={`${styles.hamburger} flex flex-col items-center gap-hamburger-gap desktop:hidden`}
       >
         <span className={styles.hamburgerLine} />
         <span className={styles.hamburgerLine} />
