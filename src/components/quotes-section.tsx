@@ -68,7 +68,7 @@ export function QuotesSection() {
         QUOTES
       </h2>
       <div className="relative">
-        <div className={`${styles.filterRow} flex gap-button-gap px-page-x pt-page-y pb-[2px]`}>
+        <div className={`${styles.filterRow} flex gap-button-gap px-page-x pt-page-y pb-filter-row-end`}>
           {filters.map((filter, index) => (
             <button
               key={filter}

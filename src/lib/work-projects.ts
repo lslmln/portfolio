@@ -46,7 +46,6 @@ export const workProjects: WorkProject[] = [
   {
     slug: "tokenized-stocks",
     title: "Bringing tokenized stocks to every day investors",
-    wip: true,
     image: "/images/work-placeholder.jpg",
     heroWidth: 1600,
     heroHeight: 900,

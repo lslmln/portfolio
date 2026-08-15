@@ -109,7 +109,11 @@ export function WorkSection({
       className={`relative ${firstOnPage ? "" : "pt-section-gap"} ${lastOnPage ? "pb-section-end" : "pb-page-y"}`}
     >
       {!firstOnPage && <Seam />}
-      {!firstOnPage && (
+      {firstOnPage ? (
+        <h1 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
+          {heading}
+        </h1>
+      ) : (
         <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
           {heading}
         </h2>

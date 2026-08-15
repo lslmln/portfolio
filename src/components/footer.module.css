@@ -4,6 +4,6 @@
 }
 
 :root[data-theme="dark"] .footer {
-  background: #000000;
+  background: var(--scrim);
   color: var(--content-primary);
 }

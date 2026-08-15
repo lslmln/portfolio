@@ -219,6 +219,7 @@ export function IconRow() {
               type="button"
               onClick={() => selectIcon(index)}
               aria-pressed={selected === index}
+              aria-label={items[index].company}
               data-selected={selected === index || undefined}
               className={styles.iconButton}
             >

@@ -51,9 +51,27 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = "https://simin.design";
+const SITE_TITLE = "Si Min Lee — Product Designer";
+const SITE_DESCRIPTION =
+  "Si Min Lee is a product designer specialising in fintech, design systems, and AI-powered tools. Previously @ Crypto.com and IBM.";
+
 export const metadata: Metadata = {
-  title: { template: "%s · Si Min", default: "Si Min" },
-  description: "Trading & Design Systems Product Designer at Crypto.com.",
+  metadataBase: new URL(SITE_URL),
+  title: { template: "%s · Si Min Lee", default: SITE_TITLE },
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: SITE_TITLE,
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 // Keeps the visual viewport fixed when the on-screen keyboard opens (the

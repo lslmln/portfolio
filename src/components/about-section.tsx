@@ -3,6 +3,7 @@ import Image from "next/image";
 export function AboutSection() {
   return (
     <section className="pb-page-y">
+      <h1 className="sr-only">About Si Min Lee — Product Designer</h1>
       <div className="grid grid-cols-1 items-center gap-page-y px-page-x py-page-y tablet:grid-cols-12">
         <div className="relative aspect-square w-full overflow-hidden rounded-card bg-content-secondary/15 tablet:col-span-4 desktop:col-span-4">
           <Image

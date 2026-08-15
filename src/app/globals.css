@@ -38,8 +38,8 @@ html {
   --content-primary: #2E2E2E;
   --content-secondary: #666666;
   --heading: #666666;
-  --icon: #999999;
-  --link: #006FF9;
+  --icon: #858585;
+  --link: #005CC5;
   --note-blue: #A8DAFF;
   --note-green: #B3EFBD;
   --note-teal: #B3F4EF;
@@ -70,7 +70,7 @@ html {
   --content-primary: #E6E6E6;
   --content-secondary: #BFBFBF;
   --heading: #BFBFBF;
-  --icon: #666666;
+  --icon: #757575;
   --link: #75ACF0;
   --note-blue: #2D5776;
   --note-green: #2F6A4D;
@@ -142,6 +142,7 @@ html {
   --spacing-section-end: 48px;
   --spacing-button-padding-x: 16px;
   --spacing-button-padding-y: 8px;
+  --spacing-filter-row-end: 2px;
 
   --radius-button: 12px;
   --radius-card: 12px;
