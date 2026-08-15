@@ -17,13 +17,32 @@ export function useDialogA11y<T extends HTMLElement>(open: boolean, onClose: () 
   useEffect(() => {
     if (!open) return;
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    // Plain `overflow: hidden` on body doesn't reliably block touch-scroll
+    // on iOS Safari — pinning the body in place with `position: fixed` (and
+    // restoring the scroll offset on close) is the part that actually works
+    // there, not just on desktop.
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const previousBodyStyle = {
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      overflow: body.style.overflow,
+    };
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
 
     triggerRef.current = document.activeElement;
     const dialog = dialogRef.current;
     const focusable = dialog?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-    focusable?.[0]?.focus();
+    // Prefer an element the caller explicitly marked with `autofocus` (e.g.
+    // the passcode input) over just grabbing the first focusable element —
+    // relevant now that a dialog's first focusable element (a leading close
+    // button) isn't necessarily the one that should actually receive focus.
+    const autoFocusTarget = dialog?.querySelector<HTMLElement>("[autofocus]");
+    (autoFocusTarget ?? focusable?.[0])?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -47,7 +66,11 @@ export function useDialogA11y<T extends HTMLElement>(open: boolean, onClose: () 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = previousOverflow;
+      body.style.position = previousBodyStyle.position;
+      body.style.top = previousBodyStyle.top;
+      body.style.width = previousBodyStyle.width;
+      body.style.overflow = previousBodyStyle.overflow;
+      window.scrollTo(0, scrollY);
       if (triggerRef.current instanceof HTMLElement) {
         triggerRef.current.focus();
       }

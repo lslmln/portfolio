@@ -13,7 +13,13 @@ export function ScrollCue() {
 
   useEffect(() => {
     function handleScroll() {
-      setVisible(window.scrollY <= 4);
+      // While a modal is open, useDialogA11y pins body via `position: fixed`
+      // (preserving the real scroll offset separately, in a negative `top`)
+      // — window.scrollY reads as 0 the whole time regardless of where the
+      // page actually was, which would otherwise make this think it's back
+      // at the top and reappear behind the modal's blur.
+      if (document.body.style.position === "fixed") return;
+      setVisible(window.scrollY <= 0);
     }
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);

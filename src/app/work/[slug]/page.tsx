@@ -6,6 +6,7 @@ import iconRowStyles from "@/components/icon-row.module.css";
 import { Seam } from "@/components/seam";
 import { TextSection } from "@/components/text-section";
 import { TransitionLink } from "@/components/transition-link";
+import { WorkDetailGate } from "@/components/work-detail-gate";
 import { WorkHeroImage } from "@/components/work-hero-image";
 import { WorkSection } from "@/components/work-section";
 import { workProjects } from "@/lib/work-projects";
@@ -787,7 +788,7 @@ export default async function WorkDetailPage({
     notFound();
   }
 
-  return (
+  const content = (
     <>
       <div className="grid grid-cols-1 items-center gap-x-card-spacing gap-y-card-row-gap px-page-x py-page-y tablet:grid-cols-12">
         <div className="min-w-0 tablet:col-span-6 desktop:col-span-3">
@@ -904,4 +905,6 @@ export default async function WorkDetailPage({
       <WorkSection heading="MORE LIKE THIS" items={getMoreLikeThis(slug)} lastOnPage />
     </>
   );
+
+  return workProject.locked ? <WorkDetailGate>{content}</WorkDetailGate> : content;
 }

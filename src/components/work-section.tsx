@@ -1,51 +1,20 @@
 "use client";
 
-import {
-  ArrowRightIcon,
-  CircleNotchIcon,
-  LockIcon,
-  LockOpenIcon,
-  XIcon,
-} from "@phosphor-icons/react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { LockIcon, LockOpenIcon } from "@phosphor-icons/react";
+import { useReducedMotion } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ICON_SIZE_SM } from "@/lib/icon-size";
-import { backdropVariants, panelVariants } from "@/lib/modal-variants";
-import { useDialogA11y } from "@/lib/use-dialog-a11y";
+import { PASSCODE_VERIFIED_KEY } from "@/lib/passcode";
 import { useIsDark } from "@/lib/use-is-dark";
 import { useMediaLoaded } from "@/lib/use-media-loaded";
-import { verifyPasscode } from "@/lib/verify-passcode";
 import { workProjects, type WorkProject } from "@/lib/work-projects";
 import { MediaError } from "./media-error";
+import { PasscodeModal } from "./passcode-modal";
 import { COVER_DURATION, useNavigate } from "./route-transition";
 import { Seam } from "./seam";
 import { TransitionLink } from "./transition-link";
 import styles from "./work-section.module.css";
-
-// Session-scoped, not persistent — matches the loading-screen intro's own
-// "seen" flag: survives reloads within the tab, clears on a fresh
-// tab/session. Once verified, every locked card unlocks, not just the one
-// the user typed the passcode for — a single shared passcode gates all of
-// them today (see verify-passcode.ts), so there's only one thing to "know."
-const PASSCODE_VERIFIED_KEY = "portfolio-passcode-verified";
-// The passcode check is a Server Action (a network round-trip) — without a
-// client-side cutoff, a dropped connection or slow server leaves the button
-// spinning with no way to retry, since nothing else would ever flip
-// isVerifying back off.
-const VERIFY_TIMEOUT_MS = 8000;
-// A wrong password almost always comes back well under this — showing the
-// spinner immediately would just flash it on and off for a moment, which
-// reads as a glitch rather than useful feedback. Only a check that's
-// genuinely still pending after this long actually shows one.
-const SPINNER_DELAY_MS = 200;
-
-function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) => setTimeout(() => reject(new Error("verify-passcode-timeout")), ms)),
-  ]);
-}
 
 function CardImage({
   src,
@@ -90,11 +59,7 @@ export function WorkSection({
   items?: readonly WorkProject[];
 }) {
   const [unlockingSlug, setUnlockingSlug] = useState<string | null>(null);
-  const [passcodeInput, setPasscodeInput] = useState("");
-  const [passcodeError, setPasscodeError] = useState<string | null>(null);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [showSpinner, setShowSpinner] = useState(false);
-  const spinnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [previewError, setPreviewError] = useState<string | undefined>(undefined);
   // Starts false on both server and client to avoid a hydration mismatch
   // (sessionStorage isn't available during SSR) — synced from sessionStorage
   // in the effect below immediately after mount, same pattern Navbar uses
@@ -103,7 +68,6 @@ export function WorkSection({
   const isDark = useIsDark();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
-  const dialogRef = useDialogA11y<HTMLDivElement>(unlockingSlug !== null, closePasscode);
 
   useEffect(() => {
     // sessionStorage is unavailable during SSR — has to be read post-mount,
@@ -117,50 +81,20 @@ export function WorkSection({
 
   const unlockingCard = items.find((item) => item.slug === unlockingSlug);
 
-  function clearSpinnerTimer() {
-    if (spinnerTimerRef.current) {
-      clearTimeout(spinnerTimerRef.current);
-      spinnerTimerRef.current = null;
-    }
-  }
-
   function closePasscode() {
-    clearSpinnerTimer();
     setUnlockingSlug(null);
-    setPasscodeInput("");
-    setPasscodeError(null);
-    setIsVerifying(false);
-    setShowSpinner(false);
+    setPreviewError(undefined);
   }
 
-  async function handleSubmitPasscode() {
-    if (!unlockingCard || !passcodeInput.trim() || isVerifying) return;
-    setIsVerifying(true);
-    setPasscodeError(null);
-    spinnerTimerRef.current = setTimeout(() => setShowSpinner(true), SPINNER_DELAY_MS);
-    try {
-      const isCorrect = await withTimeout(verifyPasscode(passcodeInput), VERIFY_TIMEOUT_MS);
-      clearSpinnerTimer();
-      if (isCorrect) {
-        sessionStorage.setItem(PASSCODE_VERIFIED_KEY, "1");
-        setUnlocked(true);
-        navigate(`/work/${unlockingCard.slug}`);
-        // Don't pop the modal closed — let the page-level cover (which sits
-        // above it) rise over it first, so it quietly disappears under the
-        // same crossfade used for every other navigation instead of visibly
-        // animating itself away right before the page covers anyway.
-        setTimeout(closePasscode, reduceMotion ? 0 : COVER_DURATION * 1000);
-      } else {
-        setPasscodeError("Incorrect password. Try again.");
-        setIsVerifying(false);
-        setShowSpinner(false);
-      }
-    } catch {
-      clearSpinnerTimer();
-      setPasscodeError("Something went wrong. Try again.");
-      setIsVerifying(false);
-      setShowSpinner(false);
-    }
+  function handleVerified() {
+    sessionStorage.setItem(PASSCODE_VERIFIED_KEY, "1");
+    setUnlocked(true);
+    if (unlockingCard) navigate(`/work/${unlockingCard.slug}`);
+    // Don't pop the modal closed — let the page-level cover (which sits
+    // above it) rise over it first, so it quietly disappears under the
+    // same crossfade used for every other navigation instead of visibly
+    // animating itself away right before the page covers anyway.
+    setTimeout(closePasscode, reduceMotion ? 0 : COVER_DURATION * 1000);
   }
 
   return (
@@ -240,94 +174,19 @@ export function WorkSection({
             const lockedCard = items.find((item) => item.locked);
             if (!lockedCard) return;
             setUnlockingSlug(lockedCard.slug);
-            setIsVerifying(false);
-            setPasscodeError("Something went wrong. Try again.");
+            setPreviewError("Something went wrong. Try again.");
           }}
           className="fixed bottom-4 left-[430px] z-[60] rounded-md border border-black/20 bg-white px-3 py-1.5 text-xs font-medium text-black shadow-sm"
         >
           Preview passcode error
         </button>
       )}
-      <AnimatePresence>
-        {unlockingCard && (
-          <motion.div
-            ref={dialogRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Enter password"
-            variants={backdropVariants}
-            initial={reduceMotion ? "visible" : "hidden"}
-            animate="visible"
-            exit={reduceMotion ? "visible" : "exit"}
-            onClick={closePasscode}
-            className={`fixed inset-0 z-scrim flex items-center justify-center px-8 backdrop-blur-lg ${isDark ? "bg-scrim/50" : "bg-scrim/75"}`}
-          >
-            <button
-              type="button"
-              onClick={closePasscode}
-              aria-label="Close"
-              className="absolute right-page-x top-page-y cursor-pointer transition-transform duration-150 active:scale-[0.97]"
-            >
-              <XIcon size={ICON_SIZE_SM} weight="regular" className="text-white" />
-            </button>
-            <motion.div
-              variants={panelVariants}
-              initial={reduceMotion ? "visible" : "hidden"}
-              animate="visible"
-              exit={reduceMotion ? "visible" : "exit"}
-              onClick={(event) => event.stopPropagation()}
-              className="grid max-w-full grid-cols-1 gap-card-text-gap"
-            >
-              <p className="font-sans font-medium text-body text-white">Enter password</p>
-              <div className="flex items-center gap-card-text-gap">
-                <input
-                  type="password"
-                  autoFocus
-                  value={passcodeInput}
-                  onChange={(event) => {
-                    setPasscodeInput(event.target.value);
-                    setPasscodeError(null);
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") handleSubmitPasscode();
-                  }}
-                  className="h-input-height w-full min-w-0 rounded-card border-2 border-white bg-transparent px-3 font-sans font-medium text-body text-white focus:border-modal-focus"
-                />
-                <button
-                  type="button"
-                  onClick={handleSubmitPasscode}
-                  disabled={!passcodeInput.trim() || isVerifying}
-                  aria-label="Submit password"
-                  className={`group flex shrink-0 cursor-pointer items-center justify-center rounded-full bg-modal-button-bg/50 p-2 backdrop-blur-sm transition-[opacity,transform] duration-150 active:scale-[0.97] ${
-                    passcodeInput.trim()
-                      ? "opacity-100 hover:bg-modal-button-bg-hover"
-                      : "pointer-events-none opacity-30"
-                  }`}
-                >
-                  {showSpinner ? (
-                    <CircleNotchIcon
-                      size={20}
-                      weight="bold"
-                      className="animate-spin text-modal-button-bg-hover group-hover:text-modal-button-bg"
-                    />
-                  ) : (
-                    <ArrowRightIcon
-                      size={20}
-                      weight="fill"
-                      className="text-modal-button-bg-hover group-hover:text-modal-button-bg"
-                    />
-                  )}
-                </button>
-              </div>
-              <p
-                className={`font-sans font-medium text-nav text-danger ${passcodeError ? "visible" : "invisible"}`}
-              >
-                {passcodeError || "Incorrect password. Try again."}
-              </p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <PasscodeModal
+        open={unlockingCard !== undefined}
+        onClose={closePasscode}
+        onVerified={handleVerified}
+        previewError={previewError}
+      />
     </section>
   );
 }
