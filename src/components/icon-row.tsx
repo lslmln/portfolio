@@ -9,12 +9,7 @@ import {
   LeafIcon,
   ShoppingCartIcon,
 } from "@phosphor-icons/react";
-import {
-  ICON_GAP_MOBILE,
-  ICON_ROW_WIDTH,
-  ICON_SIZE_LG,
-  ICON_SIZE_MOBILE,
-} from "@/lib/icon-size";
+import { ICON_ROW_WIDTH, ICON_SIZE_LG, ICON_SIZE_MOBILE } from "@/lib/icon-size";
 import { useIsDark } from "@/lib/use-is-dark";
 import { INTRO_SEEN_KEY, useLoadingComplete } from "@/lib/loading-complete";
 import { useMediaQuery } from "@/lib/use-media-query";
@@ -79,10 +74,6 @@ function CaptionText({ active }: { active: (typeof items)[number] }) {
 
 export function IconRow() {
   const [selected, setSelected] = useState<number | null>(null);
-  // Drives the mobile caption's position — kept separate from `selected` so
-  // the caption box doesn't jump to the new icon's row until the old
-  // caption has actually finished fading out (see mobileCaptionTop below).
-  const [displayedSelected, setDisplayedSelected] = useState<number | null>(null);
   const reduceMotion = useReducedMotion();
   const [scope, animate] = useAnimate();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -146,9 +137,6 @@ export function IconRow() {
 
   function selectIcon(index: number | null) {
     setSelected(index);
-    // Nothing was showing yet, so there's no old caption to wait on — jump
-    // straight to position. Otherwise, onExitComplete below handles it.
-    setDisplayedSelected((current) => (current === null ? index : current));
   }
 
   useEffect(() => {
@@ -175,10 +163,6 @@ export function IconRow() {
   // leaving the icons transformed off-screen at full opacity.
   const flyInOffset = isTablet ? { x: 0, y: "100vh" } : { x: "100vw", y: 0 };
   const flyInRest = { x: 0, y: 0 };
-  const mobileCaptionTop =
-    displayedSelected !== null
-      ? displayedSelected * (ICON_SIZE_MOBILE + ICON_GAP_MOBILE) + ICON_SIZE_MOBILE / 2
-      : 0;
 
   return (
     <div
@@ -188,11 +172,21 @@ export function IconRow() {
     >
       <div
         ref={scope}
-        className="relative flex flex-col items-center gap-page-y tablet:flex-row tablet:gap-page-x"
+        className="relative flex flex-col items-center gap-0 tablet:flex-row tablet:gap-page-x"
       >
         {items.map(({ Icon, company }, index) => (
           <motion.div
             key={company}
+            className="relative"
+            // useElaborateEntrance can only be known client-side
+            // (sessionStorage isn't available during SSR), so it — and the
+            // initial/transform styles it drives — genuinely differs
+            // between the server-rendered HTML and this first client
+            // render. That's expected, not a bug: the mismatch is resolved
+            // before the fly-in animation itself ever starts (gated on
+            // loadingComplete, well after hydration), so nothing visible
+            // is ever inconsistent.
+            suppressHydrationWarning
             initial={
               reduceMotion || !useElaborateEntrance
                 ? { opacity: 0 }
@@ -218,40 +212,41 @@ export function IconRow() {
                 <Icon size={iconSize} weight={isDark ? "fill" : "regular"} />
               </span>
             </button>
+
+            {!isTablet && (
+              // Centered against *this* icon directly via CSS (top: 50% +
+              // translateY(-50%) relative to this row), instead of a single
+              // shared caption whose position had to be computed in JS from
+              // every icon's size/gap — that math drifts out of sync the
+              // moment spacing changes; this can't drift because there's
+              // nothing to keep in sync.
+              <div
+                className="absolute left-full"
+                style={{
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  paddingLeft: "var(--spacing-page-x)",
+                  width: "max-content",
+                  maxWidth: `calc(100vw - ${ICON_SIZE_MOBILE}px - (2 * var(--spacing-page-x)))`,
+                }}
+              >
+                <AnimatePresence initial={false}>
+                  {selected === index && (
+                    <motion.p
+                      initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
+                      transition={{ type: "spring", duration: 0.25, bounce: 0 }}
+                      className="font-sans font-medium text-caption leading-6 text-content-primary"
+                    >
+                      <CaptionText active={items[index]} />
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </motion.div>
         ))}
-
-        {!isTablet && (
-          <div
-            className="absolute left-full"
-            style={{
-              top: mobileCaptionTop,
-              transform: "translateY(-50%)",
-              paddingLeft: "var(--spacing-page-x)",
-              width: "max-content",
-              maxWidth: `calc(100vw - ${ICON_SIZE_MOBILE}px - (2 * var(--spacing-page-x)))`,
-            }}
-          >
-            <AnimatePresence
-              mode="wait"
-              initial={false}
-              onExitComplete={() => setDisplayedSelected(selected)}
-            >
-              {active && (
-                <motion.p
-                  key={selected}
-                  initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
-                  transition={{ type: "spring", duration: 0.25, bounce: 0 }}
-                  className="font-sans font-medium text-caption leading-6 text-content-primary"
-                >
-                  <CaptionText active={active} />
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
       </div>
 
       {isTablet && (
