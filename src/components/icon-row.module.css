@@ -53,6 +53,7 @@
   left: var(--spacing-page-x);
   transform: translateY(-50%);
   width: fit-content;
+  max-width: calc(100% - 2 * var(--spacing-page-x));
 }
 
 @media (min-width: 768px) {

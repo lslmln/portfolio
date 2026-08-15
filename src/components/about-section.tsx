@@ -2,8 +2,8 @@ export function AboutSection() {
   return (
     <section className="pb-page-y">
       <div className="grid grid-cols-1 items-center gap-page-y px-page-x py-page-y tablet:grid-cols-12">
-        <div className="aspect-square w-full rounded-card bg-content-secondary/15 tablet:col-span-2" />
-        <div className="tablet:col-span-10">
+        <div className="aspect-square w-full rounded-card bg-content-secondary/15 tablet:col-span-4 desktop:col-span-2" />
+        <div className="tablet:col-span-8 desktop:col-span-10">
           <p className="font-sans font-medium text-body text-content-primary">
             I&apos;m a product designer based in Singapore. Previously at Crypto.com & IBM.
           </p>
