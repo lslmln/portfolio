@@ -895,9 +895,10 @@ const projects = [
           <>
             We initially explored a dedicated Stocks tab, but concerns from
             the US implementation of TradFi stocks suggested this could limit
-            discovery. Instead, we tested{" "}
+            discovery. Instead, we{" "}
             <span className={styles.highlight}>
-              mixing tokenized stocks into Home alongside crypto.
+              kept tokenized stocks mixed with crypto in the Homepage for
+              discovery.
             </span>{" "}
             This turned out to match how users already thought about their
             money. In testing, users didn&apos;t distinguish between the asset
@@ -963,6 +964,15 @@ const projects = [
         text: "We went through several iterations of naming, labels and tickers.",
       },
       {
+        type: "gallery",
+        images: [
+          {
+            src: "/images/tokenized-stocks-market-changes.png",
+            alt: "Market page Tokens tab renamed to Assets",
+          },
+        ],
+      },
+      {
         type: "paragraph",
         text: (
           <>
@@ -970,7 +980,31 @@ const projects = [
             Stocks&rdquo; after{" "}
             <span className={styles.highlight}>
               testing showed the latter was more recognizable.
-            </span>
+            </span>{" "}
+            As for tickers, we explored variations like cAAPL and !AAPL, but
+            ultimately kept the familiar underlying stock ticker.
+          </>
+        ),
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            On the Market page, usability testing surfaced a related
+            problem:{" "}
+            <span className={styles.highlight}>
+              &ldquo;tokens&rdquo; is a word strictly associated with crypto,
+              so nesting &ldquo;Stocks &amp; ETFs&rdquo; under a
+              &ldquo;Tokens&rdquo; tab made users second-guess the asset
+              before they&apos;d even opened it.
+            </span>{" "}
+            <span className={styles.highlight}>
+              Some users even compared the price against the traditional
+              stock price to verify the asset type.
+            </span>{" "}
+            We generalized the section naming from &ldquo;Tokens&rdquo; to
+            &ldquo;Assets&rdquo;, a neutral category that would reduce
+            decision-making friction.
           </>
         ),
       },
@@ -985,17 +1019,22 @@ const projects = [
       },
       {
         type: "paragraph",
+        text: "Lastly, we added clearer references to tokens across trade flows and confirmation screens.",
+      },
+      {
+        type: "paragraph",
         text: (
           <>
-            As for tickers, we explored variations like cAAPL and !AAPL, but
-            ultimately kept the familiar underlying stock ticker. We also
-            reviewed terminology across the app, replacing{" "}
-            <span className={styles.highlight}>&ldquo;crypto&rdquo; with &ldquo;asset&rdquo;</span>{" "}
-            in places where the language now needed to encompass both crypto
-            and tokenized stocks. We chose &ldquo;asset&rdquo; over
-            &ldquo;token&rdquo; as it was more general and approachable for
-            beginner users. Lastly, we added clearer references to tokens
-            across trade flows and confirmation screens.
+            Testing also revealed{" "}
+            <span className={styles.highlight}>
+              users didn&apos;t see a functional reason to buy a token over
+              the underlying stock, and without a clear comparison, defaulted
+              to skepticism about the product altogether.
+            </span>{" "}
+            We addressed this with contextual explainers on the Coin Details
+            page highlighting concrete benefits, like access to US stocks and
+            24/7 trading, along with a dedicated label for stocks that trade
+            around the clock.
           </>
         ),
       },
@@ -1009,11 +1048,25 @@ const projects = [
               some still weren&apos;t sure whether they were trading a
               tokenized stock or the actual stock itself.
             </span>{" "}
-            For users who had never encountered tokenized stocks before,{" "}
-            <span className={styles.highlight}>
-              the familiar ticker led them to assume they were buying the
-              traditional stock.
-            </span>
+            For users who had never encountered tokenized stocks before, the
+            familiar ticker led them to assume they were buying the
+            traditional stock, and they often didn&apos;t learn otherwise
+            until the confirmation screen, by which point it landed as a
+            negative surprise rather than a considered decision.
+          </>
+        ),
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            As one participant put it, &ldquo;if I land on this page and I
+            see &lsquo;one token,&rsquo; I think I would not buy immediately.
+            I need to understand the difference.&rdquo; Knowing an asset was
+            tokenized before buying was &ldquo;extremely important&rdquo; to
+            users; interestingly, younger users were fairly receptive to
+            tokenization once they understood it, seeing it as unlocking
+            benefits like 24/7 trading rather than something to be wary of.
           </>
         ),
       },
@@ -1035,7 +1088,9 @@ const projects = [
               more prominent Tokenized Stock badges and educational cues
             </span>{" "}
             on the asset details page, giving users the context they needed
-            while exploring an asset before deciding whether to trade.
+            while exploring an asset before deciding whether to trade. We
+            also changed CTA copy to be explicit, e.g. &ldquo;Trade AAPL
+            tokens&rdquo; instead of &ldquo;Trade AAPL.&rdquo;
           </>
         ),
       },
