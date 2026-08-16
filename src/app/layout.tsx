@@ -52,9 +52,17 @@ const geistMono = Geist_Mono({
 });
 
 const SITE_URL = "https://simin.design";
-const SITE_TITLE = "Si Min Lee · Product Designer";
+const SITE_NAME = "Si Min Lee";
+const SITE_TITLE = "Si Min Lee — Product Designer";
 const SITE_DESCRIPTION =
   "Si Min Lee is a product designer specialising in fintech, design systems, and AI-powered tools. Previously @ Crypto.com and IBM.";
+
+const WEBSITE_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE_NAME,
+  url: SITE_URL,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -64,7 +72,7 @@ export const metadata: Metadata = {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
-    siteName: SITE_TITLE,
+    siteName: SITE_NAME,
     type: "website",
   },
   twitter: {
@@ -92,6 +100,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="min-h-svh flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSON_LD) }}
+        />
         <Script id="theme-init" strategy="beforeInteractive">
           {THEME_INIT_SCRIPT}
         </Script>
