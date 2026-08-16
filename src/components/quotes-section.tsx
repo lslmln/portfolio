@@ -43,7 +43,7 @@ const quotesByFilter: Record<string, Quote[]> = {
     {
       quote:
         "I enjoyed working with Si Min during her internship at IBM. She's thoughtful, meticulous, and has a great eye for detail, while also being quick to understand problems and think things through. She's easy to work with, and I'd be very happy to work with her again.",
-      attribution: "Clifford Goh · User Experience Designer @ IBM",
+      attribution: "Clifford Goh · User Experience Designer @ IBM iX",
     },
   ],
   "Product Managers": [
