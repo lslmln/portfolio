@@ -52,6 +52,11 @@ const quotesByFilter: Record<string, Quote[]> = {
         "I worked with Si Min on trading products at Crypto.com, where she quickly ramped up as a grad analyst and became one of the main designers covering tokenized stocks, US equities and related features. She consistently turned complex product and compliance requirements into intuitive flows, while showing strong work ethic, attention to detail, and a willingness to learn. She'd be a great addition to any team that values craft and consistency.",
       attribution: "Nancy Li · Head, Trading Products @ Crypto.com",
     },
+    {
+      quote:
+        "Si Min is confident, efficient, and someone I could leave a messy problem with and know it would come back tighter than I asked. She didn't stop at the flow. She put a design system and reusable components in place with the tech team, which made later work faster and more consistent.\n\nI would work with her again without hesitation. She is trustworthy, and she consistently went beyond what I asked for.",
+      attribution: "Thomas Tong · Principal Product Manager, Trading @ Crypto.com",
+    },
   ],
   Engineers: [
     {
@@ -104,7 +109,7 @@ export function QuotesSection() {
               style={{ borderRadius: 12 }}
               className={`flex min-w-0 flex-col gap-card-text-gap ${noteColors[(selected * 2 + index) % noteColors.length]} p-page-y`}
             >
-              <p className="break-words font-sans font-medium text-body text-content-primary">
+              <p className="whitespace-pre-line break-words font-sans font-medium text-body text-content-primary">
                 {quote.quote}
               </p>
               <p className="font-sans font-medium text-nav text-content-secondary">
