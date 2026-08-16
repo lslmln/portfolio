@@ -55,7 +55,7 @@ const SITE_URL = "https://simin.design";
 const SITE_NAME = "Si Min Lee";
 const SITE_TITLE = "Si Min Lee — Product Designer";
 const SITE_DESCRIPTION =
-  "Si Min Lee is a product designer specialising in fintech, design systems, and AI-powered tools. Previously @ Crypto.com and IBM.";
+  "Product designer turning fintech apps into something you'd actually enjoy using.";
 
 const WEBSITE_JSON_LD = {
   "@context": "https://schema.org",
