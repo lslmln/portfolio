@@ -123,6 +123,13 @@ function BuiltSection({ heading, blocks }: { heading: string; blocks: readonly B
   );
 }
 
+type ScopeBase = { time: string; toolsUsed: string };
+type Scope =
+  | ScopeBase
+  | (ScopeBase & { model: string })
+  | (ScopeBase & { process: string })
+  | (ScopeBase & { validation: string });
+
 const projects = [
   {
     slug: "feature-flow-revamp",
@@ -157,7 +164,7 @@ const projects = [
       toolsUsed: "Claude Code · Cursor · Figma · GitHub",
       process:
         "Design in Figma → View designs on a simulator via MCP → Push changes as a pull request to the shared repo → Share videos and design rationale with the team for review → Merge once approved",
-    },
+    } as Scope,
     whatIBuilt: [
       <>
         I focused on asset detail pages, starting with{" "}
@@ -424,7 +431,7 @@ const projects = [
       toolsUsed: "Claude Code · Cursor · Figma · GitHub",
       process:
         "Design and write up documentation in Figma → Prototype animations + use skills to improve them → Describe specs to dev who will build animation for me to review",
-    },
+    } as Scope,
     whatIBuilt: [
       <>
         I placed a{" "}
@@ -725,7 +732,7 @@ const projects = [
       time: "~2.5 days in Apr 2026",
       toolsUsed: "Cursor · Figma",
       model: "Claude Opus 4.6 / Sonnet 4.6",
-    },
+    } as Scope,
     whatIBuilt: [
       "Turns a screenshot of any UI component into a Figma frame with typography, spacing and colours restyled to match our design system.",
     ],
@@ -860,7 +867,9 @@ const projects = [
     scope: {
       time: "~4 months, Dec 2025–Mar 2026",
       toolsUsed: "Figma · Jira · Dovetail",
-    },
+      validation:
+        "Moderated usability testing with 5 active investors (based in France/Germany, trading both crypto and stocks on platforms like Coinbase, Kraken, Trade Republic and Revolut)",
+    } as Scope,
     discoverabilityContent: [
       {
         type: "gallery",
@@ -890,10 +899,12 @@ const projects = [
             <span className={styles.highlight}>
               mixing tokenized stocks into Home alongside crypto.
             </span>{" "}
-            During user testing with existing Crypto.com users, the stocks
-            stood out immediately because they were new and unfamiliar, which
-            was exactly the kind of attention we wanted to create for a new
-            product.
+            This turned out to match how users already thought about their
+            money. In testing, users didn&apos;t distinguish between the asset
+            classes at all when browsing. They saw both stocks and crypto
+            simply as &quot;investments,&quot; and expected to browse them
+            together. One participant said mixing them into one list
+            &quot;saved them from having to visit an additional page.&quot;
           </>
         ),
       },
@@ -1035,12 +1046,20 @@ const projects = [
         text: (
           <>
             We kept the familiar Crypto.com asset-detail structure so
-            tokenized stocks felt native to the existing experience. At the
-            same time, we introduced{" "}
+            tokenized stocks felt native to the existing experience, while
+            introducing{" "}
             <span className={styles.highlight}>
               stock-specific information from the underlying asset
             </span>{" "}
-            to give users relevant signals when evaluating it.
+            to give users relevant signals when evaluating it. Testing this
+            with users who weren&apos;t already familiar with Crypto.com,
+            coming from platforms like Coinbase and Trade Republic instead,
+            gave us{" "}
+            <span className={styles.highlight}>
+              confidence this structure held up on its own merits
+            </span>
+            , rather than just being intuitive to people already used to the
+            app.
           </>
         ),
       },
@@ -1198,7 +1217,9 @@ export default async function WorkDetailPage({
                 {project.scope.time}
               </p>
             </div>
-            {("model" in project.scope || "process" in project.scope) && (
+            {("model" in project.scope ||
+              "process" in project.scope ||
+              "validation" in project.scope) && (
               <div>
                 <p className="font-sans font-medium text-nav text-content-secondary">
                   Tools used
@@ -1211,14 +1232,22 @@ export default async function WorkDetailPage({
           </div>
           <div className="tablet:col-span-6">
             <p className="font-sans font-medium text-nav text-content-secondary">
-              {"model" in project.scope ? "Model" : "process" in project.scope ? "Process" : "Tools used"}
+              {"model" in project.scope
+                ? "Model"
+                : "process" in project.scope
+                  ? "Process"
+                  : "validation" in project.scope
+                    ? "Validation"
+                    : "Tools used"}
             </p>
             <p className="font-sans font-medium text-body text-content-primary">
               {"model" in project.scope
                 ? project.scope.model
                 : "process" in project.scope
                   ? project.scope.process
-                  : project.scope.toolsUsed}
+                  : "validation" in project.scope
+                    ? project.scope.validation
+                    : project.scope.toolsUsed}
             </p>
           </div>
         </div>
@@ -1252,7 +1281,7 @@ export default async function WorkDetailPage({
       )}
       {"understandingContent" in project && (
         <BuiltSection
-          heading="HELPING BEGINNERS UNDERSTAND WHAT THEY'RE BUYING"
+          heading="HELPING BEGINNERS UNDERSTAND"
           blocks={project.understandingContent}
         />
       )}
