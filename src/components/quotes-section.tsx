@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Seam } from "./seam";
 import styles from "./quotes-section.module.css";
 
-const filters = ["Design Directors", "Product Designers", "Engineers"];
+const filters = ["Design Directors", "Product Designers", "Product Managers", "Engineers"];
 
 const noteColors = [
   "bg-note-blue",
@@ -20,8 +20,7 @@ const noteColors = [
 
 type Quote = { quote: string; attribution: string };
 
-// Product Managers tab and the second Engineers quote are hidden for now —
-// no real content for either yet. Re-add once given.
+// The second Engineers quote is hidden for now — no real content yet.
 const quotesByFilter: Record<string, Quote[]> = {
   "Design Directors": [
     {
@@ -45,6 +44,13 @@ const quotesByFilter: Record<string, Quote[]> = {
       quote:
         "I enjoyed working with Si Min during her internship at IBM. She's thoughtful, meticulous, and has a great eye for detail, while also being quick to understand problems and think things through. She's easy to work with, and I'd be very happy to work with her again.",
       attribution: "Clifford Goh · User Experience Designer @ IBM",
+    },
+  ],
+  "Product Managers": [
+    {
+      quote:
+        "I worked with Si Min on trading products at Crypto.com, where she quickly ramped up as a grad analyst and became one of the main designers covering tokenized stocks, US equities and related features. She consistently turned complex product and compliance requirements into intuitive flows, while showing strong work ethic, attention to detail, and a willingness to learn. She'd be a great addition to any team that values craft and consistency.",
+      attribution: "Nancy Li · Head, Trading Products @ Crypto.com",
     },
   ],
   Engineers: [
