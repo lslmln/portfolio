@@ -34,7 +34,11 @@ type BuiltBlock =
       )[];
     };
 
-function renderBuiltBlocks(blocks: readonly BuiltBlock[]) {
+function renderBuiltBlocks(
+  blocks: readonly BuiltBlock[],
+  options?: { galleryImageClassName?: string },
+) {
+  const galleryImageClassName = options?.galleryImageClassName ?? "tablet:col-span-6";
   return blocks.map((block, index) =>
     block.type === "gallery" ? (
       <div
@@ -48,7 +52,7 @@ function renderBuiltBlocks(blocks: readonly BuiltBlock[]) {
             alt={image.alt}
             width={1600}
             height={1000}
-            className="tablet:col-span-6"
+            className={galleryImageClassName}
           />
         ))}
       </div>
@@ -111,14 +115,27 @@ function renderBuiltBlocks(blocks: readonly BuiltBlock[]) {
   );
 }
 
-function BuiltSection({ heading, blocks }: { heading: string; blocks: readonly BuiltBlock[] }) {
+function BuiltSection({
+  heading,
+  blocks,
+  fullWidthTabletImages,
+}: {
+  heading: string;
+  blocks: readonly BuiltBlock[];
+  fullWidthTabletImages?: boolean;
+}) {
   return (
     <section className="relative pt-section-gap pb-page-y">
       <Seam />
       <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
         {heading}
       </h2>
-      {renderBuiltBlocks(blocks)}
+      {renderBuiltBlocks(
+        blocks,
+        fullWidthTabletImages
+          ? { galleryImageClassName: "tablet:col-span-12 desktop:col-span-6" }
+          : undefined,
+      )}
     </section>
   );
 }
@@ -1332,18 +1349,21 @@ export default async function WorkDetailPage({
         <BuiltSection
           heading="MAKING A NEW ASSET DISCOVERABLE"
           blocks={project.discoverabilityContent}
+          fullWidthTabletImages
         />
       )}
       {"understandingContent" in project && (
         <BuiltSection
           heading="HELPING BEGINNERS UNDERSTAND"
           blocks={project.understandingContent}
+          fullWidthTabletImages
         />
       )}
       {"cryptoExperienceContent" in project && (
         <BuiltSection
           heading="BRINGING STOCKS INTO A CRYPTO EXPERIENCE"
           blocks={project.cryptoExperienceContent}
+          fullWidthTabletImages
         />
       )}
       {"processContent" in project && (
