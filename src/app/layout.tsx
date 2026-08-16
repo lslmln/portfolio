@@ -64,6 +64,13 @@ const WEBSITE_JSON_LD = {
   url: SITE_URL,
 };
 
+const OG_IMAGE = {
+  url: "/og-image.png",
+  width: 1200,
+  height: 630,
+  alt: SITE_TITLE,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { template: "%s · Si Min Lee", default: SITE_TITLE },
@@ -74,11 +81,13 @@ export const metadata: Metadata = {
     url: SITE_URL,
     siteName: SITE_NAME,
     type: "website",
+    images: [OG_IMAGE],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
+    images: [OG_IMAGE],
   },
 };
 
