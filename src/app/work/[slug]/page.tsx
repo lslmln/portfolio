@@ -865,7 +865,7 @@ const projects = [
       </>,
     ],
     scope: {
-      time: "~4 months, Dec 2025–Mar 2026",
+      time: "~5 months, Dec 2025–Apr 2026",
       toolsUsed: "Figma · Jira · Dovetail",
       validation:
         "Moderated usability testing with 5 active investors (based in France/Germany, trading both crypto and stocks on platforms like Coinbase, Kraken, Trade Republic and Revolut)",
