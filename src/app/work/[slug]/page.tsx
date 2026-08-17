@@ -1179,18 +1179,18 @@ const projects = [
         their assets, was a good example of this.
       </>,
       <>
-        The results speak for themselves:{" "}
+        The results speak for themselves,{" "}
         <span className={styles.highlight}>
-          around 1 in 4 active RoW users trade tokenized stocks
-        </span>
-        , with the product{" "}
+          1 in 5 crypto traders also trade tokenized stocks
+        </span>{" "}
+        in{" "}
         <a
           href="https://crypto.com/company-news/tokenized-stocks-eea-launch"
           target="_blank"
           rel="noopener noreferrer"
           className={iconRowStyles.link}
         >
-          now expanding into the EEA
+          EEA
         </a>
         .
       </>,
