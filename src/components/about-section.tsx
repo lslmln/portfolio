@@ -11,7 +11,7 @@ export function AboutSection() {
             alt="Portrait of Simin Lee"
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 33vw, 100vw"
-            className="object-cover"
+            className="profile-photo object-cover"
             priority
           />
         </div>

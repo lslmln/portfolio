@@ -201,3 +201,7 @@ body {
 :root[data-theme="dark"] body {
   background: #000000;
 }
+
+:root[data-theme="dark"] .profile-photo {
+  filter: grayscale(1);
+}
