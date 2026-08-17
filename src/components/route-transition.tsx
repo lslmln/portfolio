@@ -4,12 +4,12 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
+import { useLoadingComplete } from "@/lib/loading-complete";
 import { scrollToTop } from "@/lib/scroll-root";
 import { ErrorMessage, ReloadButton } from "./error-message";
 
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 export const COVER_DURATION = 0.5;
-const COLD_LOAD_DURATION = 0.4;
 // router.push() fetches the new route's RSC payload over the network — if
 // that stalls (flaky connection, dropped request), pathname never changes,
 // so the effect below that lifts the cover never fires either. Without
@@ -48,6 +48,11 @@ export function RouteTransition({
   const router = useRouter();
   const pathname = usePathname();
   const reduceMotion = useReducedMotion();
+  // Drives the cold-load content fade below off the same signal (and with
+  // the same un-gated-by-reduceMotion behavior) as CrossfadeReveal uses for
+  // the navbar, so first paint reveals as one whole-screen crossfade instead
+  // of two separately-timed ones.
+  const loadingComplete = useLoadingComplete();
 
   const [shown, setShown] = useState({ pathname, children });
   const [covering, setCovering] = useState(false);
@@ -168,8 +173,8 @@ export function RouteTransition({
         ) : (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: reduceMotion ? 0 : COLD_LOAD_DURATION, ease: EASE_OUT_EXPO }}
+            animate={{ opacity: loadingComplete ? 1 : 0 }}
+            transition={{ duration: COVER_DURATION, ease: EASE_OUT_EXPO }}
           >
             {shown.children}
           </motion.div>
