@@ -20,7 +20,6 @@ const noteColors = [
 
 type Quote = { quote: string; attribution: string };
 
-// The second Engineers quote is hidden for now — no real content yet.
 const quotesByFilter: Record<string, Quote[]> = {
   "Design Directors": [
     {
@@ -63,6 +62,11 @@ const quotesByFilter: Record<string, Quote[]> = {
       quote:
         "Si Min is an exceptional designer who constantly looks for ways to communicate more efficiently with engineers. Working with her creates a positive feedback loop where we can collaborate on diverse solutions and continuously improve design management.",
       attribution: "Marcus Yip · SVP, Software Engineering @ Crypto.com",
+    },
+    {
+      quote:
+        "Working with Si Min on our Equities products was an outstanding experience. She is an exceptionally skilled designer whose clean Figma workflows and proactive communication make building out complex UIs a breeze. I would gladly collaborate with her again.",
+      attribution: "Daryl Sze · Lead Developer, Equity Trading @ Crypto.com",
     },
   ],
 };
