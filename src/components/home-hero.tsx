@@ -1,5 +1,6 @@
 import { CrossfadeReveal } from "@/components/crossfade-reveal";
 import { IconRow } from "@/components/icon-row";
+import iconRowStyles from "@/components/icon-row.module.css";
 import { ScrollCue } from "@/components/scroll-cue";
 
 // The homepage's top section, on its own so it can also be used as the
@@ -17,7 +18,16 @@ export function HomeHero() {
       <CrossfadeReveal className="flex items-start justify-between px-page-x py-6 tablet:items-end tablet:pt-0 tablet:pb-page-y">
         <div>
           <p className="font-sans font-medium text-body text-content-secondary">
-            Si Min was @ Crypto.com
+            Si Min was @{" "}
+            <a
+              href="https://crypto.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${iconRowStyles.link} font-sans font-medium text-body`}
+            >
+              Crypto.com
+            </a>
+            .
           </p>
           <p className="hidden font-sans font-medium text-body text-content-primary tablet:block">
             Bringing emerging asset classes to everyday investors.

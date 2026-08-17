@@ -4,5 +4,5 @@ import { WorkSection } from "@/components/work-section";
 export const metadata: Metadata = { title: "Work" };
 
 export default function WorkPage() {
-  return <WorkSection firstOnPage lastOnPage />;
+  return <WorkSection firstOnPage lastOnPage hideHeading />;
 }

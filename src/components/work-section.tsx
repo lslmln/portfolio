@@ -58,12 +58,14 @@ export function WorkSection({
   heading = "WORK",
   items = workProjects,
   hideHeaderOnMobile = false,
+  hideHeading = false,
 }: {
   firstOnPage?: boolean;
   lastOnPage?: boolean;
   heading?: string;
   items?: readonly WorkProject[];
   hideHeaderOnMobile?: boolean;
+  hideHeading?: boolean;
 }) {
   const [unlockingSlug, setUnlockingSlug] = useState<string | null>(null);
   const [previewError, setPreviewError] = useState<string | undefined>(undefined);
@@ -115,13 +117,13 @@ export function WorkSection({
       )}
       {firstOnPage ? (
         <h1
-          className={`px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading ${hideHeaderOnMobile ? "hidden tablet:block" : ""}`}
+          className={`px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading ${hideHeading ? "sr-only" : hideHeaderOnMobile ? "hidden tablet:block" : ""}`}
         >
           {heading}
         </h1>
       ) : (
         <h2
-          className={`px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading ${hideHeaderOnMobile ? "hidden tablet:block" : ""}`}
+          className={`px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading ${hideHeading ? "sr-only" : hideHeaderOnMobile ? "hidden tablet:block" : ""}`}
         >
           {heading}
         </h2>
