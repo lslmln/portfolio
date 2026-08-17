@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { useLoadingComplete } from "@/lib/loading-complete";
+import { CrossfadeReveal } from "@/components/crossfade-reveal";
 import { scrollToTop } from "@/lib/scroll-root";
 import { ErrorMessage, ReloadButton } from "./error-message";
 
@@ -48,11 +48,6 @@ export function RouteTransition({
   const router = useRouter();
   const pathname = usePathname();
   const reduceMotion = useReducedMotion();
-  // Drives the cold-load content fade below off the same signal (and with
-  // the same un-gated-by-reduceMotion behavior) as CrossfadeReveal uses for
-  // the navbar, so first paint reveals as one whole-screen crossfade instead
-  // of two separately-timed ones.
-  const loadingComplete = useLoadingComplete();
 
   const [shown, setShown] = useState({ pathname, children });
   const [covering, setCovering] = useState(false);
@@ -171,13 +166,12 @@ export function RouteTransition({
             </ErrorMessage>
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: loadingComplete ? 1 : 0 }}
-            transition={{ duration: COVER_DURATION, ease: EASE_OUT_EXPO }}
-          >
-            {shown.children}
-          </motion.div>
+          // Same component (and so the exact same trigger, duration, and
+          // elaborate-vs-plain timing) as the navbar's own CrossfadeReveal —
+          // otherwise the two fade in on independent timings and content
+          // (plain 0.5s) finishes well before the navbar's elaborate,
+          // delayed first-visit entrance even starts.
+          <CrossfadeReveal>{shown.children}</CrossfadeReveal>
         )}
         <motion.div
           aria-hidden
