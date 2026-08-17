@@ -57,11 +57,13 @@ export function WorkSection({
   lastOnPage = false,
   heading = "WORK",
   items = workProjects,
+  hideHeaderOnMobile = false,
 }: {
   firstOnPage?: boolean;
   lastOnPage?: boolean;
   heading?: string;
   items?: readonly WorkProject[];
+  hideHeaderOnMobile?: boolean;
 }) {
   const [unlockingSlug, setUnlockingSlug] = useState<string | null>(null);
   const [previewError, setPreviewError] = useState<string | undefined>(undefined);
@@ -106,15 +108,21 @@ export function WorkSection({
 
   return (
     <section
-      className={`relative ${firstOnPage ? "" : "pt-section-gap"} ${lastOnPage ? "pb-section-end" : "pb-page-y"}`}
+      className={`relative ${firstOnPage ? "" : hideHeaderOnMobile ? "pt-0 tablet:pt-section-gap" : "pt-section-gap"} ${lastOnPage ? "pb-section-end" : "pb-page-y"}`}
     >
-      {!firstOnPage && <Seam />}
+      {!firstOnPage && (
+        <Seam className={hideHeaderOnMobile ? "hidden tablet:block" : undefined} />
+      )}
       {firstOnPage ? (
-        <h1 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
+        <h1
+          className={`px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading ${hideHeaderOnMobile ? "hidden tablet:block" : ""}`}
+        >
           {heading}
         </h1>
       ) : (
-        <h2 className="px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading">
+        <h2
+          className={`px-page-x py-page-y font-sans font-bold text-title tracking-title text-heading ${hideHeaderOnMobile ? "hidden tablet:block" : ""}`}
+        >
           {heading}
         </h2>
       )}

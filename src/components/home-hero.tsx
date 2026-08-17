@@ -7,25 +7,22 @@ import { ScrollCue } from "@/components/scroll-cue";
 // a direct URL — see WorkDetailGate.
 export function HomeHero() {
   return (
-    <main
-      className="flex flex-col"
-      style={{ minHeight: "calc(100svh - var(--nav-height))" }}
-    >
+    <main className="flex flex-col tablet:min-h-[calc(100svh-var(--nav-height))]">
       <h1 className="sr-only">Si Min Lee · Product Designer</h1>
-      <div className="relative flex-1">
+      <div className="relative hidden flex-1 tablet:block">
         <div className="absolute inset-x-0 top-0 bottom-page-y tablet:bottom-0">
           <IconRow />
         </div>
       </div>
-      <CrossfadeReveal className="flex items-end justify-between px-page-x pb-page-y">
+      <CrossfadeReveal className="flex items-start justify-between px-page-x py-6 tablet:items-end tablet:pt-0 tablet:pb-page-y">
         <div>
           <p className="font-sans font-medium text-body text-content-secondary">
             Si Min was @ Crypto.com
           </p>
-          <p className="font-sans font-medium text-body text-content-primary">
+          <p className="hidden font-sans font-medium text-body text-content-primary tablet:block">
             Bringing emerging asset classes to everyday investors.
           </p>
-          <p className="font-sans font-medium text-body text-content-primary">
+          <p className="hidden font-sans font-medium text-body text-content-primary tablet:block">
             Building the design system that makes them intuitive and accessible.
           </p>
         </div>
