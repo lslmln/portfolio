@@ -878,7 +878,18 @@ const projects = [
       <>
         I was the main product designer from concept to launch, owning the
         end-to-end experience. A second senior product designer joined midway
-        to support user research and testing.
+        to support user research and testing. Tokenized stocks launched in RoW
+        and{" "}
+        <a
+          href="https://crypto.com/company-news/tokenized-stocks-eea-launch"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={iconRowStyles.link}
+        >
+          EEA
+        </a>
+        ; the US market offers the same experience through traditional stock
+        rails due to local regulations.
       </>,
     ],
     scope: {
