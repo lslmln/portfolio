@@ -45,7 +45,11 @@ export function ScrollCue() {
                 duration: 0.5,
                 ease: [0.19, 1, 0.22, 1],
                 repeat: Infinity,
-                repeatDelay: 3.5,
+                // Deliberately off IconRow's 4s hint cadence (3.5 + 0.5 =
+                // 4.3s here) — both are visible together in the hero on
+                // desktop, so a matching period would tick in lockstep and
+                // read mechanical instead of organic.
+                repeatDelay: 3.8,
                 delay: 1.5,
               }
         }

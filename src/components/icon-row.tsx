@@ -54,7 +54,10 @@ const items = [
   },
 ];
 
-// Matches the Scroll cue's cadence (delay: 1.5, duration: 0.5, repeatDelay: 3.5).
+// Shares the Scroll cue's initial delay (1.5s) but deliberately runs on a
+// different repeat period (4s vs. its 4.3s) — both hints are visible
+// together in the hero on desktop, so a matching cadence would tick in
+// lockstep and read mechanical instead of organic.
 const HINT_INITIAL_DELAY_MS = 1500;
 const HINT_REPEAT_MS = 4000;
 const HINT_STAGGER_S = 0.05;
