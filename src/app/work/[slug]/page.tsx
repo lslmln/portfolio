@@ -6,9 +6,9 @@ import { ExpandableImage } from "@/components/expandable-image";
 import iconRowStyles from "@/components/icon-row.module.css";
 import { Seam } from "@/components/seam";
 import { TextSection } from "@/components/text-section";
-import { TransitionLink } from "@/components/transition-link";
 import { WorkDetailGate } from "@/components/work-detail-gate";
 import { WorkHeroImage } from "@/components/work-hero-image";
+import { WorkLink } from "@/components/work-link";
 import { WorkSection } from "@/components/work-section";
 import { workProjects } from "@/lib/work-projects";
 import styles from "./page.module.css";
@@ -165,14 +165,14 @@ const projects = [
       <>
         I worked on two parts of this revamp: feature-level improvements, and the
         design system behind them. This page covers the feature work, see{" "}
-        <TransitionLink href="/work/design-system-revamp" className={iconRowStyles.link}>
+        <WorkLink slug="design-system-revamp" className={iconRowStyles.link}>
           this page
-        </TransitionLink>{" "}
+        </WorkLink>{" "}
         for design systems. I also explored what AI could do to support the
         revamp as it grew{" "}
-        <TransitionLink href="/work/screenshot-to-figma" className={iconRowStyles.link}>
+        <WorkLink slug="screenshot-to-figma" className={iconRowStyles.link}>
           here
-        </TransitionLink>
+        </WorkLink>
         .
       </>,
     ],
@@ -424,14 +424,14 @@ const projects = [
       <>
         I worked on two parts of this revamp: feature-level improvements, and the
         design system behind them. This page covers design systems, see{" "}
-        <TransitionLink href="/work/feature-flow-revamp" className={iconRowStyles.link}>
+        <WorkLink slug="feature-flow-revamp" className={iconRowStyles.link}>
           this page
-        </TransitionLink>{" "}
+        </WorkLink>{" "}
         for the feature work. I also explored what AI could do to support the
         revamp as it grew{" "}
-        <TransitionLink href="/work/screenshot-to-figma" className={iconRowStyles.link}>
+        <WorkLink slug="screenshot-to-figma" className={iconRowStyles.link}>
           here
-        </TransitionLink>
+        </WorkLink>
         .
       </>,
       <>
@@ -720,13 +720,13 @@ const projects = [
         foundation instead of the foundation being revisited to accommodate them.
         So we decided to revisit that foundation, from the components (read more
         about it{" "}
-        <TransitionLink href="/work/design-system-revamp" className={iconRowStyles.link}>
+        <WorkLink slug="design-system-revamp" className={iconRowStyles.link}>
           here
-        </TransitionLink>
+        </WorkLink>
         ) to the flow of our core features (read more about it{" "}
-        <TransitionLink href="/work/feature-flow-revamp" className={iconRowStyles.link}>
+        <WorkLink slug="feature-flow-revamp" className={iconRowStyles.link}>
           here
-        </TransitionLink>
+        </WorkLink>
         ). But with a tight ~3-month timeline,{" "}
         <span className={styles.highlight}>
           it&apos;s faster for designers to rebuild what they already know than to
