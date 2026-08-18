@@ -880,8 +880,7 @@ const projects = [
         >
           EEA
         </a>
-        ; the US market offers the same experience through traditional stock
-        rails due to local regulations.
+        .
       </>,
     ],
     scope: {
