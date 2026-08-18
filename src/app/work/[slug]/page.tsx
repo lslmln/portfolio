@@ -905,8 +905,8 @@ const projects = [
               discovery.
             </span>{" "}
             This turned out to match how users already thought about their
-            money. In testing, users didn&apos;t distinguish between the asset
-            classes at all when browsing. They saw both stocks and crypto
+            money. In testing, users didn&apos;t mind the mixture. They saw
+            both stocks and crypto
             simply as &quot;investments,&quot; and expected to browse them
             together. One participant said mixing them into one list
             &quot;saved them from having to visit an additional page.&quot;
