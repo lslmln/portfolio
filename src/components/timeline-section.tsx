@@ -23,7 +23,7 @@ const entries = [
     company: "Crypto.com",
     href: "https://crypto.com/",
     role: "Product Designer",
-    meta: "Jun 2025 - Aug 2026 · Singapore",
+    meta: "2025 - 2026 · Singapore",
     highlight: "Tokenized stocks & Equities Trading",
   },
   {

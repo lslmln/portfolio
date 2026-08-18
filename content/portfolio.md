@@ -17,7 +17,7 @@
 *Given directly by the user (as the `/about` Timeline section content) — title, dates, location for each. Order below is most-recent-first, matching how it's displayed.*
 
 ### Crypto.com — Product Designer
-- Jun 2025 - Aug 2026 · Singapore
+- 2025 - 2026 · Singapore
 - Most recent role
 - Focus: design systems & fintech products
 
