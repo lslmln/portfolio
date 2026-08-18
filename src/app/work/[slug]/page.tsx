@@ -341,26 +341,11 @@ const projects = [
       },
       {
         type: "paragraph",
-        text: (
-          <>
-            The calculator itself was overcomplicated: the graph reloaded on every
-            input change, and{" "}
-            <span className={styles.highlight}>
-              it would still indicate a red dollar value even when the basket had
-              lost value, inadvertently signaling to beginners not to buy.
-            </span>{" "}
-            This defeats the point of DCA as a strategy for the business to
-            improve retention by pooling in automated recurring investments. I
-            simplified the calculator by fixing the time period to one year
-            (removing that variable entirely) and cutting the graph altogether. I
-            also made the copy more neutral, and any values in the negative would
-            show as blue rather than red. Now users only need to adjust amount and
-            frequency to see a single, plain-language output. Once a user sets up
-            a recurring buy, the DCA section disappears entirely, they can already
-            see the value generated directly from their balance, so showing it
-            twice would be redundant.
-          </>
-        ),
+        text: "The original calculator was overcomplicated: the graph reloaded on every input change, and users had three variables to toggle (amount, frequency, time period). It also displayed the dollar value in red whenever the basket had lost value, inadvertently signaling to beginners not to buy. On top of that, the calculator kept appearing even after a user had already set up a recurring buy, which was redundant since they could already see that basket's returns directly.",
+      },
+      {
+        type: "paragraph",
+        text: "I simplified the calculator by fixing the time period to one year, removing that variable entirely, and cutting the graph. I also made the copy more neutral and changed negative values to show in blue instead of red. Once a user sets up a recurring buy, the DCA section disappears entirely, they can already see the value generated directly from their balance, so showing it twice would be redundant.",
       },
     ],
     reflections: [
