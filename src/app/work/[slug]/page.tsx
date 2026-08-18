@@ -701,14 +701,6 @@ const projects = [
           one forces you to make the system a little more robust.
         </span>
       </>,
-      <>
-        Getting the chance to work on both feature design and the design
-        system was especially valuable.{" "}
-        <span className={styles.highlight}>
-          You understand the system differently when you&apos;ve experienced
-          all the different features it needs to support.
-        </span>
-      </>,
     ],
   },
   {
