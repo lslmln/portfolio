@@ -306,7 +306,7 @@ const projects = [
             earlier. Besides the main differences of what these baskets consist
             of, crypto baskets also support optional rebalancing, letting users
             buy/sell to maintain a target ratio. Whale baskets instead track real
-            allocation shifts of specific whales (e.g. Jensen Huang), updating
+            allocation shifts of specific whales, updating
             automatically as those whales&apos; positions change.{" "}
             <span className={styles.highlight}>
               To surface this difference, rebalancing for crypto baskets appear
