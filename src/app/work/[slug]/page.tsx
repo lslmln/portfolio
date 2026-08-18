@@ -287,7 +287,7 @@ const projects = [
         type: "mixedGallery",
         compact: true,
         items: [
-          { kind: "image", src: "/images/rebalancing-old.png", alt: "Rebalancing, earlier version" },
+          { kind: "video", src: "/videos/rebalancing-old.mp4" },
           { kind: "video", src: "/videos/rebalancing.mp4" },
           {
             kind: "image",
