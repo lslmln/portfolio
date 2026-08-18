@@ -277,7 +277,7 @@ const projects = [
             details screen used before purchase, using the same components with an
             added allocation breakdown, so{" "}
             <span className={styles.highlight}>
-              users can relate the pre- and post-purchase versions of the same
+              users can relate the pre and post-purchase versions of the same
               screen.
             </span>
           </>
