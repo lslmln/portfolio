@@ -546,7 +546,7 @@ const projects = [
         type: "paragraph",
         text: (
           <>
-            The existing price chart felt outdated: the whole chart rescaled
+            The existing live price chart felt outdated: the whole chart rescaled
             whenever a value moved beyond the axis range, the loading animation
             fully reloaded (with a skeleton state) on every timeframe switch, and
             scrubbing snapped numbers instantly with no transition.{" "}
@@ -582,22 +582,6 @@ const projects = [
         type: "paragraph",
         text: (
           <>
-            When switching between timeframes, I took cues from Family&apos;s
-            approach:{" "}
-            <span className={styles.highlight}>
-              the chart snaps smoothly along the y-axis so each transition has
-              continuity, rather than fully reloading.
-            </span>{" "}
-            When scrubbing, a rolling lift/press interaction transitions into a
-            subtle sliding animation, making values easier to read while still
-            feeling delightful.
-          </>
-        ),
-      },
-      {
-        type: "paragraph",
-        text: (
-          <>
             For the live chart specifically, I drew inspiration from{" "}
             <a
               href="https://benji.org/liveline"
@@ -615,6 +599,22 @@ const projects = [
               one point rather than a chart repositioning on both axes at once,
             </span>{" "}
             while also giving the chart more room to breathe.
+          </>
+        ),
+      },
+      {
+        type: "paragraph",
+        text: (
+          <>
+            When switching between timeframes, I took cues from Family&apos;s
+            approach:{" "}
+            <span className={styles.highlight}>
+              the chart snaps smoothly along the y-axis so each transition has
+              continuity, rather than fully reloading.
+            </span>{" "}
+            When scrubbing, a rolling lift/press interaction transitions into a
+            subtle sliding animation, making values easier to read while still
+            feeling delightful.
           </>
         ),
       },
