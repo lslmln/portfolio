@@ -887,7 +887,7 @@ const projects = [
           <>
             I revisited key trading touchpoints across{" "}
             <span className={styles.highlight}>
-              Home, Markets, Search, Accounts and Buy
+              Home, Markets, Search and Accounts
             </span>{" "}
             to determine where tokenized stocks should appear.
           </>
