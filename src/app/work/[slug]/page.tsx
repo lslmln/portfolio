@@ -261,7 +261,7 @@ const projects = [
       },
       {
         type: "paragraph",
-        text: "Besides crypto and stocks, I also tackled the issues in more complicated products such as crypto and whale baskets. Crypto baskets are automated bundles of different digital tokens grouped by blockchain themes or sectors. Whale baskets are curated collections of traditional stocks that mirror the exact personal portfolios of billionaire investors and prominent public figures, letting you copy the strategies of market elites with one click.",
+        text: "Besides crypto and stocks, I also tackled the issues in more complicated products such as crypto and whale baskets. Crypto baskets are automated bundles of different digital tokens grouped by blockchain themes or sectors. Whale baskets are curated collections of traditional stocks that mirror the personal portfolios of billionaire investors and prominent public figures such as Nancy Pelosi and Jensen Huang, letting you copy the strategies of market elites with one click.",
       },
       {
         type: "videoGallery",
