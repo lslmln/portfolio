@@ -105,7 +105,7 @@ export function QuotesSection() {
         <div className={styles.filterFadeLeft} aria-hidden="true" />
         <div className={styles.filterFadeRight} aria-hidden="true" />
       </div>
-      <div className={`${styles.grid} items-start gap-card-spacing px-page-x py-page-y`}>
+      <div className={`${styles.grid} items-stretch gap-card-spacing px-page-x py-page-y`}>
         <AnimatePresence mode="popLayout" initial={false}>
           {quotes.map((quote, index) => (
             <motion.div
@@ -116,7 +116,7 @@ export function QuotesSection() {
               exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
               transition={{ type: "spring", duration: 0.3, bounce: 0 }}
               style={{ borderRadius: 12 }}
-              className={`flex min-w-0 flex-col gap-card-text-gap ${noteColors[(selected * 2 + index) % noteColors.length]} p-page-y`}
+              className={`flex min-w-0 flex-col justify-between gap-card-text-gap ${noteColors[(selected * 2 + index) % noteColors.length]} p-page-y`}
             >
               <p className="whitespace-pre-line break-words font-sans font-medium text-body text-content-primary">
                 {quote.quote}
