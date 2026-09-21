@@ -68,6 +68,11 @@ const quotesByFilter: Record<string, Quote[]> = {
         "Working with Si Min on our Equities products was an outstanding experience. She is an exceptionally skilled designer whose clean Figma workflows and proactive communication make building out complex UIs a breeze. I would gladly collaborate with her again.",
       attribution: "Daryl Sze · Lead Developer, Equity Trading @ Crypto.com",
     },
+    {
+      quote:
+        "I had the pleasure of working closely with Si Min on multiple Equities projects. Her strong product mindset, openness to new ideas, and ability to bring people together made even the most challenging projects feel like a true team effort. She's an incredible collaborator who consistently turns ideas into meaningful results, and any team would be lucky to have her.",
+      attribution: "Will Chen · iOS Team Lead",
+    },
   ],
 };
 
