@@ -71,7 +71,7 @@ const quotesByFilter: Record<string, Quote[]> = {
     {
       quote:
         "I had the pleasure of working closely with Si Min on multiple Equities projects. Her strong product mindset, openness to new ideas, and ability to bring people together made even the most challenging projects feel like a true team effort. She's an incredible collaborator who consistently turns ideas into meaningful results, and any team would be lucky to have her.",
-      attribution: "Will Chen · iOS Team Lead",
+      attribution: "Will Chen · iOS Team Lead @ Crypto.com",
     },
   ],
 };
